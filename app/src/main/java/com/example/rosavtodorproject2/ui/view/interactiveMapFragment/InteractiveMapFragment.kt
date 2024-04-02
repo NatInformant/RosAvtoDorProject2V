@@ -66,8 +66,6 @@ class InteractiveMapFragment : Fragment() {
 
     private var locationManager: LocationManager? = null
 
-    // Вот это надо хранить где-то на уровне приложения, а то иначе при выходе с фрагмента
-    // он не сохраняет его
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -236,14 +234,15 @@ class InteractiveMapFragment : Fragment() {
             val distance = App.getInstance().previousLocation!!.distanceTo(location)
 
             if (distance >= 2000) {
-                mapView.map.move(
+                /*mapView.map.move(
                     CameraPosition(
                         Point(location.latitude, location.longitude),
-                        /* zoom = */ 8f,
-                        /* azimuth = */ 0f,
-                        /* tilt = */ 0f
+                        *//* zoom = *//* 8f,
+                        *//* azimuth = *//* 0f,
+                        *//* tilt = *//* 0f
                     )
-                )
+                )*/
+
                 viewModel.updatePoints(location.latitude, location.longitude)
                 App.getInstance().previousLocation = location
             }
