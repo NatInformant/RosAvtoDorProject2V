@@ -172,11 +172,11 @@ class InteractiveMapFragment : Fragment() {
 
                         val url =
                             "https://yandex.ru/maps/?rtext=" +
-                                    "${App.getInstance().previousLocation?.latitude}," +
-                                    "${App.getInstance().previousLocation?.longitude}" +
+                                    "${App.getInstance().previousLocation?.latitude}," +// точка
+                                    "${App.getInstance().previousLocation?.longitude}" +// начала пути
                                     "~" +
-                                    "${currentPointInformation?.coordinates?.latitude}," +
-                                    "${currentPointInformation?.coordinates?.longitude}" +
+                                    "${currentPointInformation?.coordinates?.latitude}," +//точка
+                                    "${currentPointInformation?.coordinates?.longitude}" +//конца пути
                                     "&rtt=auto"
 
                         val intent = Intent(Intent.ACTION_VIEW) // Создаем новый Intent
