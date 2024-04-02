@@ -2,6 +2,7 @@ package com.example.rosavtodorproject2.ui.view.interactiveMapFragment
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ActionBar.LayoutParams
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -16,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -27,11 +29,15 @@ import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
+import com.example.rosavtodorproject2.databinding.VerifiedPointPopupWindowBinding
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
+import com.yandex.mapkit.map.MapObject
+import com.yandex.mapkit.map.MapObjectTapListener
+import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.Runtime.getApplicationContext
 import com.yandex.runtime.image.ImageProvider
@@ -39,6 +45,8 @@ import com.yandex.runtime.image.ImageProvider
 
 class InteractiveMapFragment : Fragment() {
     private lateinit var binding: FragmentInteractiveMapBinding
+    private lateinit var bindingVerifiedPopupWindow: VerifiedPointPopupWindowBinding
+
     private val applicationComponent
         get() = App.getInstance().applicationComponent
 
@@ -48,6 +56,8 @@ class InteractiveMapFragment : Fragment() {
 
     private var isPointAdding = false
     private var currentIconNumber: Int = -1
+
+    //Пять типов верифицированных, т.к. заготовка под достопримечательности
     private val iconsResources = listOf(
         R.drawable.petrol_station_icon,
         R.drawable.cafe_icon_24dp,
@@ -71,6 +81,9 @@ class InteractiveMapFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentInteractiveMapBinding.inflate(layoutInflater, container, false)
+        //Хз правильно ли, но так хотя бы всегда обьект view для popupWindow подгруженный и
+        //отрисованный будет и останется только сам обьект создать и всё
+        bindingVerifiedPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater)
 
         MapKitFactory.initialize(getApplicationContext())
         mapView = binding.mapview
@@ -100,17 +113,18 @@ class InteractiveMapFragment : Fragment() {
                 )
             )
         }
-        mapView.map.addInputListener(addingPointListener)
+        mapView.map.addInputListener(addingNewPointListener)
 
         viewModel.points.observe(viewLifecycleOwner)
         {
-            addVerifiedPointsToInteractiveMap(it)
+            addPointsToInteractiveMap(it)
         }
 
         return binding.root
     }
 
-    private val addingPointListener = object : InputListener {
+    //Храним все listener-ы в переменных, т.к. слабые ссылки, c-шные приколы вся херня.
+    private val addingNewPointListener = object : InputListener {
         override fun onMapTap(map: Map, point: Point) {
 
             if (!isPointAdding) {
@@ -140,8 +154,51 @@ class InteractiveMapFragment : Fragment() {
             // Пока не нужно, но может потом что-нибудь покумекаем
         }
     }
+    private val pointTapListener = object : MapObjectTapListener {
+        override fun onMapObjectTap(mapObject: MapObject, point: Point): Boolean {
+            // обработка нажатия на точку
+            if (mapObject is PlacemarkMapObject) {
 
-    private fun addVerifiedPointsToInteractiveMap(myPoints: List<MyPoint>) {
+                //получение инфы о точке, из обьекта класса, который всегда "лежит рядом с ней"
+                val currentPointInformation = mapObject.userData as? MyPoint
+
+                //переводим координаты из координат на карте в координаты на экране
+                val screenPoint = mapView.mapWindow.worldToScreen(point)
+                if (screenPoint != null) {
+                    bindingVerifiedPopupWindow.verifiedPointName.text =
+                        currentPointInformation?.name
+
+                    val popupWindow = PopupWindow(
+                        bindingVerifiedPopupWindow.root,
+                        LayoutParams.WRAP_CONTENT,
+                        LayoutParams.WRAP_CONTENT,
+                        true
+                    )
+
+                    popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    val windowWidth = popupWindow.contentView.measuredWidth
+                    val windowHeight = popupWindow.contentView.measuredHeight
+                    popupWindow.showAtLocation(
+                        mapView,
+                        Gravity.NO_GRAVITY,
+                        (screenPoint.x - windowWidth/2).toInt(),
+                        (screenPoint.y+binding.backToChatsPanel.height+windowHeight/2).toInt()
+                    )
+
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Точка находится за пределами экрана",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            return true
+        }
+    }
+
+    private fun addPointsToInteractiveMap(myPoints: List<MyPoint>) {
 
         mapView.map.mapObjects.clear()
         myPoints.forEach {
@@ -149,8 +206,10 @@ class InteractiveMapFragment : Fragment() {
                 ImageProvider.fromResource(requireContext(), iconsResources[it.type])
             mapView.map.mapObjects.addPlacemark()
                 .apply {
+                    userData = it
                     geometry = Point(it.coordinates.latitude, it.coordinates.longitude)
                     setIcon(imageProvider)
+                    addTapListener(pointTapListener)
                 }
         }
     }

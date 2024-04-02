@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/verified_point_popup_window_background"
+        android:paddingVertical="5dp"
+        android:paddingHorizontal="10dp"
+        android:minWidth="140dp"
+        >
+
+        <TextView
+            android:id="@+id/verified_point_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            />
+
+        <TextView
+            android:id="@+id/go_to_button"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/verified_point_popup_window_goto_button_background"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="15dp"
+            android:text="@string/verified_point_popup_window_goto_button_text"
+            android:textAlignment="center"
+            android:textSize="21sp"
+            />
+    </LinearLayout>
+
+</LinearLayout>

@@ -12,4 +12,5 @@
     <string name="bandit_menu_item_title">Бандит</string>
     <string name="dialog_window_positive_button_text">Изменить</string>
     <string name="dialog_window_negative_button_text">Отменить</string>
+    <string name="verified_point_popup_window_goto_button_text">Поехали!</string>
 </resources>
