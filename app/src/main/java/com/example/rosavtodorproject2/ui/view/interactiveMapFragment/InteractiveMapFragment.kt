@@ -4,10 +4,12 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.ActionBar.LayoutParams
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextThemeWrapper
@@ -25,7 +27,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.rosavtodorproject2.App
-
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
@@ -167,7 +168,23 @@ class InteractiveMapFragment : Fragment() {
                 if (screenPoint != null) {
                     bindingVerifiedPopupWindow.verifiedPointName.text =
                         currentPointInformation?.name
+                    bindingVerifiedPopupWindow.goToButton.setOnClickListener {
 
+                        val url =
+                            "https://yandex.ru/maps/?rtext=" +
+                                    "${App.getInstance().previousLocation?.latitude}," +
+                                    "${App.getInstance().previousLocation?.longitude}" +
+                                    "~" +
+                                    "${currentPointInformation?.coordinates?.latitude}," +
+                                    "${currentPointInformation?.coordinates?.longitude}" +
+                                    "&rtt=auto"
+
+                        val intent = Intent(Intent.ACTION_VIEW) // Создаем новый Intent
+
+                        intent.data = Uri.parse(url) // Устанавливаем URL-адрес для Intent
+
+                        startActivity(intent) // Запускаем новое Activity с помощью Intent
+                    }
                     val popupWindow = PopupWindow(
                         bindingVerifiedPopupWindow.root,
                         LayoutParams.WRAP_CONTENT,
@@ -175,14 +192,17 @@ class InteractiveMapFragment : Fragment() {
                         true
                     )
 
-                    popupWindow.contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    popupWindow.contentView.measure(
+                        View.MeasureSpec.UNSPECIFIED,
+                        View.MeasureSpec.UNSPECIFIED
+                    )
                     val windowWidth = popupWindow.contentView.measuredWidth
                     val windowHeight = popupWindow.contentView.measuredHeight
                     popupWindow.showAtLocation(
                         mapView,
                         Gravity.NO_GRAVITY,
-                        (screenPoint.x - windowWidth/2).toInt(),
-                        (screenPoint.y+binding.backToChatsPanel.height+windowHeight/2).toInt()
+                        (screenPoint.x - windowWidth / 2).toInt(),
+                        (screenPoint.y + binding.backToChatsPanel.height + windowHeight / 2).toInt()
                     )
 
                 } else {
