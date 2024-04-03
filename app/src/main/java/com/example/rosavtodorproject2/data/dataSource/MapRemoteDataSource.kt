@@ -22,19 +22,19 @@ class MapRemoteDataSource {
 
     private val points: MutableList<MyPoint> = mutableListOf(
         MyPoint(
-            Coordinates(54.88324475618048,57.26202530166927),
-            "Азс 1.",
-            4,
+            Coordinates(54.944265,60.819966),
+            "Гостинница: Ника",
+            2,
         ),
         MyPoint(
-            Coordinates(55.52648707893606,65.22737461759895),
-            "Азс 2",
-            4,
+            Coordinates(54.944153,60.818947),
+            "Азс: Экотоп",
+            0,
         ),
         MyPoint(
-            Coordinates(64.24725076450086,56.10278315937718),
-            "Азс 3",
-            4,
+            Coordinates(54.916774,60.353165),
+            "Кафе: Крепость М5",
+            1,
         ),
     )
     fun loadPoints() = points
