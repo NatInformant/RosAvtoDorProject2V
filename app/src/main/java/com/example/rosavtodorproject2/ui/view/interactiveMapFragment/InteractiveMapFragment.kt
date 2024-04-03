@@ -28,6 +28,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
+import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
 import com.example.rosavtodorproject2.databinding.VerifiedPointPopupWindowBinding
@@ -161,29 +162,17 @@ class InteractiveMapFragment : Fragment() {
             if (mapObject is PlacemarkMapObject) {
 
                 //получение инфы о точке, из обьекта класса, который всегда "лежит рядом с ней"
-                val currentPointInformation = mapObject.userData as? MyPoint
+                val currentPointInformation = mapObject.userData as? MyPoint ?: return true
 
                 //переводим координаты из координат на карте в координаты на экране
-                val screenPoint = mapView.mapWindow.worldToScreen(point)
-                if (screenPoint != null) {
+                val screenPoint = mapView.mapWindow.worldToScreen(point) ?: return true
+
+                if (currentPointInformation.type < 5) {
                     bindingVerifiedPopupWindow.verifiedPointName.text =
-                        currentPointInformation?.name
+                        currentPointInformation.name
+
                     bindingVerifiedPopupWindow.goToButton.setOnClickListener {
-
-                        val url =
-                            "https://yandex.ru/maps/?rtext=" +
-                                    "${App.getInstance().previousLocation?.latitude}," +// точка
-                                    "${App.getInstance().previousLocation?.longitude}" +// начала пути
-                                    "~" +
-                                    "${currentPointInformation?.coordinates?.latitude}," +//точка
-                                    "${currentPointInformation?.coordinates?.longitude}" +//конца пути
-                                    "&rtt=auto"
-
-                        val intent = Intent(Intent.ACTION_VIEW) // Создаем новый Intent
-
-                        intent.data = Uri.parse(url) // Устанавливаем URL-адрес для Intent
-
-                        startActivity(intent) // Запускаем новое Activity с помощью Intent
+                        goToYandexMaps(currentPointInformation.coordinates)
                     }
                     val popupWindow = PopupWindow(
                         bindingVerifiedPopupWindow.root,
@@ -204,19 +193,31 @@ class InteractiveMapFragment : Fragment() {
                         (screenPoint.x - windowWidth / 2).toInt(),
                         (screenPoint.y + binding.backToChatsPanel.height + windowHeight / 2).toInt()
                     )
-
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Точка находится за пределами экрана",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(requireContext(),"Это ДТП ЛОЛ",Toast.LENGTH_SHORT).show()
                 }
             }
-
             return true
         }
+
+        private fun goToYandexMaps(currentPointCoordinates: Coordinates) {
+            val url =
+                "https://yandex.ru/maps/?rtext=" +
+                        "${App.getInstance().previousLocation?.latitude}," +// точка
+                        "${App.getInstance().previousLocation?.longitude}" +// начала пути
+                        "~" +
+                        "${currentPointCoordinates.latitude}," +//точка
+                        "${currentPointCoordinates.longitude}" +//конца пути
+                        "&rtt=auto"
+
+            val intent = Intent(Intent.ACTION_VIEW) // Создаем новый Intent
+
+            intent.data = Uri.parse(url) // Устанавливаем URL-адрес для Intent
+
+            startActivity(intent) // Запускаем новое Activity с помощью Intent
+        }
     }
+
 
     private fun addPointsToInteractiveMap(myPoints: List<MyPoint>) {
 
