@@ -75,6 +75,7 @@
         android:layout_marginEnd="80dp"
         android:src="@drawable/confirm_addition_point_to_map_button_icon"
         android:backgroundTint="@color/white"
+        app:tint = "@drawable/confirm_addition_point_to_map_fab_icon_tint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:borderWidth="0dp"

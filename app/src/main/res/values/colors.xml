@@ -2,4 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="disabled_confirm_addition_fab_icon_color">#8031B431</color>
+    <color name="enabled_confirm_addition_fab_icon_color">#31B431</color>
 </resources>
