@@ -1,6 +1,7 @@
 package com.example.rosavtodorproject2.ui.view.interactiveMapFragment
 
 import android.Manifest
+import android.R.attr.button
 import android.annotation.SuppressLint
 import android.app.ActionBar.LayoutParams
 import android.content.Context
@@ -403,7 +404,6 @@ class InteractiveMapFragment : Fragment() {
 
             addingPointDescriptionPopupWindow?.dismiss()
 
-
             binding.addPointToMapFab.visibility = View.VISIBLE
             binding.cancelAdditionPointToMapFab.visibility = View.INVISIBLE
             binding.confirmAdditionPointToMapFab.visibility = View.INVISIBLE
@@ -436,7 +436,6 @@ class InteractiveMapFragment : Fragment() {
 
             addingPointDescriptionPopupWindow?.isOutsideTouchable = false;
 
-            //убрать измерение Ширины и Высоты!
             addingPointDescriptionPopupWindow?.contentView?.measure(
                 View.MeasureSpec.UNSPECIFIED,
                 View.MeasureSpec.UNSPECIFIED
@@ -446,13 +445,14 @@ class InteractiveMapFragment : Fragment() {
             val windowHeight =
                 addingPointDescriptionPopupWindow?.contentView?.measuredHeight ?: return true
 
-            val screenPoint =
-                mapView.mapWindow.worldToScreen(currentIconPlacemark!!.geometry) ?: return true
+            val buttonLocation = IntArray(2)
+            binding.confirmAdditionPointToMapFab.getLocationOnScreen(buttonLocation)
+
             addingPointDescriptionPopupWindow?.showAtLocation(
                 mapView,
                 Gravity.NO_GRAVITY,
-                (screenPoint.x - windowWidth / 2).toInt(),
-                (screenPoint.y + binding.backToChatsPanel.height + windowHeight / 2).toInt()
+                (binding.root.width - windowWidth) / 2,
+                buttonLocation[1] - windowHeight - 40 // Волшебное чиселко, надо будет заменить
             )
         }
 
