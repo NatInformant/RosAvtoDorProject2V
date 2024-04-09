@@ -26,7 +26,7 @@ class InteractiveMapFragmentViewModel @Inject constructor(
             MyPoint(
                 type = type,
                 coordinates = Coordinates(latitude,longitude),
-                name = text,
+                description = text,
             )
         )
     }
