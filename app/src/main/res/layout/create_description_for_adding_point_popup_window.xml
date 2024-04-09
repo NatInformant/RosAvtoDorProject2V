@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/popup_window_background"
+    android:orientation="vertical"
+    android:paddingHorizontal="10dp"
+    android:paddingVertical="5dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="2dp"
+        android:textSize="17sp"
+        android:text="@string/create_description_for_adding_point_popup_window_title"
+        />
+    <!--Возможно потом придётся поиграться с textMultiLine-->
+    <EditText
+        android:id="@+id/go_to_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/create_description_for_adding_point_popup_window_edit_text_background"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:hint="@string/create_description_for_adding_point_popup_window_edit_text_hint"
+        android:textSize="15sp"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:maxLines="4"
+        android:gravity="top|start"
+        />
+</LinearLayout>

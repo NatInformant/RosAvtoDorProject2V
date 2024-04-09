@@ -13,4 +13,6 @@
     <string name="dialog_window_positive_button_text">Изменить</string>
     <string name="dialog_window_negative_button_text">Отменить</string>
     <string name="verified_point_popup_window_goto_button_text">Поехали!</string>
+    <string name="create_description_for_adding_point_popup_window_title">Добавьте текстовое описание:</string>
+    <string name="create_description_for_adding_point_popup_window_edit_text_hint">Напишите здесь описание…</string>
 </resources>
