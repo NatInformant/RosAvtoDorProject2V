@@ -402,7 +402,7 @@ class InteractiveMapFragment : Fragment() {
         if (isPointDescriptionCreating) {
 
             addingPointDescriptionPopupWindow?.dismiss()
-            addingPointDescriptionPopupWindow = null
+
 
             binding.addPointToMapFab.visibility = View.VISIBLE
             binding.cancelAdditionPointToMapFab.visibility = View.INVISIBLE
@@ -414,13 +414,14 @@ class InteractiveMapFragment : Fragment() {
                 type = currentIconNumber,
                 latitude = currentIconPlacemark!!.geometry.latitude,
                 longitude = currentIconPlacemark!!.geometry.longitude,
-                text = "Зачем я существую?"
+                text = bindingCreateDescriptionForAddingPointPopupWindow
+                    .addingPointDescription.text.toString()
             )
 
             currentIconNumber = -1
             currentIconPlacemark = null
             binding.confirmAdditionPointToMapFab.isEnabled = false
-
+            addingPointDescriptionPopupWindow = null
         } else {
 
             isPointAdding = false

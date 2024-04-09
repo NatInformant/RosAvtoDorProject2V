@@ -16,7 +16,7 @@
         />
     <!--Возможно потом придётся поиграться с textMultiLine-->
     <EditText
-        android:id="@+id/go_to_button"
+        android:id="@+id/adding_point_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/create_description_for_adding_point_popup_window_edit_text_background"
