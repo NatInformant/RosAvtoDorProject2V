@@ -1,12 +1,13 @@
 package com.example.rosavtodorproject2.ui.view.interactiveMapFragment
 
 import android.Manifest
-import android.R.attr.button
 import android.annotation.SuppressLint
 import android.app.ActionBar.LayoutParams
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -19,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.PopupMenu
 import android.widget.PopupWindow
 import android.widget.Toast
@@ -89,11 +91,21 @@ class InteractiveMapFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentInteractiveMapBinding.inflate(layoutInflater, container, false)
+
         //Хз правильно ли, но так хотя бы всегда обьект view для popupWindow подгруженный и
         //отрисованный будет и останется только сам обьект создать и всё
         bindingVerifiedPointPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater)
         bindingCreateDescriptionForAddingPointPopupWindow =
             CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater)
+
+        bindingCreateDescriptionForAddingPointPopupWindow
+            .confirmDescriptionAddingButton.setOnClickListener {
+                listenerForConfirmDescriptionAddingButton()
+            }
+        bindingCreateDescriptionForAddingPointPopupWindow
+            .cancelDescriptionAddingButton.setOnClickListener {
+                listenerForCancelDescriptionAddingButton()
+            }
 
         MapKitFactory.initialize(getApplicationContext())
         mapView = binding.mapview
@@ -230,7 +242,6 @@ class InteractiveMapFragment : Fragment() {
         }
     }
 
-
     private fun addPointsToInteractiveMap(myPoints: List<MyPoint>) {
 
         mapView.map.mapObjects.clear()
@@ -326,6 +337,7 @@ class InteractiveMapFragment : Fragment() {
             val distance = App.getInstance().previousLocation!!.distanceTo(location)
 
             if (distance >= 2000) {
+                // Изменить под самый конец работы с картой!!!
                 /*mapView.map.move(
                     CameraPosition(
                         Point(location.latitude, location.longitude),
@@ -375,88 +387,76 @@ class InteractiveMapFragment : Fragment() {
     }
 
     private fun listenerForCancelAdditionPointFab(fabView: View): Boolean {
-        if (isPointDescriptionCreating) {
-            addingPointDescriptionPopupWindow?.dismiss()
-            addingPointDescriptionPopupWindow = null
+        binding.addPointToMapFab.visibility = View.VISIBLE
+        binding.cancelAdditionPointToMapFab.visibility = View.INVISIBLE
+        binding.confirmAdditionPointToMapFab.visibility = View.INVISIBLE
+        isPointAdding = false
+        currentIconNumber = -1
 
-            isPointDescriptionCreating = false
-            isPointAdding = true
-        } else {
-            binding.addPointToMapFab.visibility = View.VISIBLE
-            binding.cancelAdditionPointToMapFab.visibility = View.INVISIBLE
-            binding.confirmAdditionPointToMapFab.visibility = View.INVISIBLE
-            isPointAdding = false
-            currentIconNumber = -1
-
-            if (currentIconPlacemark != null) {
-                mapView.map.mapObjects.remove(currentIconPlacemark!!)
-                currentIconPlacemark = null
-            }
-            binding.confirmAdditionPointToMapFab.isEnabled = false
+        if (currentIconPlacemark != null) {
+            mapView.map.mapObjects.remove(currentIconPlacemark!!)
+            currentIconPlacemark = null
         }
+        binding.confirmAdditionPointToMapFab.isEnabled = false
 
         return true
     }
 
     private fun listenerForConfirmAdditionPointFab(fabView: View): Boolean {
+        isPointAdding = false
+        isPointDescriptionCreating = true
 
-        if (isPointDescriptionCreating) {
+        addingPointDescriptionPopupWindow = PopupWindow(
+            bindingCreateDescriptionForAddingPointPopupWindow.root,
+            LayoutParams.MATCH_PARENT,
+            LayoutParams.MATCH_PARENT,
+            true
+        )
 
-            addingPointDescriptionPopupWindow?.dismiss()
+        addingPointDescriptionPopupWindow?.softInputMode =
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+        bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.requestFocus()
 
-            binding.addPointToMapFab.visibility = View.VISIBLE
-            binding.cancelAdditionPointToMapFab.visibility = View.INVISIBLE
-            binding.confirmAdditionPointToMapFab.visibility = View.INVISIBLE
-
-            isPointDescriptionCreating = false
-
-            viewModel.addPoint(
-                type = currentIconNumber,
-                latitude = currentIconPlacemark!!.geometry.latitude,
-                longitude = currentIconPlacemark!!.geometry.longitude,
-                text = bindingCreateDescriptionForAddingPointPopupWindow
-                    .addingPointDescription.text.toString()
-            )
-
-            currentIconNumber = -1
-            currentIconPlacemark = null
-            binding.confirmAdditionPointToMapFab.isEnabled = false
-            addingPointDescriptionPopupWindow = null
-        } else {
-
-            isPointAdding = false
-            isPointDescriptionCreating = true
-
-            addingPointDescriptionPopupWindow = PopupWindow(
-                bindingCreateDescriptionForAddingPointPopupWindow.root,
-                LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT,
-                false
-            )
-
-            addingPointDescriptionPopupWindow?.isOutsideTouchable = false;
-
-            addingPointDescriptionPopupWindow?.contentView?.measure(
-                View.MeasureSpec.UNSPECIFIED,
-                View.MeasureSpec.UNSPECIFIED
-            )
-            val windowWidth =
-                addingPointDescriptionPopupWindow?.contentView?.measuredWidth ?: return true
-            val windowHeight =
-                addingPointDescriptionPopupWindow?.contentView?.measuredHeight ?: return true
-
-            val buttonLocation = IntArray(2)
-            binding.confirmAdditionPointToMapFab.getLocationOnScreen(buttonLocation)
-
-            addingPointDescriptionPopupWindow?.showAtLocation(
-                mapView,
-                Gravity.NO_GRAVITY,
-                (binding.root.width - windowWidth) / 2,
-                buttonLocation[1] - windowHeight - 40 // Волшебное чиселко, надо будет заменить
-            )
-        }
+        addingPointDescriptionPopupWindow?.showAtLocation(
+            binding.root,
+            Gravity.NO_GRAVITY,
+            0,
+            0
+        )
 
         return true
+    }
+
+    private fun listenerForCancelDescriptionAddingButton() {
+        addingPointDescriptionPopupWindow?.dismiss()
+        addingPointDescriptionPopupWindow = null
+
+        isPointDescriptionCreating = false
+        isPointAdding = true
+    }
+
+    private fun listenerForConfirmDescriptionAddingButton() {
+        addingPointDescriptionPopupWindow?.dismiss()
+
+        binding.addPointToMapFab.visibility = View.VISIBLE
+        binding.cancelAdditionPointToMapFab.visibility = View.INVISIBLE
+        binding.confirmAdditionPointToMapFab.visibility = View.INVISIBLE
+
+        isPointDescriptionCreating = false
+
+        viewModel.addPoint(
+            type = currentIconNumber,
+            latitude = currentIconPlacemark!!.geometry.latitude,
+            longitude = currentIconPlacemark!!.geometry.longitude,
+            text = bindingCreateDescriptionForAddingPointPopupWindow
+                .addingPointDescription.text.toString()
+        )
+
+        currentIconNumber = -1
+        currentIconPlacemark = null
+        binding.confirmAdditionPointToMapFab.isEnabled = false
+        addingPointDescriptionPopupWindow = null
+        bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.text.clear()
     }
 
     override fun onStart() {
@@ -472,6 +472,7 @@ class InteractiveMapFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        //Не уверен, что теперь в этом вообще есть необходимость, но лучше перебдеть, чем недобдеть.
         addingPointDescriptionPopupWindow?.dismiss()
         addingPointDescriptionPopupWindow = null
         super.onDestroyView()
