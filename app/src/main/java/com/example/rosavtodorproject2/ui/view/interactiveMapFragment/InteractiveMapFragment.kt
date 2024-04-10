@@ -6,8 +6,6 @@ import android.app.ActionBar.LayoutParams
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -35,6 +33,7 @@ import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.databinding.CreateDescriptionForAddingPointPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
+import com.example.rosavtodorproject2.databinding.UnverifiedPointPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.VerifiedPointPopupWindowBinding
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
@@ -52,6 +51,7 @@ import com.yandex.runtime.image.ImageProvider
 class InteractiveMapFragment : Fragment() {
     private lateinit var binding: FragmentInteractiveMapBinding
     private lateinit var bindingVerifiedPointPopupWindow: VerifiedPointPopupWindowBinding
+    private lateinit var bindingUnverifiedPointPopupWindow: UnverifiedPointPopupWindowBinding
     private lateinit var bindingCreateDescriptionForAddingPointPopupWindow: CreateDescriptionForAddingPointPopupWindowBinding
     private val applicationComponent
         get() = App.getInstance().applicationComponent
@@ -79,6 +79,12 @@ class InteractiveMapFragment : Fragment() {
         R.drawable.image_car_accident_24dp,
         R.drawable.image_car_accident_24dp,
     )
+    private val mapUnverifiedPointTypeToNameResource:kotlin.collections.Map<Int,Int> = mapOf(
+        Pair(5, R.string.road_accident_menu_item_title),
+        Pair(6, R.string.pothole_menu_item_title),
+        Pair(7, R.string.obstruction_menu_item_title),
+        Pair(8, R.string.bandit_menu_item_title),
+    )
     private var currentIconPlacemark: com.yandex.mapkit.map.PlacemarkMapObject? = null
 
     private val BASE_LATITUDE: Double = 55.154
@@ -92,20 +98,9 @@ class InteractiveMapFragment : Fragment() {
     ): View {
         binding = FragmentInteractiveMapBinding.inflate(layoutInflater, container, false)
 
-        //Хз правильно ли, но так хотя бы всегда обьект view для popupWindow подгруженный и
-        //отрисованный будет и останется только сам обьект создать и всё
-        bindingVerifiedPointPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater)
-        bindingCreateDescriptionForAddingPointPopupWindow =
-            CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater)
-
-        bindingCreateDescriptionForAddingPointPopupWindow
-            .confirmDescriptionAddingButton.setOnClickListener {
-                listenerForConfirmDescriptionAddingButton()
-            }
-        bindingCreateDescriptionForAddingPointPopupWindow
-            .cancelDescriptionAddingButton.setOnClickListener {
-                listenerForCancelDescriptionAddingButton()
-            }
+        //Хз правильно ли, но так хотя бы всегда обьект для popupWindow подгруженный будет и
+        //останется только сам обьект view создать и всё
+        setUpBindingsForPopupWindows()
 
         MapKitFactory.initialize(getApplicationContext())
         mapView = binding.mapview
@@ -145,6 +140,23 @@ class InteractiveMapFragment : Fragment() {
         return binding.root
     }
 
+    private fun setUpBindingsForPopupWindows() {
+        bindingVerifiedPointPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater)
+        bindingUnverifiedPointPopupWindow =
+            UnverifiedPointPopupWindowBinding.inflate(layoutInflater)
+
+        bindingCreateDescriptionForAddingPointPopupWindow =
+            CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater)
+        bindingCreateDescriptionForAddingPointPopupWindow
+            .confirmDescriptionAddingButton.setOnClickListener {
+                listenerForConfirmDescriptionAddingButton()
+            }
+        bindingCreateDescriptionForAddingPointPopupWindow
+            .cancelDescriptionAddingButton.setOnClickListener {
+                listenerForCancelDescriptionAddingButton()
+            }
+    }
+
     //Храним все listener-ы в переменных, т.к. слабые ссылки, c-шные приколы вся херня.
     private val addingNewPointListener = object : InputListener {
         override fun onMapTap(map: Map, point: Point) {
@@ -179,48 +191,71 @@ class InteractiveMapFragment : Fragment() {
     private val pointTapListener = object : MapObjectTapListener {
         override fun onMapObjectTap(mapObject: MapObject, point: Point): Boolean {
             // обработка нажатия на точку
-            if (mapObject is PlacemarkMapObject) {
 
-                //получение инфы о точке, из обьекта класса, который всегда "лежит рядом с ней"
-                val currentPointInformation = mapObject.userData as? MyPoint ?: return true
-
-                //переводим координаты из координат на карте в координаты на экране
-                val screenPoint = mapView.mapWindow.worldToScreen(point) ?: return true
-
-                if (currentPointInformation.type < 5) {
-                    bindingVerifiedPointPopupWindow.verifiedPointName.text =
-                        currentPointInformation.description
-
-                    bindingVerifiedPointPopupWindow.goToButton.setOnClickListener {
-                        goToYandexMaps(currentPointInformation.coordinates)
-                    }
-                    val popupWindow = PopupWindow(
-                        bindingVerifiedPointPopupWindow.root,
-                        LayoutParams.WRAP_CONTENT,
-                        LayoutParams.WRAP_CONTENT,
-                        true
-                    )
-
-                    popupWindow.contentView.measure(
-                        View.MeasureSpec.UNSPECIFIED,
-                        View.MeasureSpec.UNSPECIFIED
-                    )
-                    val windowWidth = popupWindow.contentView.measuredWidth
-                    val windowHeight = popupWindow.contentView.measuredHeight
-                    popupWindow.showAtLocation(
-                        mapView,
-                        Gravity.NO_GRAVITY,
-                        (screenPoint.x - windowWidth / 2).toInt(),
-                        (screenPoint.y + binding.backToChatsPanel.height + windowHeight / 2).toInt()
-                    )
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Это ДТП и надо бы сделать описание",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            if (mapObject !is PlacemarkMapObject) {
+                return true
             }
+
+            //получение инфы о точке, из обьекта класса, который всегда "лежит рядом с ней"
+            val currentPointInformation = mapObject.userData as? MyPoint ?: return true
+
+            //переводим координаты из координат на карте в координаты на экране
+            val screenPoint = mapView.mapWindow.worldToScreen(point) ?: return true
+
+            if (currentPointInformation.type < 5) {
+                bindingVerifiedPointPopupWindow.verifiedPointName.text =
+                    currentPointInformation.description
+
+                bindingVerifiedPointPopupWindow.goToButton.setOnClickListener {
+                    goToYandexMaps(currentPointInformation.coordinates)
+                }
+                val popupWindow = PopupWindow(
+                    bindingVerifiedPointPopupWindow.root,
+                    LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT,
+                    true
+                )
+
+                popupWindow.contentView.measure(
+                    View.MeasureSpec.UNSPECIFIED,
+                    View.MeasureSpec.UNSPECIFIED
+                )
+                val windowWidth = popupWindow.contentView.measuredWidth
+                val windowHeight = popupWindow.contentView.measuredHeight
+                popupWindow.showAtLocation(
+                    mapView,
+                    Gravity.NO_GRAVITY,
+                    (screenPoint.x - windowWidth / 2).toInt(),
+                    (screenPoint.y + binding.backToChatsPanel.height + windowHeight / 2).toInt()
+                )
+            } else {
+                bindingUnverifiedPointPopupWindow.unverifiedPointName.text =
+                    getString(mapUnverifiedPointTypeToNameResource[currentPointInformation.type]!!)
+
+                bindingUnverifiedPointPopupWindow.unverifiedPointDescription.text =
+                    currentPointInformation.description
+
+                val popupWindow = PopupWindow(
+                    bindingUnverifiedPointPopupWindow.root,
+                    LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT,
+                    true
+                )
+
+                popupWindow.contentView.measure(
+                    View.MeasureSpec.UNSPECIFIED,
+                    View.MeasureSpec.UNSPECIFIED
+                )
+                val windowWidth = popupWindow.contentView.measuredWidth
+                val windowHeight = popupWindow.contentView.measuredHeight
+                popupWindow.showAtLocation(
+                    mapView,
+                    Gravity.NO_GRAVITY,
+                    (screenPoint.x - windowWidth / 2).toInt(),
+                    (screenPoint.y + binding.backToChatsPanel.height + windowHeight / 2).toInt()
+                )
+            }
+
             return true
         }
 
@@ -381,7 +416,7 @@ class InteractiveMapFragment : Fragment() {
         binding.cancelAdditionPointToMapFab.visibility = View.VISIBLE
         binding.confirmAdditionPointToMapFab.visibility = View.VISIBLE
 
-        currentIconNumber = menuItem.order + 5
+        currentIconNumber =  menuItem.order + 5
         isPointAdding = true
         return true
     }
