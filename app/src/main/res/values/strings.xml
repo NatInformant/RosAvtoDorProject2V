@@ -17,4 +17,9 @@
     <string name="create_description_for_adding_point_popup_window_edit_text_hint">Напишите здесь описание…</string>
     <string name="create_description_for_adding_point_popup_window_confirm_button_text">Принято</string>
     <string name="create_description_for_adding_point_popup_window_cancel_button_text">Отмена</string>
+    <string name="petrol_station">АЗС</string>
+    <string name="cafe">Кафе</string>
+    <string name="car_service">Автосервис</string>
+    <string name="guesthouse">Гостиница</string>
+    <string name="incidents">Проишествия</string>
 </resources>
