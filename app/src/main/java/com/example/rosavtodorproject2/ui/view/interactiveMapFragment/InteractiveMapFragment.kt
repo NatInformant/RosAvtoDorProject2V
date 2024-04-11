@@ -36,6 +36,7 @@ import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
 import com.example.rosavtodorproject2.databinding.UnverifiedPointPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.VerifiedPointPopupWindowBinding
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.ScreenPoint
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.InputListener
@@ -180,7 +181,6 @@ class InteractiveMapFragment : Fragment() {
             } else {
                 currentIconPlacemark?.geometry = Point(point.latitude, point.longitude)
             }
-
         }
 
         override fun onMapLongTap(p0: Map, p1: Point) {
@@ -203,60 +203,74 @@ class InteractiveMapFragment : Fragment() {
             val screenPoint = mapView.mapWindow.worldToScreen(point) ?: return true
 
             if (currentPointInformation.type < 5) {
-                bindingVerifiedPointPopupWindow.verifiedPointName.text =
-                    currentPointInformation.description
-
-                bindingVerifiedPointPopupWindow.goToButton.setOnClickListener {
-                    goToYandexMaps(currentPointInformation.coordinates)
-                }
-                val popupWindow = PopupWindow(
-                    bindingVerifiedPointPopupWindow.root,
-                    LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT,
-                    true
-                )
-
-                popupWindow.contentView.measure(
-                    View.MeasureSpec.UNSPECIFIED,
-                    View.MeasureSpec.UNSPECIFIED
-                )
-                val windowWidth = popupWindow.contentView.measuredWidth
-                val windowHeight = popupWindow.contentView.measuredHeight
-                popupWindow.showAtLocation(
-                    mapView,
-                    Gravity.NO_GRAVITY,
-                    (screenPoint.x - windowWidth / 2).toInt(),
-                    (screenPoint.y + binding.backToChatsPanel.height + windowHeight / 2).toInt()
-                )
+                onVerifiedPointTap(currentPointInformation, screenPoint)
             } else {
-                bindingUnverifiedPointPopupWindow.unverifiedPointName.text =
-                    getString(mapUnverifiedPointTypeToNameResource[currentPointInformation.type]!!)
-
-                bindingUnverifiedPointPopupWindow.unverifiedPointDescription.text =
-                    currentPointInformation.description
-
-                val popupWindow = PopupWindow(
-                    bindingUnverifiedPointPopupWindow.root,
-                    LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT,
-                    true
-                )
-
-                popupWindow.contentView.measure(
-                    View.MeasureSpec.UNSPECIFIED,
-                    View.MeasureSpec.UNSPECIFIED
-                )
-                val windowWidth = popupWindow.contentView.measuredWidth
-                val windowHeight = popupWindow.contentView.measuredHeight
-                popupWindow.showAtLocation(
-                    mapView,
-                    Gravity.NO_GRAVITY,
-                    (screenPoint.x - windowWidth / 2).toInt(),
-                    (screenPoint.y + binding.backToChatsPanel.height + windowHeight / 2).toInt()
-                )
+                onUnverifiedPointTap(currentPointInformation, screenPoint)
             }
 
             return true
+        }
+
+        private fun onVerifiedPointTap(
+            currentPointInformation: MyPoint,
+            screenPoint: ScreenPoint
+        ) {
+            bindingVerifiedPointPopupWindow.verifiedPointName.text =
+                currentPointInformation.description
+
+            bindingVerifiedPointPopupWindow.goToButton.setOnClickListener {
+                goToYandexMaps(currentPointInformation.coordinates)
+            }
+            val popupWindow = PopupWindow(
+                bindingVerifiedPointPopupWindow.root,
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT,
+                true
+            )
+
+            popupWindow.contentView.measure(
+                View.MeasureSpec.UNSPECIFIED,
+                View.MeasureSpec.UNSPECIFIED
+            )
+            val windowWidth = popupWindow.contentView.measuredWidth
+            val windowHeight = popupWindow.contentView.measuredHeight
+            popupWindow.showAtLocation(
+                mapView,
+                Gravity.NO_GRAVITY,
+                (screenPoint.x - windowWidth / 2).toInt(),
+                (screenPoint.y + binding.backToChatsPanel.height + windowHeight / 2).toInt()
+            )
+        }
+
+        private fun onUnverifiedPointTap(
+            currentPointInformation: MyPoint,
+            screenPoint: ScreenPoint
+        ) {
+            bindingUnverifiedPointPopupWindow.unverifiedPointName.text =
+                getString(mapUnverifiedPointTypeToNameResource[currentPointInformation.type]!!)
+
+            bindingUnverifiedPointPopupWindow.unverifiedPointDescription.text =
+                currentPointInformation.description
+
+            val popupWindow = PopupWindow(
+                bindingUnverifiedPointPopupWindow.root,
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT,
+                true
+            )
+
+            popupWindow.contentView.measure(
+                View.MeasureSpec.UNSPECIFIED,
+                View.MeasureSpec.UNSPECIFIED
+            )
+            val windowWidth = popupWindow.contentView.measuredWidth
+            val windowHeight = popupWindow.contentView.measuredHeight
+            popupWindow.showAtLocation(
+                mapView,
+                Gravity.NO_GRAVITY,
+                (screenPoint.x - windowWidth / 2).toInt(),
+                (screenPoint.y + binding.backToChatsPanel.height + windowHeight / 2).toInt()
+            )
         }
 
         private fun goToYandexMaps(currentPointCoordinates: Coordinates) {
