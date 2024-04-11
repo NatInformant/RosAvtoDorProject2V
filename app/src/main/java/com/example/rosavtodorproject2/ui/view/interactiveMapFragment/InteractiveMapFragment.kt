@@ -109,6 +109,34 @@ class InteractiveMapFragment : Fragment() {
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager?
 
+        setUpCameraPosition()
+
+        mapView.map.addInputListener(addingNewPointListener)
+
+        viewModel.points.observe(viewLifecycleOwner)
+        {
+            addPointsToInteractiveMap(it)
+        }
+
+        return binding.root
+    }
+    private fun setUpBindingsForPopupWindows() {
+        bindingVerifiedPointPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater)
+        bindingUnverifiedPointPopupWindow =
+            UnverifiedPointPopupWindowBinding.inflate(layoutInflater)
+
+        bindingCreateDescriptionForAddingPointPopupWindow =
+            CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater)
+        bindingCreateDescriptionForAddingPointPopupWindow
+            .confirmDescriptionAddingButton.setOnClickListener {
+                listenerForConfirmDescriptionAddingButton()
+            }
+        bindingCreateDescriptionForAddingPointPopupWindow
+            .cancelDescriptionAddingButton.setOnClickListener {
+                listenerForCancelDescriptionAddingButton()
+            }
+    }
+    private fun setUpCameraPosition() {
         if (App.getInstance().previousLocation == null) {
             mapView.map.move(
                 CameraPosition(
@@ -131,31 +159,6 @@ class InteractiveMapFragment : Fragment() {
                 )
             )
         }
-        mapView.map.addInputListener(addingNewPointListener)
-
-        viewModel.points.observe(viewLifecycleOwner)
-        {
-            addPointsToInteractiveMap(it)
-        }
-
-        return binding.root
-    }
-
-    private fun setUpBindingsForPopupWindows() {
-        bindingVerifiedPointPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater)
-        bindingUnverifiedPointPopupWindow =
-            UnverifiedPointPopupWindowBinding.inflate(layoutInflater)
-
-        bindingCreateDescriptionForAddingPointPopupWindow =
-            CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater)
-        bindingCreateDescriptionForAddingPointPopupWindow
-            .confirmDescriptionAddingButton.setOnClickListener {
-                listenerForConfirmDescriptionAddingButton()
-            }
-        bindingCreateDescriptionForAddingPointPopupWindow
-            .cancelDescriptionAddingButton.setOnClickListener {
-                listenerForCancelDescriptionAddingButton()
-            }
     }
 
     //Храним все listener-ы в переменных, т.к. слабые ссылки, c-шные приколы вся херня.
@@ -319,10 +322,10 @@ class InteractiveMapFragment : Fragment() {
             listenerForAddPointToMapFab(binding.anchorViewForPopupMenu)
         }
         binding.confirmAdditionPointToMapFab.setOnClickListener {
-            listenerForConfirmAdditionPointFab(it)
+            listenerForConfirmAdditionPointFab()
         }
         binding.cancelAdditionPointToMapFab.setOnClickListener {
-            listenerForCancelAdditionPointFab(it)
+            listenerForCancelAdditionPointFab()
         }
     }
 
@@ -383,6 +386,7 @@ class InteractiveMapFragment : Fragment() {
                 viewModel.updatePoints(location.latitude, location.longitude)
                 return
             }
+
             val distance = App.getInstance().previousLocation!!.distanceTo(location)
 
             if (distance >= 2000) {
@@ -435,7 +439,7 @@ class InteractiveMapFragment : Fragment() {
         return true
     }
 
-    private fun listenerForCancelAdditionPointFab(fabView: View): Boolean {
+    private fun listenerForCancelAdditionPointFab(): Boolean {
         binding.addPointToMapFab.visibility = View.VISIBLE
         binding.cancelAdditionPointToMapFab.visibility = View.INVISIBLE
         binding.confirmAdditionPointToMapFab.visibility = View.INVISIBLE
@@ -451,7 +455,7 @@ class InteractiveMapFragment : Fragment() {
         return true
     }
 
-    private fun listenerForConfirmAdditionPointFab(fabView: View): Boolean {
+    private fun listenerForConfirmAdditionPointFab(): Boolean {
         isPointAdding = false
         isPointDescriptionCreating = true
 
