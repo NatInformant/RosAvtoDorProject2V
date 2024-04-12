@@ -42,11 +42,17 @@ import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.ScreenPoint
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.map.CircleMapObject
+import com.yandex.mapkit.map.ClusterizedPlacemarkCollection
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.map.MapObject
+import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.map.MapObjectTapListener
+import com.yandex.mapkit.map.MapObjectVisitor
 import com.yandex.mapkit.map.PlacemarkMapObject
+import com.yandex.mapkit.map.PolygonMapObject
+import com.yandex.mapkit.map.PolylineMapObject
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.Runtime.getApplicationContext
 import com.yandex.runtime.image.ImageProvider
@@ -92,19 +98,9 @@ class InteractiveMapFragment : Fragment() {
         Pair(7, R.string.obstruction_menu_item_title),
         Pair(8, R.string.bandit_menu_item_title),
     )
-    private val listFilterStatesForPointType: MutableList<Boolean> = mutableListOf(
-        false,
-        false,
-        false,
-        false,
-        false,
-        true,
-        true,
-        true,
-        true
-    )
 
-    private var currentIconPlacemark: com.yandex.mapkit.map.PlacemarkMapObject? = null
+    private var changedFilterStatePointType: Int = -1
+    private var currentIconPlacemark: PlacemarkMapObject? = null
 
     private val BASE_LATITUDE: Double = 55.154
     private val BASE_LONGITUDE: Double = 61.4291
@@ -144,19 +140,31 @@ class InteractiveMapFragment : Fragment() {
     private fun setUpBindingsForPopupWindows() {
         bindingFilterPointsCheckboxPopupWindow =
             FilterPointsCheckboxPopupWindowBinding.inflate(layoutInflater)
-        bindingFilterPointsCheckboxPopupWindow.petrolStationCheckBox.setOnCheckedChangeListener(
+
+        bindingFilterPointsCheckboxPopupWindow.petrolStationCheckBox.also {
+            it.isChecked = App.getInstance().listFilterStatesForPointType[0]
+        }.setOnCheckedChangeListener(
             checkedChangeListener
         )
-        bindingFilterPointsCheckboxPopupWindow.cafeCheckBox.setOnCheckedChangeListener(
+
+        bindingFilterPointsCheckboxPopupWindow.cafeCheckBox.also {
+            it.isChecked = App.getInstance().listFilterStatesForPointType[1]
+        }.setOnCheckedChangeListener(
             checkedChangeListener
         )
-        bindingFilterPointsCheckboxPopupWindow.carServiceCheckBox.setOnCheckedChangeListener(
+        bindingFilterPointsCheckboxPopupWindow.carServiceCheckBox.also {
+            it.isChecked = App.getInstance().listFilterStatesForPointType[2]
+        }.setOnCheckedChangeListener(
             checkedChangeListener
         )
-        bindingFilterPointsCheckboxPopupWindow.guesthouseCheckBox.setOnCheckedChangeListener(
+        bindingFilterPointsCheckboxPopupWindow.guesthouseCheckBox.also {
+            it.isChecked = App.getInstance().listFilterStatesForPointType[3]
+        }.setOnCheckedChangeListener(
             checkedChangeListener
         )
-        bindingFilterPointsCheckboxPopupWindow.incidentsCheckBox.setOnCheckedChangeListener(
+        bindingFilterPointsCheckboxPopupWindow.incidentsCheckBox.also {
+            it.isChecked = App.getInstance().listFilterStatesForPointType[5]
+        }.setOnCheckedChangeListener(
             checkedChangeListener
         )
 
@@ -178,44 +186,48 @@ class InteractiveMapFragment : Fragment() {
 
     private val checkedChangeListener = object : CompoundButton.OnCheckedChangeListener {
         override fun onCheckedChanged(button: CompoundButton?, isChecked: Boolean) {
-            if(button?.text==getString(R.string.incidents))
-            {
-                for(x in 5..8){
-                    listFilterStatesForPointType[x]=isChecked
+            if (button?.text == getString(R.string.incidents)) {
+                for (x in 5..8) {
+                    changedFilterStatePointType = x
+                    App.getInstance().listFilterStatesForPointType[changedFilterStatePointType] =
+                        isChecked
+                    if (isChecked) {
+                        addCurrentTypePointsToMap()
+                    } else {
+                        removeCurrentTypePointsFromMap()
+                    }
                 }
-
                 return
             }
 
-            var changedFilterStatePointType:Int =-1
-
-            when(button?.text)
-            {
-                getString(R.string.petrol_station) -> changedFilterStatePointType=0
-                getString(R.string.cafe) -> changedFilterStatePointType=1
-                getString(R.string.car_service) -> changedFilterStatePointType=2
-                getString(R.string.guesthouse) -> changedFilterStatePointType=3
+            when (button?.text) {
+                getString(R.string.petrol_station) -> changedFilterStatePointType = 0
+                getString(R.string.cafe) -> changedFilterStatePointType = 1
+                getString(R.string.car_service) -> changedFilterStatePointType = 2
+                getString(R.string.guesthouse) -> changedFilterStatePointType = 3
             }
 
-            listFilterStatesForPointType[changedFilterStatePointType]=isChecked
+            App.getInstance().listFilterStatesForPointType[changedFilterStatePointType] = isChecked
 
-            if(isChecked){
-                addCurrentTypePointsToMap(changedFilterStatePointType)
-            }else{
-                removeCurrentTypePointsFromMap(changedFilterStatePointType)
+            if (isChecked) {
+                addCurrentTypePointsToMap()
+            } else {
+                removeCurrentTypePointsFromMap()
             }
         }
 
     }
-    private fun addCurrentTypePointsToMap(pointType:Int){
-        currentPointsList.filter { it.type==pointType }.forEach{
+
+    private fun addCurrentTypePointsToMap() {
+        currentPointsList.filter { it.type == changedFilterStatePointType }.forEach {
             addCurrentPointToMap(it)
         }
     }
 
-    private fun removeCurrentTypePointsFromMap(pointType:Int){
-
+    private fun removeCurrentTypePointsFromMap() {
+        mapView.map.mapObjects.traverse(removingMapObjectVisitor)
     }
+
     private fun setUpCameraPosition() {
         if (App.getInstance().previousLocation == null) {
             mapView.map.move(
@@ -241,7 +253,44 @@ class InteractiveMapFragment : Fragment() {
         }
     }
 
-    //Храним все listener-ы для работы с ЯК в переменных, т.к. слабые ссылки, c-шные приколы вся херня.
+    //Храним все listener-ы для работы с ЯК в переменных, т.к. слабые ссылки.
+    private val removingMapObjectVisitor = object : MapObjectVisitor {
+        override fun onPlacemarkVisited(mapObject: PlacemarkMapObject) {
+            val currentPointInformation = mapObject.userData as? MyPoint ?: return
+            if (currentPointInformation.type == changedFilterStatePointType) {
+                mapView.map.mapObjects.remove(mapObject)
+            }
+        }
+
+        override fun onPolylineVisited(p0: PolylineMapObject) {
+            return
+        }
+
+        override fun onPolygonVisited(p0: PolygonMapObject) {
+            return
+        }
+
+        override fun onCircleVisited(p0: CircleMapObject) {
+            return
+        }
+
+        override fun onCollectionVisitStart(p0: MapObjectCollection): Boolean {
+            return true
+        }
+
+        override fun onCollectionVisitEnd(p0: MapObjectCollection) {
+            return
+        }
+
+        override fun onClusterizedCollectionVisitStart(p0: ClusterizedPlacemarkCollection): Boolean {
+            return true
+        }
+
+        override fun onClusterizedCollectionVisitEnd(p0: ClusterizedPlacemarkCollection) {
+            return
+        }
+
+    }
     private val addingNewPointListener = object : InputListener {
         override fun onMapTap(map: Map, point: Point) {
 
@@ -376,16 +425,16 @@ class InteractiveMapFragment : Fragment() {
     }
 
     private fun addPointsToInteractiveMap(myPoints: List<MyPoint>) {
-
         mapView.map.mapObjects.clear()
         myPoints.forEach {
-            if (listFilterStatesForPointType[it.type]) {
+            if (App.getInstance().listFilterStatesForPointType[it.type]) {
                 addCurrentPointToMap(it)
             }
         }
     }
 
     private fun addCurrentPointToMap(it: MyPoint) {
+        //СЛОЖИТЬ В МАПУ IMAGE PROVIDER-ы////////////////////////////////////////////////
         val imageProvider =
             ImageProvider.fromResource(requireContext(), iconsResources[it.type])
         mapView.map.mapObjects.addPlacemark()

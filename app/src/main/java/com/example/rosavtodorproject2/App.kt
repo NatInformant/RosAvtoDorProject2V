@@ -15,6 +15,17 @@ class App : Application() {
         DaggerApplicationComponent.builder().build()
     }
     var previousLocation: Location? = null
+    val listFilterStatesForPointType: MutableList<Boolean> = mutableListOf(
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true
+    )
     override fun onCreate() {
         super.onCreate()
         sInstance = this
