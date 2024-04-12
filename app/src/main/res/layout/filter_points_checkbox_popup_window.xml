@@ -56,6 +56,7 @@
         android:text="@string/guesthouse"
         android:textSize="17sp"
         android:paddingHorizontal="10dp"
+
         />
     <View
         android:layout_width="170dp"
@@ -70,5 +71,6 @@
         android:text="@string/incidents"
         android:textSize="17sp"
         android:paddingHorizontal="10dp"
+        android:checked="true"
         />
 </LinearLayout>

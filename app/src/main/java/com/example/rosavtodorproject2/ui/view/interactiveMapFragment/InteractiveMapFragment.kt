@@ -6,6 +6,7 @@ import android.app.ActionBar.LayoutParams
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -32,6 +33,7 @@ import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.databinding.CreateDescriptionForAddingPointPopupWindowBinding
+import com.example.rosavtodorproject2.databinding.FilterPointsCheckboxPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
 import com.example.rosavtodorproject2.databinding.UnverifiedPointPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.VerifiedPointPopupWindowBinding
@@ -51,6 +53,7 @@ import com.yandex.runtime.image.ImageProvider
 
 class InteractiveMapFragment : Fragment() {
     private lateinit var binding: FragmentInteractiveMapBinding
+    private lateinit var bindingFilterPointsCheckboxPopupWindow: FilterPointsCheckboxPopupWindowBinding
     private lateinit var bindingVerifiedPointPopupWindow: VerifiedPointPopupWindowBinding
     private lateinit var bindingUnverifiedPointPopupWindow: UnverifiedPointPopupWindowBinding
     private lateinit var bindingCreateDescriptionForAddingPointPopupWindow: CreateDescriptionForAddingPointPopupWindowBinding
@@ -80,7 +83,7 @@ class InteractiveMapFragment : Fragment() {
         R.drawable.image_car_accident_24dp,
         R.drawable.image_car_accident_24dp,
     )
-    private val mapUnverifiedPointTypeToNameResource:kotlin.collections.Map<Int,Int> = mapOf(
+    private val mapUnverifiedPointTypeToNameResource: kotlin.collections.Map<Int, Int> = mapOf(
         Pair(5, R.string.road_accident_menu_item_title),
         Pair(6, R.string.pothole_menu_item_title),
         Pair(7, R.string.obstruction_menu_item_title),
@@ -120,7 +123,11 @@ class InteractiveMapFragment : Fragment() {
 
         return binding.root
     }
+
     private fun setUpBindingsForPopupWindows() {
+        bindingFilterPointsCheckboxPopupWindow =
+            FilterPointsCheckboxPopupWindowBinding.inflate(layoutInflater)
+
         bindingVerifiedPointPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater)
         bindingUnverifiedPointPopupWindow =
             UnverifiedPointPopupWindowBinding.inflate(layoutInflater)
@@ -136,6 +143,7 @@ class InteractiveMapFragment : Fragment() {
                 listenerForCancelDescriptionAddingButton()
             }
     }
+
     private fun setUpCameraPosition() {
         if (App.getInstance().previousLocation == null) {
             mapView.map.move(
@@ -221,6 +229,7 @@ class InteractiveMapFragment : Fragment() {
             bindingVerifiedPointPopupWindow.verifiedPointName.text =
                 currentPointInformation.description
 
+            //Можно оптимизировать и не ставить слушатели нажатий каждый раз, а просто менять текущие координаты?
             bindingVerifiedPointPopupWindow.goToButton.setOnClickListener {
                 goToYandexMaps(currentPointInformation.coordinates)
             }
@@ -318,6 +327,9 @@ class InteractiveMapFragment : Fragment() {
         binding.backToChatsPanelButton.setOnClickListener {
             findNavController().navigate(R.id.action_interactiveMapFragment_to_chatsFragment)
         }
+        binding.filtersButton.setOnClickListener {
+            listenerForFiltersButton(it)
+        }
         binding.addPointToMapFab.setOnClickListener {
             listenerForAddPointToMapFab(binding.anchorViewForPopupMenu)
         }
@@ -406,6 +418,33 @@ class InteractiveMapFragment : Fragment() {
         }
     }
 
+    private fun listenerForFiltersButton(filtersButton: View) {
+        val popupWindow = PopupWindow(
+            bindingFilterPointsCheckboxPopupWindow.root,
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        popupWindow.contentView.measure(
+            View.MeasureSpec.UNSPECIFIED,
+            View.MeasureSpec.UNSPECIFIED
+        )
+
+        val a = IntArray(2)
+        filtersButton.getLocationOnScreen(a)
+        val x = a[0]
+        val y = a[1]
+        val windowWidth = popupWindow.contentView.measuredWidth
+        val windowHeight = popupWindow.contentView.measuredHeight
+        popupWindow.showAtLocation(
+            mapView,
+            Gravity.NO_GRAVITY,
+            x + filtersButton.width - windowWidth,
+            y - windowHeight - dpToPx(5)
+        )
+    }
+
     private fun listenerForAddPointToMapFab(anchorView: View) {
         val wrapper: Context = ContextThemeWrapper(requireContext(), R.style.MyPopupMenuStyle)
         val popupMenu = PopupMenu(wrapper, anchorView, Gravity.END)
@@ -434,7 +473,7 @@ class InteractiveMapFragment : Fragment() {
         binding.cancelAdditionPointToMapFab.visibility = View.VISIBLE
         binding.confirmAdditionPointToMapFab.visibility = View.VISIBLE
 
-        currentIconNumber =  menuItem.order + 5
+        currentIconNumber = menuItem.order + 5
         isPointAdding = true
         return true
     }
@@ -511,7 +550,7 @@ class InteractiveMapFragment : Fragment() {
         addingPointDescriptionPopupWindow = null
         bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.text.clear()
     }
-
+    private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
     override fun onStart() {
         super.onStart()
         MapKitFactory.getInstance().onStart()

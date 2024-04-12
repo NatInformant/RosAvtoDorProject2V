@@ -22,4 +22,5 @@
     <string name="car_service">Автосервис</string>
     <string name="guesthouse">Гостиница</string>
     <string name="incidents">Проишествия</string>
+    <string name="filtres_title">Фильтры</string>
 </resources>
