@@ -20,6 +20,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.CompoundButton
 import android.widget.PopupMenu
 import android.widget.PopupWindow
 import android.widget.Toast
@@ -71,6 +72,8 @@ class InteractiveMapFragment : Fragment() {
     private var currentIconNumber = -1
     private var addingPointDescriptionPopupWindow: PopupWindow? = null
 
+    private var currentPointsList = listOf<MyPoint>()
+
     //Пять типов верифицированных, т.к. заготовка под достопримечательности
     private val iconsResources = listOf(
         R.drawable.petrol_station_icon,
@@ -89,6 +92,18 @@ class InteractiveMapFragment : Fragment() {
         Pair(7, R.string.obstruction_menu_item_title),
         Pair(8, R.string.bandit_menu_item_title),
     )
+    private val listFilterStatesForPointType: MutableList<Boolean> = mutableListOf(
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true
+    )
+
     private var currentIconPlacemark: com.yandex.mapkit.map.PlacemarkMapObject? = null
 
     private val BASE_LATITUDE: Double = 55.154
@@ -118,7 +133,9 @@ class InteractiveMapFragment : Fragment() {
 
         viewModel.points.observe(viewLifecycleOwner)
         {
+            currentPointsList = it
             addPointsToInteractiveMap(it)
+
         }
 
         return binding.root
@@ -127,6 +144,21 @@ class InteractiveMapFragment : Fragment() {
     private fun setUpBindingsForPopupWindows() {
         bindingFilterPointsCheckboxPopupWindow =
             FilterPointsCheckboxPopupWindowBinding.inflate(layoutInflater)
+        bindingFilterPointsCheckboxPopupWindow.petrolStationCheckBox.setOnCheckedChangeListener(
+            checkedChangeListener
+        )
+        bindingFilterPointsCheckboxPopupWindow.cafeCheckBox.setOnCheckedChangeListener(
+            checkedChangeListener
+        )
+        bindingFilterPointsCheckboxPopupWindow.carServiceCheckBox.setOnCheckedChangeListener(
+            checkedChangeListener
+        )
+        bindingFilterPointsCheckboxPopupWindow.guesthouseCheckBox.setOnCheckedChangeListener(
+            checkedChangeListener
+        )
+        bindingFilterPointsCheckboxPopupWindow.incidentsCheckBox.setOnCheckedChangeListener(
+            checkedChangeListener
+        )
 
         bindingVerifiedPointPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater)
         bindingUnverifiedPointPopupWindow =
@@ -144,6 +176,46 @@ class InteractiveMapFragment : Fragment() {
             }
     }
 
+    private val checkedChangeListener = object : CompoundButton.OnCheckedChangeListener {
+        override fun onCheckedChanged(button: CompoundButton?, isChecked: Boolean) {
+            if(button?.text==getString(R.string.incidents))
+            {
+                for(x in 5..8){
+                    listFilterStatesForPointType[x]=isChecked
+                }
+
+                return
+            }
+
+            var changedFilterStatePointType:Int =-1
+
+            when(button?.text)
+            {
+                getString(R.string.petrol_station) -> changedFilterStatePointType=0
+                getString(R.string.cafe) -> changedFilterStatePointType=1
+                getString(R.string.car_service) -> changedFilterStatePointType=2
+                getString(R.string.guesthouse) -> changedFilterStatePointType=3
+            }
+
+            listFilterStatesForPointType[changedFilterStatePointType]=isChecked
+
+            if(isChecked){
+                addCurrentTypePointsToMap(changedFilterStatePointType)
+            }else{
+                removeCurrentTypePointsFromMap(changedFilterStatePointType)
+            }
+        }
+
+    }
+    private fun addCurrentTypePointsToMap(pointType:Int){
+        currentPointsList.filter { it.type==pointType }.forEach{
+            addCurrentPointToMap(it)
+        }
+    }
+
+    private fun removeCurrentTypePointsFromMap(pointType:Int){
+
+    }
     private fun setUpCameraPosition() {
         if (App.getInstance().previousLocation == null) {
             mapView.map.move(
@@ -169,7 +241,7 @@ class InteractiveMapFragment : Fragment() {
         }
     }
 
-    //Храним все listener-ы в переменных, т.к. слабые ссылки, c-шные приколы вся херня.
+    //Храним все listener-ы для работы с ЯК в переменных, т.к. слабые ссылки, c-шные приколы вся херня.
     private val addingNewPointListener = object : InputListener {
         override fun onMapTap(map: Map, point: Point) {
 
@@ -307,16 +379,22 @@ class InteractiveMapFragment : Fragment() {
 
         mapView.map.mapObjects.clear()
         myPoints.forEach {
-            val imageProvider =
-                ImageProvider.fromResource(requireContext(), iconsResources[it.type])
-            mapView.map.mapObjects.addPlacemark()
-                .apply {
-                    userData = it
-                    geometry = Point(it.coordinates.latitude, it.coordinates.longitude)
-                    setIcon(imageProvider)
-                    addTapListener(pointTapListener)
-                }
+            if (listFilterStatesForPointType[it.type]) {
+                addCurrentPointToMap(it)
+            }
         }
+    }
+
+    private fun addCurrentPointToMap(it: MyPoint) {
+        val imageProvider =
+            ImageProvider.fromResource(requireContext(), iconsResources[it.type])
+        mapView.map.mapObjects.addPlacemark()
+            .apply {
+                userData = it
+                geometry = Point(it.coordinates.latitude, it.coordinates.longitude)
+                setIcon(imageProvider)
+                addTapListener(pointTapListener)
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -550,6 +628,7 @@ class InteractiveMapFragment : Fragment() {
         addingPointDescriptionPopupWindow = null
         bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.text.clear()
     }
+
     private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
     override fun onStart() {
         super.onStart()

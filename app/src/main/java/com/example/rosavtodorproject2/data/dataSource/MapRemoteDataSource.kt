@@ -24,7 +24,7 @@ class MapRemoteDataSource {
         MyPoint(
             Coordinates(54.944265,60.819966),
             "Гостинница: Ника",
-            2,
+            3,
         ),
         MyPoint(
             Coordinates(54.944153,60.818947),
