@@ -56,6 +56,7 @@ import com.yandex.mapkit.map.PolylineMapObject
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.Runtime.getApplicationContext
 import com.yandex.runtime.image.ImageProvider
+import java.io.Serializable
 
 
 class InteractiveMapFragment : Fragment() {
@@ -407,6 +408,15 @@ class InteractiveMapFragment : Fragment() {
         }
 
         private fun goToYandexMaps(currentPointCoordinates: Coordinates) {
+            if (App.getInstance().previousLocation == null) {
+                Toast
+                    .makeText(
+                        requireContext(),
+                        "не зная вашего местоположения мы не можем сделать это",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                return
+            }
             val url =
                 "https://yandex.ru/maps/?rtext=" +
                         "${App.getInstance().previousLocation?.latitude}," +// точка
@@ -449,6 +459,17 @@ class InteractiveMapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (savedInstanceState != null) {
+            isPointAdding = savedInstanceState.getBoolean("isPointAdding")
+            isPointDescriptionCreating = savedInstanceState.getBoolean("isPointDescriptionCreating")
+            val addingPointGeometry = Point(
+                savedInstanceState.getDouble("addingPointLatitude"),
+                savedInstanceState.getDouble("addingPointLongitude"),
+            )
+
+            currentIconNumber = savedInstanceState.getInt("addingPointIconNumber")
+            setUpFragmentCurrentState(addingPointGeometry)
+        }
         checkLocationPermission()
 
         binding.backToChatsPanelButton.setOnClickListener {
@@ -465,6 +486,37 @@ class InteractiveMapFragment : Fragment() {
         }
         binding.cancelAdditionPointToMapFab.setOnClickListener {
             listenerForCancelAdditionPointFab()
+        }
+    }
+
+    private fun setUpFragmentCurrentState(addingPointGeometry: Point) {
+        when {
+            isPointAdding -> {
+                binding.addPointToMapFab.visibility = View.INVISIBLE
+                binding.cancelAdditionPointToMapFab.visibility = View.VISIBLE
+                binding.confirmAdditionPointToMapFab.visibility = View.VISIBLE
+                if (addingPointGeometry.latitude != 0.0 && addingPointGeometry.longitude != 0.0) {
+                    val imageProvider =
+                        ImageProvider.fromResource(
+                            requireContext(),
+                            iconsResources[currentIconNumber]
+                        )
+                    binding.confirmAdditionPointToMapFab.isEnabled = true
+                    currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
+                        .apply {
+                            geometry = addingPointGeometry
+                            setIcon(imageProvider)
+                        }
+                }
+            }
+
+            isPointDescriptionCreating -> {
+                Toast.makeText(
+                    requireContext(),
+                    "Раньше здеcь добавлялось описание",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
@@ -689,6 +741,22 @@ class InteractiveMapFragment : Fragment() {
         mapView.onStop()
         MapKitFactory.getInstance().onStop()
         super.onStop()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("isPointAdding", isPointAdding)
+        outState.putBoolean("isPointDescriptionCreating", isPointDescriptionCreating)
+
+        outState.putDouble(
+            "addingPointLatitude",
+            currentIconPlacemark?.geometry?.latitude ?: 0.0
+        )
+        outState.putDouble(
+            "addingPointLongitude",
+            currentIconPlacemark?.geometry?.longitude ?: 0.0
+        )
+        outState.putInt("addingPointIconNumber", currentIconNumber)
     }
 
     override fun onDestroyView() {
