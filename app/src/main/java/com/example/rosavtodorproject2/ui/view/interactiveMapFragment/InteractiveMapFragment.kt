@@ -80,18 +80,8 @@ class InteractiveMapFragment : Fragment() {
 
     private var currentPointsList = listOf<MyPoint>()
 
-    //Пять типов верифицированных, т.к. заготовка под достопримечательности
-    private val iconsResources = listOf(
-        R.drawable.petrol_station_icon,
-        R.drawable.cafe_icon_24dp,
-        R.drawable.petrol_station_icon,
-        R.drawable.petrol_station_icon,
-        R.drawable.petrol_station_icon,
-        R.drawable.image_car_accident_24dp,
-        R.drawable.image_car_accident_24dp,
-        R.drawable.image_car_accident_24dp,
-        R.drawable.image_car_accident_24dp,
-    )
+    private var pointIconsList = listOf<ImageProvider>()
+
     private val mapUnverifiedPointTypeToNameResource: kotlin.collections.Map<Int, Int> = mapOf(
         Pair(5, R.string.road_accident_menu_item_title),
         Pair(6, R.string.pothole_menu_item_title),
@@ -131,7 +121,18 @@ class InteractiveMapFragment : Fragment() {
             currentPointsList = it
             addPointsToInteractiveMap(it)
         }
-
+        //Пять типов верифицированных, т.к. заготовка под достопримечательности
+        pointIconsList = listOf(
+            ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.cafe_icon_24dp),
+            ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
+            ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
+            ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
+            ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
+        )
         return binding.root
     }
 
@@ -315,12 +316,7 @@ class InteractiveMapFragment : Fragment() {
         currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
             .apply {
                 geometry = Point(point.latitude, point.longitude)
-                setIcon(
-                    ImageProvider.fromResource(
-                        requireContext(),
-                        iconsResources[currentIconNumber]
-                    )
-                )
+                setIcon(pointIconsList[currentIconNumber])
             }
     }
 
@@ -454,14 +450,11 @@ class InteractiveMapFragment : Fragment() {
     }
 
     private fun addCurrentPointToMap(it: MyPoint) {
-        //СЛОЖИТЬ В МАПУ IMAGE PROVIDER-ы////////////////////////////////////////////////
-        val imageProvider =
-            ImageProvider.fromResource(requireContext(), iconsResources[it.type])
         mapView.map.mapObjects.addPlacemark()
             .apply {
                 userData = it
                 geometry = Point(it.coordinates.latitude, it.coordinates.longitude)
-                setIcon(imageProvider)
+                setIcon(pointIconsList[it.type])
                 addTapListener(pointTapListener)
             }
     }
