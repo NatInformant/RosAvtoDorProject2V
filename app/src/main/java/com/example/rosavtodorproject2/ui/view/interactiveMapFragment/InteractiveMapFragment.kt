@@ -56,7 +56,6 @@ import com.yandex.mapkit.map.PolylineMapObject
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.Runtime.getApplicationContext
 import com.yandex.runtime.image.ImageProvider
-import java.io.Serializable
 
 
 class InteractiveMapFragment : Fragment() {
@@ -107,7 +106,7 @@ class InteractiveMapFragment : Fragment() {
     private val BASE_LONGITUDE: Double = 61.4291
 
     private var locationManager: LocationManager? = null
-
+    private var savedDescription: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -128,14 +127,46 @@ class InteractiveMapFragment : Fragment() {
 
         mapView.map.addInputListener(addingNewPointListener)
 
+        setUpFragmentCurrentState(savedInstanceState)
+
         viewModel.points.observe(viewLifecycleOwner)
         {
             currentPointsList = it
             addPointsToInteractiveMap(it)
-
         }
 
         return binding.root
+    }
+
+    private fun setUpFragmentCurrentState(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            isPointAdding = savedInstanceState.getBoolean("isPointAdding")
+            isPointDescriptionCreating = savedInstanceState.getBoolean("isPointDescriptionCreating")
+            val addingPointGeometry = Point(
+                savedInstanceState.getDouble("addingPointLatitude"),
+                savedInstanceState.getDouble("addingPointLongitude"),
+            )
+
+            currentIconNumber = savedInstanceState.getInt("addingPointIconNumber")
+
+            if (addingPointGeometry.latitude != 0.0 && addingPointGeometry.longitude != 0.0) {
+                binding.confirmAdditionPointToMapFab.isEnabled = true
+                // Здесь ставлю только положение на карте, т.к. в любом случае после этого
+                // выполниться блок с observe и нет смысла подгружать для этого изображение,
+                // ведь данная точка будет очищена вместе со всеми и
+                // потом добавлена обратно но уже с изображением
+                currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
+                    .apply {
+                        geometry = addingPointGeometry
+                    }
+            }
+
+            if (isPointAdding) {
+                binding.addPointToMapFab.visibility = View.INVISIBLE
+                binding.cancelAdditionPointToMapFab.visibility = View.VISIBLE
+                binding.confirmAdditionPointToMapFab.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun setUpBindingsForPopupWindows() {
@@ -301,16 +332,8 @@ class InteractiveMapFragment : Fragment() {
 
             binding.confirmAdditionPointToMapFab.isEnabled = true
 
-            val imageProvider =
-                ImageProvider.fromResource(requireContext(), iconsResources[currentIconNumber])
-
             if (currentIconPlacemark == null) {
-                currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
-                    .apply {
-                        geometry = Point(point.latitude, point.longitude)
-                        setIcon(imageProvider)
-                    }
-
+                setUpCurrentIconPlacemark(point)
             } else {
                 currentIconPlacemark?.geometry = Point(point.latitude, point.longitude)
             }
@@ -321,6 +344,20 @@ class InteractiveMapFragment : Fragment() {
             // Пока не нужно, но может потом что-нибудь покумекаем
         }
     }
+
+    private fun setUpCurrentIconPlacemark(point: Point) {
+        currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
+            .apply {
+                geometry = Point(point.latitude, point.longitude)
+                setIcon(
+                    ImageProvider.fromResource(
+                        requireContext(),
+                        iconsResources[currentIconNumber]
+                    )
+                )
+            }
+    }
+
     private val pointTapListener = object : MapObjectTapListener {
         override fun onMapObjectTap(mapObject: MapObject, point: Point): Boolean {
             // обработка нажатия на точку
@@ -435,7 +472,14 @@ class InteractiveMapFragment : Fragment() {
     }
 
     private fun addPointsToInteractiveMap(myPoints: List<MyPoint>) {
-        mapView.map.mapObjects.clear()
+        if (currentIconPlacemark != null) {
+            val currentIconPlacemarkPoint = currentIconPlacemark!!.geometry
+            mapView.map.mapObjects.clear()
+            setUpCurrentIconPlacemark(currentIconPlacemarkPoint)
+        } else {
+            mapView.map.mapObjects.clear()
+        }
+
         myPoints.forEach {
             if (App.getInstance().listFilterStatesForPointType[it.type]) {
                 addCurrentPointToMap(it)
@@ -459,17 +503,6 @@ class InteractiveMapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState != null) {
-            isPointAdding = savedInstanceState.getBoolean("isPointAdding")
-            isPointDescriptionCreating = savedInstanceState.getBoolean("isPointDescriptionCreating")
-            val addingPointGeometry = Point(
-                savedInstanceState.getDouble("addingPointLatitude"),
-                savedInstanceState.getDouble("addingPointLongitude"),
-            )
-
-            currentIconNumber = savedInstanceState.getInt("addingPointIconNumber")
-            setUpFragmentCurrentState(addingPointGeometry)
-        }
         checkLocationPermission()
 
         binding.backToChatsPanelButton.setOnClickListener {
@@ -487,36 +520,9 @@ class InteractiveMapFragment : Fragment() {
         binding.cancelAdditionPointToMapFab.setOnClickListener {
             listenerForCancelAdditionPointFab()
         }
-    }
 
-    private fun setUpFragmentCurrentState(addingPointGeometry: Point) {
-        when {
-            isPointAdding -> {
-                binding.addPointToMapFab.visibility = View.INVISIBLE
-                binding.cancelAdditionPointToMapFab.visibility = View.VISIBLE
-                binding.confirmAdditionPointToMapFab.visibility = View.VISIBLE
-                if (addingPointGeometry.latitude != 0.0 && addingPointGeometry.longitude != 0.0) {
-                    val imageProvider =
-                        ImageProvider.fromResource(
-                            requireContext(),
-                            iconsResources[currentIconNumber]
-                        )
-                    binding.confirmAdditionPointToMapFab.isEnabled = true
-                    currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
-                        .apply {
-                            geometry = addingPointGeometry
-                            setIcon(imageProvider)
-                        }
-                }
-            }
-
-            isPointDescriptionCreating -> {
-                Toast.makeText(
-                    requireContext(),
-                    "Раньше здеcь добавлялось описание",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        if (isPointDescriptionCreating) {
+            savedDescription = savedInstanceState?.getString("savedDescriptionForAddingPoint")
         }
     }
 
@@ -677,6 +683,13 @@ class InteractiveMapFragment : Fragment() {
         isPointAdding = false
         isPointDescriptionCreating = true
 
+        createAddingPointDescriptionPopupWindow("")
+
+        return true
+    }
+
+    private fun createAddingPointDescriptionPopupWindow(savedDescription: String) {
+
         addingPointDescriptionPopupWindow = PopupWindow(
             bindingCreateDescriptionForAddingPointPopupWindow.root,
             LayoutParams.MATCH_PARENT,
@@ -684,18 +697,20 @@ class InteractiveMapFragment : Fragment() {
             true
         )
 
-        addingPointDescriptionPopupWindow?.softInputMode =
-            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+        /*addingPointDescriptionPopupWindow?.softInputMode =
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE*/
         bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.requestFocus()
 
+        bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.setText(
+            savedDescription
+        )
+
         addingPointDescriptionPopupWindow?.showAtLocation(
-            binding.root,
+            requireView(),
             Gravity.NO_GRAVITY,
             0,
             0
         )
-
-        return true
     }
 
     private fun listenerForCancelDescriptionAddingButton() {
@@ -737,6 +752,15 @@ class InteractiveMapFragment : Fragment() {
         mapView.onStart()
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.root.post {
+            if (this.isResumed && isPointDescriptionCreating) {
+                createAddingPointDescriptionPopupWindow(savedDescription?:"")
+            }
+        }
+    }
+
     override fun onStop() {
         mapView.onStop()
         MapKitFactory.getInstance().onStop()
@@ -757,6 +781,10 @@ class InteractiveMapFragment : Fragment() {
             currentIconPlacemark?.geometry?.longitude ?: 0.0
         )
         outState.putInt("addingPointIconNumber", currentIconNumber)
+        outState.putString(
+            "savedDescriptionForAddingPoint",
+            bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.text.toString()
+        )
     }
 
     override fun onDestroyView() {
