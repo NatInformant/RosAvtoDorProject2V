@@ -106,7 +106,6 @@ class InteractiveMapFragment : Fragment() {
     private val BASE_LONGITUDE: Double = 61.4291
 
     private var locationManager: LocationManager? = null
-    private var savedDescription: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -127,8 +126,6 @@ class InteractiveMapFragment : Fragment() {
 
         mapView.map.addInputListener(addingNewPointListener)
 
-        setUpFragmentCurrentState(savedInstanceState)
-
         viewModel.points.observe(viewLifecycleOwner)
         {
             currentPointsList = it
@@ -136,37 +133,6 @@ class InteractiveMapFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    private fun setUpFragmentCurrentState(savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            isPointAdding = savedInstanceState.getBoolean("isPointAdding")
-            isPointDescriptionCreating = savedInstanceState.getBoolean("isPointDescriptionCreating")
-            val addingPointGeometry = Point(
-                savedInstanceState.getDouble("addingPointLatitude"),
-                savedInstanceState.getDouble("addingPointLongitude"),
-            )
-
-            currentIconNumber = savedInstanceState.getInt("addingPointIconNumber")
-
-            if (addingPointGeometry.latitude != 0.0 && addingPointGeometry.longitude != 0.0) {
-                binding.confirmAdditionPointToMapFab.isEnabled = true
-                // Здесь ставлю только положение на карте, т.к. в любом случае после этого
-                // выполниться блок с observe и нет смысла подгружать для этого изображение,
-                // ведь данная точка будет очищена вместе со всеми и
-                // потом добавлена обратно но уже с изображением
-                currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
-                    .apply {
-                        geometry = addingPointGeometry
-                    }
-            }
-
-            if (isPointAdding) {
-                binding.addPointToMapFab.visibility = View.INVISIBLE
-                binding.cancelAdditionPointToMapFab.visibility = View.VISIBLE
-                binding.confirmAdditionPointToMapFab.visibility = View.VISIBLE
-            }
-        }
     }
 
     private fun setUpBindingsForPopupWindows() {
@@ -521,8 +487,46 @@ class InteractiveMapFragment : Fragment() {
             listenerForCancelAdditionPointFab()
         }
 
+        setUpFragmentCurrentState(savedInstanceState)
+    }
+
+    private fun setUpFragmentCurrentState(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) {
+            return
+        }
+
+        isPointAdding = savedInstanceState.getBoolean("isPointAdding")
+        isPointDescriptionCreating = savedInstanceState.getBoolean("isPointDescriptionCreating")
+        val addingPointPosition = Point(
+            savedInstanceState.getDouble("addingPointLatitude"),
+            savedInstanceState.getDouble("addingPointLongitude"),
+        )
+        currentIconNumber = savedInstanceState.getInt("addingPointIconNumber")
+
+        if (addingPointPosition.latitude != 0.0 && addingPointPosition.longitude != 0.0) {
+            binding.confirmAdditionPointToMapFab.isEnabled = true
+            /* Здесь ставлю только положение на карте, т.к. в любом случае после этого
+             выполниться блок с observe и нет смысла подгружать для этого изображение,
+             ведь данная точка будет очищена вместе со всеми и
+             потом добавлена обратно, но уже с изображением */
+            currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
+                .apply {
+                    geometry = addingPointPosition
+                }
+        }
+
+        if (isPointAdding || isPointDescriptionCreating) {
+            binding.addPointToMapFab.visibility = View.INVISIBLE
+            binding.cancelAdditionPointToMapFab.visibility = View.VISIBLE
+            binding.confirmAdditionPointToMapFab.visibility = View.VISIBLE
+        }
         if (isPointDescriptionCreating) {
-            savedDescription = savedInstanceState?.getString("savedDescriptionForAddingPoint")
+            val savedDescription = savedInstanceState.getString("savedDescriptionForAddingPoint")
+            binding.root.post {
+                if (this.isResumed && isPointDescriptionCreating) {
+                    createAddingPointDescriptionPopupWindow(savedDescription ?: "")
+                }
+            }
         }
     }
 
@@ -684,12 +688,10 @@ class InteractiveMapFragment : Fragment() {
         isPointDescriptionCreating = true
 
         createAddingPointDescriptionPopupWindow("")
-
         return true
     }
 
     private fun createAddingPointDescriptionPopupWindow(savedDescription: String) {
-
         addingPointDescriptionPopupWindow = PopupWindow(
             bindingCreateDescriptionForAddingPointPopupWindow.root,
             LayoutParams.MATCH_PARENT,
@@ -697,8 +699,8 @@ class InteractiveMapFragment : Fragment() {
             true
         )
 
-        /*addingPointDescriptionPopupWindow?.softInputMode =
-            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE*/
+        addingPointDescriptionPopupWindow?.softInputMode =
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
         bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.requestFocus()
 
         bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.setText(
@@ -750,15 +752,6 @@ class InteractiveMapFragment : Fragment() {
         super.onStart()
         MapKitFactory.getInstance().onStart()
         mapView.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        binding.root.post {
-            if (this.isResumed && isPointDescriptionCreating) {
-                createAddingPointDescriptionPopupWindow(savedDescription?:"")
-            }
-        }
     }
 
     override fun onStop() {
