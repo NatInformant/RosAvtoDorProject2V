@@ -477,6 +477,9 @@ class InteractiveMapFragment : Fragment() {
         binding.filtersButton.setOnClickListener {
             listenerForFiltersButton(it)
         }
+        binding.showCurrentUserPositionFab.setOnClickListener {
+            listenerForShowCurrentUserPositionFab()
+        }
         binding.addPointToMapFab.setOnClickListener {
             listenerForAddPointToMapFab(binding.anchorViewForPopupMenu)
         }
@@ -517,6 +520,8 @@ class InteractiveMapFragment : Fragment() {
 
         if (isPointAdding || isPointDescriptionCreating) {
             binding.addPointToMapFab.visibility = View.INVISIBLE
+            binding.showCurrentUserPositionFab.visibility = View.INVISIBLE
+            binding.filtersButton.visibility = View.INVISIBLE
             binding.cancelAdditionPointToMapFab.visibility = View.VISIBLE
             binding.confirmAdditionPointToMapFab.visibility = View.VISIBLE
         }
@@ -584,10 +589,24 @@ class InteractiveMapFragment : Fragment() {
             if (App.getInstance().previousLocation == null) {
                 App.getInstance().previousLocation = location
                 viewModel.updatePoints(location.latitude, location.longitude)
+
+                mapView.map.move(
+                    CameraPosition(
+                        Point(location.latitude, location.longitude),
+                        /* zoom = */ 8f,
+                        /* azimuth = */ 0f,
+                        /* tilt = */ 0f
+                    ),
+                    Animation(Animation.Type.SMOOTH, 2f),
+                    null
+                )
+
                 return
             }
 
             binding.addPointToMapFab.isEnabled=true
+            binding.showCurrentUserPositionFab.isEnabled=true
+            binding.filtersButton.isEnabled=true
 
             val distance = App.getInstance().previousLocation!!.distanceTo(location)
 
@@ -597,7 +616,6 @@ class InteractiveMapFragment : Fragment() {
             }
         }
     }
-
     private fun listenerForFiltersButton(filtersButton: View) {
         val popupWindow = PopupWindow(
             bindingFilterPointsCheckboxPopupWindow.root,
@@ -624,7 +642,18 @@ class InteractiveMapFragment : Fragment() {
             y - windowHeight - dpToPx(5)
         )
     }
-
+    private fun listenerForShowCurrentUserPositionFab() {
+        mapView.map.move(
+            CameraPosition(
+                userLocationLayer!!.cameraPosition()!!.target,
+                /* zoom = */ userLocationLayer!!.cameraPosition()!!.zoom,
+                /* azimuth = */ userLocationLayer!!.cameraPosition()!!.azimuth,
+                /* tilt = */ userLocationLayer!!.cameraPosition()!!.tilt
+            ),
+            Animation(Animation.Type.SMOOTH, 2f),
+            null
+        )
+    }
     private fun listenerForAddPointToMapFab(anchorView: View) {
         val wrapper: Context = ContextThemeWrapper(requireContext(), R.style.MyPopupMenuStyle)
         val popupMenu = PopupMenu(wrapper, anchorView, Gravity.END)
@@ -650,6 +679,9 @@ class InteractiveMapFragment : Fragment() {
 
     private fun listenerForMenuItemClick(menuItem: MenuItem): Boolean {
         binding.addPointToMapFab.visibility = View.INVISIBLE
+        binding.showCurrentUserPositionFab.visibility = View.INVISIBLE
+        binding.filtersButton.visibility = View.INVISIBLE
+
         binding.cancelAdditionPointToMapFab.visibility = View.VISIBLE
         binding.confirmAdditionPointToMapFab.visibility = View.VISIBLE
 
@@ -660,6 +692,9 @@ class InteractiveMapFragment : Fragment() {
 
     private fun listenerForCancelAdditionPointFab(): Boolean {
         binding.addPointToMapFab.visibility = View.VISIBLE
+        binding.showCurrentUserPositionFab.visibility = View.VISIBLE
+        binding.filtersButton.visibility = View.VISIBLE
+
         binding.cancelAdditionPointToMapFab.visibility = View.INVISIBLE
         binding.confirmAdditionPointToMapFab.visibility = View.INVISIBLE
         isPointAdding = false
@@ -718,6 +753,9 @@ class InteractiveMapFragment : Fragment() {
         addingPointDescriptionPopupWindow?.dismiss()
 
         binding.addPointToMapFab.visibility = View.VISIBLE
+        binding.showCurrentUserPositionFab.visibility = View.VISIBLE
+        binding.filtersButton.visibility = View.VISIBLE
+
         binding.cancelAdditionPointToMapFab.visibility = View.INVISIBLE
         binding.confirmAdditionPointToMapFab.visibility = View.INVISIBLE
 

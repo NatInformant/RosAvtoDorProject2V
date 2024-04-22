@@ -54,6 +54,7 @@
         android:paddingHorizontal="5dp"
         android:paddingVertical="2dp"
         android:textSize="18sp"
+        android:enabled="false"
         android:layout_marginBottom="10dp"
         android:background="@drawable/filters_button_background"
         app:layout_constraintBottom_toTopOf="@id/add_point_to_map_fab"
@@ -67,6 +68,21 @@
         app:layout_constraintEnd_toEndOf="@id/add_point_to_map_fab"
         />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/show_current_user_position_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="160dp"
+        android:backgroundTint="@color/white"
+        android:enabled="false"
+        android:contentDescription="@string/add_point_to_interactive_map"
+        android:src="@drawable/show_current_user_position_fab_icon"
+        app:tint = "@drawable/show_current_user_position_fab_icon_tint"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toTopOf="@id/filters_button"
+        app:layout_constraintEnd_toEndOf="@id/filters_button"
+        app:maxImageSize="48dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_point_to_map_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,7 +91,7 @@
         android:backgroundTint="@color/white"
         android:enabled="false"
         android:contentDescription="@string/add_point_to_interactive_map"
-        android:src="@drawable/add_point_to_map_button_icon"
+        android:src="@drawable/add_point_to_map_fab_icon"
         app:tint = "@drawable/add_point_to_map_fab_icon_tint"
         app:borderWidth="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
