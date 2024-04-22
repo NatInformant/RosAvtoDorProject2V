@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -38,9 +39,11 @@ import com.example.rosavtodorproject2.databinding.FilterPointsCheckboxPopupWindo
 import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
 import com.example.rosavtodorproject2.databinding.UnverifiedPointPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.VerifiedPointPopupWindowBinding
+import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.ScreenPoint
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.layers.ObjectEvent
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.CircleMapObject
 import com.yandex.mapkit.map.ClusterizedPlacemarkCollection
@@ -54,6 +57,9 @@ import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.map.PolygonMapObject
 import com.yandex.mapkit.map.PolylineMapObject
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.mapkit.user_location.UserLocationLayer
+import com.yandex.mapkit.user_location.UserLocationObjectListener
+import com.yandex.mapkit.user_location.UserLocationView
 import com.yandex.runtime.Runtime.getApplicationContext
 import com.yandex.runtime.image.ImageProvider
 
@@ -96,6 +102,7 @@ class InteractiveMapFragment : Fragment() {
     private val BASE_LONGITUDE: Double = 61.4291
 
     private var locationManager: LocationManager? = null
+    private lateinit var userLocationLayer: UserLocationLayer
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -133,6 +140,13 @@ class InteractiveMapFragment : Fragment() {
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
         )
+
+        userLocationLayer = MapKitFactory.getInstance().createUserLocationLayer(mapView.mapWindow)
+        // Настройка отслеживания изменений местоположения
+        userLocationLayer.setObjectListener(userLocationListener)
+        userLocationLayer.isVisible = true
+        userLocationLayer.isHeadingEnabled = true
+
         return binding.root
     }
 
@@ -234,8 +248,10 @@ class InteractiveMapFragment : Fragment() {
                     Point(BASE_LATITUDE, BASE_LONGITUDE),
                     /* zoom = */ 8f,
                     /* azimuth = */ 0f,
-                    /* tilt = */ 0f
-                )
+                    /* tilt = */ 0f,
+                ),
+                Animation(Animation.Type.SMOOTH, 2f),
+                null
             )
         } else {
             mapView.map.move(
@@ -247,7 +263,9 @@ class InteractiveMapFragment : Fragment() {
                     /* zoom = */ 8f,
                     /* azimuth = */ 0f,
                     /* tilt = */ 0f
-                )
+                ),
+                Animation(Animation.Type.SMOOTH, 2f),
+                null
             )
         }
     }
@@ -433,6 +451,22 @@ class InteractiveMapFragment : Fragment() {
         }
     }
 
+    private val userLocationListener =  object : UserLocationObjectListener {
+        override fun onObjectAdded(userLocationView: UserLocationView) {
+            // Объект текущего местоположения добавлен на карту
+            userLocationView.pin.setIcon(ImageProvider.fromResource(requireContext(), R.drawable.user_arrow))
+            userLocationView.arrow.setIcon(ImageProvider.fromResource(requireContext(), R.drawable.user_arrow))
+            userLocationView.accuracyCircle.fillColor = Color.BLUE
+        }
+
+        override fun onObjectRemoved(userLocationObject: UserLocationView) {
+            // Объект текущего местоположения удален с карты
+        }
+
+        override fun onObjectUpdated(userLocationObject: UserLocationView, objectEvent: ObjectEvent) {
+            
+        }
+    }
     private fun addPointsToInteractiveMap(myPoints: List<MyPoint>) {
         if (currentIconPlacemark != null) {
             val currentIconPlacemarkPoint = currentIconPlacemark!!.geometry
@@ -575,7 +609,9 @@ class InteractiveMapFragment : Fragment() {
                         /* zoom = */ 8f,
                         /* azimuth = */ 0f,
                         /* tilt = */ 0f
-                    )
+                    ),
+                    Animation(Animation.Type.SMOOTH, 2f),
+                    null
                 )
                 viewModel.updatePoints(location.latitude, location.longitude)
                 return
