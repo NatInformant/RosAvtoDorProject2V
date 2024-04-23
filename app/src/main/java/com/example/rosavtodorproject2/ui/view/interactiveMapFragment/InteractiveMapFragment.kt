@@ -435,7 +435,7 @@ class InteractiveMapFragment : Fragment() {
                 Toast
                     .makeText(
                         requireContext(),
-                        "не зная вашего местоположения мы не можем сделать это",
+                        "не зная вашего местоположения мы не можем работать",
                         Toast.LENGTH_SHORT
                     ).show()
                 return
