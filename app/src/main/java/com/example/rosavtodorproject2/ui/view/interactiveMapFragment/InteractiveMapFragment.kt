@@ -44,6 +44,7 @@ import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.ScreenPoint
 import com.yandex.mapkit.geometry.Circle
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.layers.ObjectEvent
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.CircleMapObject
 import com.yandex.mapkit.map.ClusterizedPlacemarkCollection
@@ -58,6 +59,8 @@ import com.yandex.mapkit.map.PolygonMapObject
 import com.yandex.mapkit.map.PolylineMapObject
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.user_location.UserLocationLayer
+import com.yandex.mapkit.user_location.UserLocationObjectListener
+import com.yandex.mapkit.user_location.UserLocationView
 import com.yandex.runtime.Runtime.getApplicationContext
 import com.yandex.runtime.image.ImageProvider
 
@@ -323,7 +326,16 @@ class InteractiveMapFragment : Fragment() {
             // Пока не нужно, но может потом что-нибудь покумекаем
         }
     }
+    private val userLocationObjectListener = object :UserLocationObjectListener{
+        override fun onObjectAdded(p0: UserLocationView) {
+            binding.showCurrentUserPositionFab.isEnabled = true
+        }
 
+        override fun onObjectRemoved(p0: UserLocationView) {}
+
+        override fun onObjectUpdated(p0: UserLocationView, p1: ObjectEvent) {}
+
+    }
     private fun setUpCurrentIconPlacemark(point: Point) {
         currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
             .apply {
@@ -573,7 +585,7 @@ class InteractiveMapFragment : Fragment() {
         } else {
             // Если разрешение предоставлено, запрашиваем обновления местоположения
             locationManager?.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
+                LocationManager.NETWORK_PROVIDER,
                 LOCATION_UPDATES_TIME_INTERVAL,
                 LOCATION_UPDATES_MIN_DISTANCE,
                 locationListener
@@ -590,7 +602,7 @@ class InteractiveMapFragment : Fragment() {
             if (isGranted) {
                 // Разрешение на использование местоположения предоставлено
                 locationManager?.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
+                    LocationManager.NETWORK_PROVIDER,
                     LOCATION_UPDATES_TIME_INTERVAL,
                     LOCATION_UPDATES_MIN_DISTANCE,
                     locationListener
@@ -610,6 +622,7 @@ class InteractiveMapFragment : Fragment() {
         userLocationLayer = MapKitFactory.getInstance().createUserLocationLayer(mapView.mapWindow)
         userLocationLayer?.isVisible = true
         userLocationLayer?.isHeadingEnabled = true
+        userLocationLayer?.setObjectListener(userLocationObjectListener)
     }
 
     private val locationListener = object : LocationListener {
@@ -629,14 +642,12 @@ class InteractiveMapFragment : Fragment() {
                 )
 
                 binding.addPointToMapFab.isEnabled = true
-                binding.showCurrentUserPositionFab.isEnabled = true
                 binding.filtersButton.isEnabled = true
 
                 return
             }
 
             binding.addPointToMapFab.isEnabled = true
-            binding.showCurrentUserPositionFab.isEnabled = true
             binding.filtersButton.isEnabled = true
 
             val distance = App.getInstance().currentUserPosition!!.distanceTo(location)
