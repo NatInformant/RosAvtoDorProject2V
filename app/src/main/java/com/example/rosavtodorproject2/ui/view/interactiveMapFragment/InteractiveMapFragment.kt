@@ -240,7 +240,7 @@ class InteractiveMapFragment : Fragment() {
     }
 
     private fun setUpCameraPosition() {
-        if (App.getInstance().currentUserPosition == null) {
+        if (App.getInstance().currentCameraPosition == null) {
             mapView.map.move(
                 CameraPosition(
                     Point(BASE_LATITUDE, BASE_LONGITUDE),
@@ -253,15 +253,7 @@ class InteractiveMapFragment : Fragment() {
             )
         } else {
             mapView.map.move(
-                CameraPosition(
-                    Point(
-                        App.getInstance().currentUserPosition!!.latitude,
-                        App.getInstance().currentUserPosition!!.longitude
-                    ),
-                    /* zoom = */ 8f,
-                    /* azimuth = */ 0f,
-                    /* tilt = */ 0f
-                ),
+                App.getInstance().currentCameraPosition!!,
                 Animation(Animation.Type.SMOOTH, 1f),
                 null
             )
@@ -629,14 +621,17 @@ class InteractiveMapFragment : Fragment() {
         override fun onLocationChanged(location: Location) {
             if (App.getInstance().currentUserPosition == null) {
                 App.getInstance().currentUserPosition = location
+
                 viewModel.updatePoints(location.latitude, location.longitude)
+
+                App.getInstance().currentCameraPosition = CameraPosition(
+                    Point(location.latitude, location.longitude),
+                    /* zoom = */ 8f,
+                    /* azimuth = */ 0f,
+                    /* tilt = */ 0f
+                )
                 mapView.map.move(
-                    CameraPosition(
-                        Point(location.latitude, location.longitude),
-                        /* zoom = */ 8f,
-                        /* azimuth = */ 0f,
-                        /* tilt = */ 0f
-                    ),
+                    App.getInstance().currentCameraPosition!!,
                     Animation(Animation.Type.SMOOTH, 2f),
                     null
                 )
@@ -862,6 +857,7 @@ class InteractiveMapFragment : Fragment() {
         //Не уверен, что теперь в этом вообще есть необходимость, но лучше перебдеть, чем недобдеть.
         addingPointDescriptionPopupWindow?.dismiss()
         addingPointDescriptionPopupWindow = null
+        App.getInstance().currentCameraPosition = mapView.map.cameraPosition
         super.onDestroyView()
     }
 }

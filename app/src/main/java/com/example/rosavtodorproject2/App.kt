@@ -5,6 +5,7 @@ import android.location.Location
 import com.example.rosavtodorproject2.ioc.ApplicationComponent
 import com.example.rosavtodorproject2.ioc.DaggerApplicationComponent
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.map.CameraPosition
 
 
 class App : Application() {
@@ -12,6 +13,7 @@ class App : Application() {
         DaggerApplicationComponent.builder().build()
     }
     var currentUserPosition: Location? = null
+    var currentCameraPosition: CameraPosition? = null
     val listFilterStatesForPointType: MutableList<Boolean> = mutableListOf(
         false,
         false,
