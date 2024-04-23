@@ -454,25 +454,29 @@ class InteractiveMapFragment : Fragment() {
         }
 
         if (App.getInstance().currentUserPosition != null) {
-            val userAreaCircle = Circle(
-                Point(
-                    App.getInstance().currentUserPosition!!.latitude,
-                    App.getInstance().currentUserPosition!!.longitude
-                ), userAreaCircleRadius
-            )
-            mapView.map.mapObjects.addCircle(userAreaCircle).apply {
-                strokeWidth = 1.5f
-                strokeColor =
-                    ContextCompat.getColor(requireContext(), R.color.user_area_circle_stroke_color)
-                fillColor =
-                    ContextCompat.getColor(requireContext(), R.color.user_area_circle_fill_color)
-            }
+            setUpUserAreaCircle()
         }
 
         myPoints.forEach {
             if (App.getInstance().listFilterStatesForPointType[it.type]) {
                 addCurrentPointToMap(it)
             }
+        }
+    }
+
+    private fun setUpUserAreaCircle() {
+        val userAreaCircle = Circle(
+            Point(
+                App.getInstance().currentUserPosition!!.latitude,
+                App.getInstance().currentUserPosition!!.longitude
+            ), userAreaCircleRadius
+        )
+        mapView.map.mapObjects.addCircle(userAreaCircle).apply {
+            strokeWidth = 1.5f
+            strokeColor =
+                ContextCompat.getColor(requireContext(), R.color.user_area_circle_stroke_color)
+            fillColor =
+                ContextCompat.getColor(requireContext(), R.color.user_area_circle_fill_color)
         }
     }
 

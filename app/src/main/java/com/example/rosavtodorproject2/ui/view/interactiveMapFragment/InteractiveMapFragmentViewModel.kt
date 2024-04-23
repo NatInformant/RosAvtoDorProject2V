@@ -22,12 +22,14 @@ class InteractiveMapFragmentViewModel @Inject constructor(
     }
 
     fun addPoint(type: Int, latitude: Double, longitude: Double, text: String) {
-        mapPointsUseCase.addPoint(
-            MyPoint(
-                type = type,
-                coordinates = Coordinates(latitude,longitude),
-                description = text,
+        viewModelScope.launch {
+            mapPointsUseCase.addPoint(
+                MyPoint(
+                    type = type,
+                    coordinates = Coordinates(latitude, longitude),
+                    description = text,
+                )
             )
-        )
+        }
     }
 }

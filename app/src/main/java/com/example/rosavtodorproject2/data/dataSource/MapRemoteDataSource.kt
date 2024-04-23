@@ -2,6 +2,7 @@ package com.example.rosavtodorproject2.data.dataSource
 
 import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.MyPoint
+import com.example.rosavtodorproject2.data.models.RequestBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
@@ -11,7 +12,7 @@ import retrofit2.create
 
 class MapRemoteDataSource {
 
-    private val BASE_URL = "https://sug4chy.un1ver5e.keenetic.link/api/Mobile/"
+    private val BASE_URL = "https://sug4chy.un1ver5e.keenetic.link/api/"
     private val mapPointsApi: MapPointsApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -50,5 +51,16 @@ class MapRemoteDataSource {
         }*/
 
         return points
+    }
+    suspend fun addPoint(newPoint: MyPoint) {
+
+        //Ниже делается запрос к апишке, пока закомментил, но потом надо будет вернуть как было.
+        val response = mapPointsApi.addPoint(
+            requestBody = RequestBody(newPoint,"")
+        )
+
+        if (response.isSuccessful) {
+            //Хз надо ли вообще тут что-то проверять?
+        }
     }
 }

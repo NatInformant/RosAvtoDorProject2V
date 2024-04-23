@@ -23,8 +23,13 @@ class MapPointsRepository @Inject constructor(
             withContext(Dispatchers.IO) { dataSource.getPoints(currentLatitude, currentLongitude) }
         _points.value = loadedList
     }
+    @MainThread
+    suspend fun addPoint(point: MyPoint) {
 
-    fun addPoint(point: MyPoint) {
+        withContext(Dispatchers.IO) {
+            dataSource.addPoint(point)
+        }
+
         dataSource.loadPoints().add(point)
         _points.value = dataSource.loadPoints()
     }

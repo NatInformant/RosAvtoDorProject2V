@@ -20,7 +20,9 @@ class MapPointsUseCase @Inject constructor(
         }
     }
 
-    fun addPoint(point: MyPoint) {
-        mapPointsRepository.addPoint(point)
+    suspend fun addPoint(point: MyPoint) {
+        withContext(Dispatchers.Main) {
+            mapPointsRepository.addPoint(point)
+        }
     }
 }
