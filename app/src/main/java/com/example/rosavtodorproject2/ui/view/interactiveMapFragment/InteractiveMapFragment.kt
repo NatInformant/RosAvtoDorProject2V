@@ -6,6 +6,7 @@ import android.app.ActionBar.LayoutParams
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.location.Location
 import android.location.LocationListener
@@ -326,13 +327,15 @@ class InteractiveMapFragment : Fragment() {
             // Пока не нужно, но может потом что-нибудь покумекаем
         }
     }
-    private val userLocationObjectListener = object :UserLocationObjectListener{
+    private val userLocationObjectListener = object : UserLocationObjectListener {
         override fun onObjectAdded(p0: UserLocationView) {
             binding.showCurrentUserPositionFab.isEnabled = true
         }
+
         override fun onObjectRemoved(p0: UserLocationView) {}
         override fun onObjectUpdated(p0: UserLocationView, p1: ObjectEvent) {}
     }
+
     private fun setUpCurrentIconPlacemark(point: Point) {
         currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
             .apply {
@@ -657,29 +660,33 @@ class InteractiveMapFragment : Fragment() {
     }
 
     private fun listenerForFiltersButton(filtersButton: View) {
+
+        val windowWidth: Int = dpToPx(resources.getInteger(R.integer.filters_popup_window_width))
+        var windowHeight: Int =
+            dpToPx(resources.getInteger(R.integer.filters_popup_window_width_landscape_orientation))
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            windowHeight =
+                dpToPx(resources.getInteger(R.integer.filters_popup_window_height_vertical_orientation))
+        }
+
         val popupWindow = PopupWindow(
             bindingFilterPointsCheckboxPopupWindow.root,
-            LayoutParams.WRAP_CONTENT,
-            LayoutParams.WRAP_CONTENT,
+            windowWidth,
+            windowHeight,
             true
         )
 
-        popupWindow.contentView.measure(
-            View.MeasureSpec.UNSPECIFIED,
-            View.MeasureSpec.UNSPECIFIED
-        )
+        val pointCoordinationArray = IntArray(2)
+        filtersButton.getLocationOnScreen(pointCoordinationArray)
+        val x = pointCoordinationArray[0]
+        val y = pointCoordinationArray[1]
 
-        val a = IntArray(2)
-        filtersButton.getLocationOnScreen(a)
-        val x = a[0]
-        val y = a[1]
-        val windowWidth = popupWindow.contentView.measuredWidth
-        val windowHeight = popupWindow.contentView.measuredHeight
         popupWindow.showAtLocation(
             mapView,
             Gravity.NO_GRAVITY,
             x + filtersButton.width - windowWidth,
-            y - windowHeight - dpToPx(5)
+            y - windowHeight - dpToPx(resources.getInteger(R.integer.filters_popup_window_bottom_offset))
         )
     }
 

@@ -1,76 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:fillViewport="true"
     android:background="@drawable/check_box_menu_window_background"
     >
 
-    <CheckBox
-        android:id="@+id/petrol_station_check_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minWidth="160dp"
-        android:text="@string/petrol_station"
-        android:textSize="17sp"
-        android:paddingHorizontal="10dp"
-        />
-    <View
-        android:layout_width="170dp"
-        android:layout_height="2dp"
-        android:background="@color/divider_color"
-        />
-    <CheckBox
-        android:id="@+id/cafe_check_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minWidth="160dp"
-        android:text="@string/cafe"
-        android:textSize="17sp"
-        android:paddingHorizontal="10dp"
-        />
-    <View
-        android:layout_width="170dp"
-        android:layout_height="2dp"
-        android:background="@color/divider_color"
-        />
-    <CheckBox
-        android:id="@+id/car_service_check_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minWidth="160dp"
-        android:text="@string/car_service"
-        android:textSize="17sp"
-        android:paddingHorizontal="10dp"
-        />
-    <View
-        android:layout_width="170dp"
-        android:layout_height="2dp"
-        android:background="@color/divider_color"
-        />
-    <CheckBox
-        android:id="@+id/guesthouse_check_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minWidth="160dp"
-        android:text="@string/guesthouse"
-        android:textSize="17sp"
-        android:paddingHorizontal="10dp"
 
-        />
-    <View
-        android:layout_width="170dp"
-        android:layout_height="2dp"
-        android:background="@color/divider_color"
-        />
-    <CheckBox
-        android:id="@+id/incidents_check_box"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minWidth="160dp"
-        android:text="@string/incidents"
-        android:textSize="17sp"
-        android:paddingHorizontal="10dp"
-        android:checked="true"
-        />
-</LinearLayout>
+        android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/petrol_station_check_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="160dp"
+            android:paddingHorizontal="10dp"
+            android:text="@string/petrol_station"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="170dp"
+            android:layout_height="2dp"
+            android:background="@color/divider_color" />
+
+        <CheckBox
+            android:id="@+id/cafe_check_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="160dp"
+            android:paddingHorizontal="10dp"
+            android:text="@string/cafe"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="170dp"
+            android:layout_height="2dp"
+            android:background="@color/divider_color" />
+
+        <CheckBox
+            android:id="@+id/car_service_check_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="160dp"
+            android:paddingHorizontal="10dp"
+            android:text="@string/car_service"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="170dp"
+            android:layout_height="2dp"
+            android:background="@color/divider_color" />
+
+        <CheckBox
+            android:id="@+id/guesthouse_check_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="160dp"
+            android:paddingHorizontal="10dp"
+            android:text="@string/guesthouse"
+            android:textSize="17sp"
+
+            />
+
+        <View
+            android:layout_width="170dp"
+            android:layout_height="2dp"
+            android:background="@color/divider_color" />
+
+        <CheckBox
+            android:id="@+id/incidents_check_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:minWidth="160dp"
+            android:paddingHorizontal="10dp"
+            android:text="@string/incidents"
+            android:textSize="17sp" />
+    </LinearLayout>
+</ScrollView>
