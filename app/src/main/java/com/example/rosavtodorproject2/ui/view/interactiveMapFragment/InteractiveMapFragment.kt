@@ -101,6 +101,8 @@ class InteractiveMapFragment : Fragment() {
     private val userAreaCircleRadius = 100000f
     private var locationManager: LocationManager? = null
     private var userLocationLayer: UserLocationLayer? = null
+    private val LOCATION_UPDATES_TIME_INTERVAL: Long = 1000 // 1 секунда
+    private val LOCATION_UPDATES_MIN_DISTANCE: Float = 10f // 10 метров
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -572,8 +574,8 @@ class InteractiveMapFragment : Fragment() {
             // Если разрешение предоставлено, запрашиваем обновления местоположения
             locationManager?.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                0,
-                0f,
+                LOCATION_UPDATES_TIME_INTERVAL,
+                LOCATION_UPDATES_MIN_DISTANCE,
                 locationListener
             )
             setUpCurrentUserPositionIcon()
@@ -589,8 +591,8 @@ class InteractiveMapFragment : Fragment() {
                 // Разрешение на использование местоположения предоставлено
                 locationManager?.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    0,
-                    0f,
+                    LOCATION_UPDATES_TIME_INTERVAL,
+                    LOCATION_UPDATES_MIN_DISTANCE,
                     locationListener
                 )
                 setUpCurrentUserPositionIcon()
