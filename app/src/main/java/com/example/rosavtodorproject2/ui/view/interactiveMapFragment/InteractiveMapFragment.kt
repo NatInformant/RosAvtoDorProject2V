@@ -627,6 +627,11 @@ class InteractiveMapFragment : Fragment() {
                     Animation(Animation.Type.SMOOTH, 2f),
                     null
                 )
+
+                binding.addPointToMapFab.isEnabled = true
+                binding.showCurrentUserPositionFab.isEnabled = true
+                binding.filtersButton.isEnabled = true
+
                 return
             }
 
