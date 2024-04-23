@@ -330,11 +330,8 @@ class InteractiveMapFragment : Fragment() {
         override fun onObjectAdded(p0: UserLocationView) {
             binding.showCurrentUserPositionFab.isEnabled = true
         }
-
         override fun onObjectRemoved(p0: UserLocationView) {}
-
         override fun onObjectUpdated(p0: UserLocationView, p1: ObjectEvent) {}
-
     }
     private fun setUpCurrentIconPlacemark(point: Point) {
         currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
