@@ -71,7 +71,7 @@
         android:id="@+id/show_current_user_position_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="160dp"
+        android:layout_marginBottom="80dp"
         android:backgroundTint="@color/white"
         android:enabled="false"
         android:contentDescription="@string/add_point_to_interactive_map"

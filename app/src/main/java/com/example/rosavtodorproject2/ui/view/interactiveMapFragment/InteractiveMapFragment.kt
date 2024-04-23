@@ -26,6 +26,7 @@ import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -41,6 +42,7 @@ import com.example.rosavtodorproject2.databinding.VerifiedPointPopupWindowBindin
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.ScreenPoint
+import com.yandex.mapkit.geometry.Circle
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.CircleMapObject
@@ -96,7 +98,7 @@ class InteractiveMapFragment : Fragment() {
 
     private val BASE_LATITUDE: Double = 55.154
     private val BASE_LONGITUDE: Double = 61.4291
-
+    private val userAreaCircleRadius = 100000f
     private var locationManager: LocationManager? = null
     private var userLocationLayer: UserLocationLayer? = null
     override fun onCreateView(
@@ -232,7 +234,7 @@ class InteractiveMapFragment : Fragment() {
     }
 
     private fun setUpCameraPosition() {
-        if (App.getInstance().previousLocation == null) {
+        if (App.getInstance().currentUserPosition == null) {
             mapView.map.move(
                 CameraPosition(
                     Point(BASE_LATITUDE, BASE_LONGITUDE),
@@ -247,8 +249,8 @@ class InteractiveMapFragment : Fragment() {
             mapView.map.move(
                 CameraPosition(
                     Point(
-                        App.getInstance().previousLocation!!.latitude,
-                        App.getInstance().previousLocation!!.longitude
+                        App.getInstance().currentUserPosition!!.latitude,
+                        App.getInstance().currentUserPosition!!.longitude
                     ),
                     /* zoom = */ 8f,
                     /* azimuth = */ 0f,
@@ -415,7 +417,7 @@ class InteractiveMapFragment : Fragment() {
         }
 
         private fun goToYandexMaps(currentPointCoordinates: Coordinates) {
-            if (App.getInstance().previousLocation == null) {
+            if (App.getInstance().currentUserPosition == null) {
                 Toast
                     .makeText(
                         requireContext(),
@@ -426,8 +428,8 @@ class InteractiveMapFragment : Fragment() {
             }
             val url =
                 "https://yandex.ru/maps/?rtext=" +
-                        "${App.getInstance().previousLocation?.latitude}," +// точка
-                        "${App.getInstance().previousLocation?.longitude}" +// начала пути
+                        "${App.getInstance().currentUserPosition?.latitude}," +// точка
+                        "${App.getInstance().currentUserPosition?.longitude}" +// начала пути
                         "~" +
                         "${currentPointCoordinates.latitude}," +//точка
                         "${currentPointCoordinates.longitude}" +//конца пути
@@ -440,13 +442,31 @@ class InteractiveMapFragment : Fragment() {
             startActivity(intent) // Запускаем новое Activity с помощью Intent
         }
     }
+
     private fun addPointsToInteractiveMap(myPoints: List<MyPoint>) {
+
         if (currentIconPlacemark != null) {
             val currentIconPlacemarkPoint = currentIconPlacemark!!.geometry
             mapView.map.mapObjects.clear()
             setUpCurrentIconPlacemark(currentIconPlacemarkPoint)
         } else {
             mapView.map.mapObjects.clear()
+        }
+
+        if (App.getInstance().currentUserPosition != null) {
+            val userAreaCircle = Circle(
+                Point(
+                    App.getInstance().currentUserPosition!!.latitude,
+                    App.getInstance().currentUserPosition!!.longitude
+                ), userAreaCircleRadius
+            )
+            mapView.map.mapObjects.addCircle(userAreaCircle).apply {
+                strokeWidth = 1.5f
+                strokeColor =
+                    ContextCompat.getColor(requireContext(), R.color.user_area_circle_stroke_color)
+                fillColor =
+                    ContextCompat.getColor(requireContext(), R.color.user_area_circle_fill_color)
+            }
         }
 
         myPoints.forEach {
@@ -579,17 +599,18 @@ class InteractiveMapFragment : Fragment() {
                 ).show()
             }
         }
+
     private fun setUpCurrentUserPositionIcon() {
         userLocationLayer = MapKitFactory.getInstance().createUserLocationLayer(mapView.mapWindow)
         userLocationLayer?.isVisible = true
         userLocationLayer?.isHeadingEnabled = true
     }
+
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            if (App.getInstance().previousLocation == null) {
-                App.getInstance().previousLocation = location
+            if (App.getInstance().currentUserPosition == null) {
+                App.getInstance().currentUserPosition = location
                 viewModel.updatePoints(location.latitude, location.longitude)
-
                 mapView.map.move(
                     CameraPosition(
                         Point(location.latitude, location.longitude),
@@ -600,22 +621,22 @@ class InteractiveMapFragment : Fragment() {
                     Animation(Animation.Type.SMOOTH, 2f),
                     null
                 )
-
                 return
             }
 
-            binding.addPointToMapFab.isEnabled=true
-            binding.showCurrentUserPositionFab.isEnabled=true
-            binding.filtersButton.isEnabled=true
+            binding.addPointToMapFab.isEnabled = true
+            binding.showCurrentUserPositionFab.isEnabled = true
+            binding.filtersButton.isEnabled = true
 
-            val distance = App.getInstance().previousLocation!!.distanceTo(location)
+            val distance = App.getInstance().currentUserPosition!!.distanceTo(location)
 
             if (distance >= 5000) {
                 viewModel.updatePoints(location.latitude, location.longitude)
-                App.getInstance().previousLocation = location
+                App.getInstance().currentUserPosition = location
             }
         }
     }
+
     private fun listenerForFiltersButton(filtersButton: View) {
         val popupWindow = PopupWindow(
             bindingFilterPointsCheckboxPopupWindow.root,
@@ -642,6 +663,7 @@ class InteractiveMapFragment : Fragment() {
             y - windowHeight - dpToPx(5)
         )
     }
+
     private fun listenerForShowCurrentUserPositionFab() {
         mapView.map.move(
             CameraPosition(
@@ -654,6 +676,7 @@ class InteractiveMapFragment : Fragment() {
             null
         )
     }
+
     private fun listenerForAddPointToMapFab(anchorView: View) {
         val wrapper: Context = ContextThemeWrapper(requireContext(), R.style.MyPopupMenuStyle)
         val popupMenu = PopupMenu(wrapper, anchorView, Gravity.END)
