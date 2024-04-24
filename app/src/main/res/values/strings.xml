@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RosAvtoDorProject2</string>
+    <string name="app_name">Путеслав</string>
     <string name="go_to_interactive_map_text">Перейти к интерактивной карте</string>
     <string name="back_to_chats_fragment_text">Вернуться к панели чатов</string>
     <string name="ros_avto_dor_bot_mame">Бот помощник рос авто дора</string>
