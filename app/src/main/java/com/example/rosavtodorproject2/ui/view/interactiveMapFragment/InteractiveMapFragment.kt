@@ -849,7 +849,11 @@ class InteractiveMapFragment : Fragment() {
         outState.putInt("addingPointIconNumber", currentIconNumber)
         outState.putString(
             "savedDescriptionForAddingPoint",
-            bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.text.toString()
+            if (this::bindingCreateDescriptionForAddingPointPopupWindow.isInitialized) {
+                bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.text.toString()
+            } else {
+                ""
+            }
         )
     }
 
