@@ -138,7 +138,7 @@ class InteractiveMapFragment : Fragment() {
             ImageProvider.fromResource(requireContext(), R.drawable.cafe_icon_24dp),
             ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
-            ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.car_recharge_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
@@ -170,6 +170,11 @@ class InteractiveMapFragment : Fragment() {
         )
         bindingFilterPointsCheckboxPopupWindow.guesthouseCheckBox.also {
             it.isChecked = App.getInstance().listFilterStatesForPointType[3]
+        }.setOnCheckedChangeListener(
+            checkedChangeListener
+        )
+        bindingFilterPointsCheckboxPopupWindow.carRechargeStationCheckBox.also {
+            it.isChecked = App.getInstance().listFilterStatesForPointType[4]
         }.setOnCheckedChangeListener(
             checkedChangeListener
         )
@@ -216,6 +221,7 @@ class InteractiveMapFragment : Fragment() {
                 getString(R.string.cafe) -> changedFilterStatePointType = 1
                 getString(R.string.car_service) -> changedFilterStatePointType = 2
                 getString(R.string.guesthouse) -> changedFilterStatePointType = 3
+                getString(R.string.car_recharge_station) -> changedFilterStatePointType = 4
             }
 
             App.getInstance().listFilterStatesForPointType[changedFilterStatePointType] = isChecked
@@ -226,7 +232,6 @@ class InteractiveMapFragment : Fragment() {
                 removeCurrentTypePointsFromMap()
             }
         }
-
     }
 
     private fun addCurrentTypePointsToMap() {
@@ -364,7 +369,7 @@ class InteractiveMapFragment : Fragment() {
             screenPoint: ScreenPoint
         ) {
             bindingVerifiedPointPopupWindow.verifiedPointName.text =
-                currentPointInformation.description
+                currentPointInformation.name
 
             //Можно оптимизировать и не ставить слушатели нажатий каждый раз, а просто менять текущие координаты?
             bindingVerifiedPointPopupWindow.goToButton.setOnClickListener {
@@ -399,7 +404,7 @@ class InteractiveMapFragment : Fragment() {
                 getString(mapUnverifiedPointTypeToNameResource[currentPointInformation.type]!!)
 
             bindingUnverifiedPointPopupWindow.unverifiedPointDescription.text =
-                currentPointInformation.description
+                currentPointInformation.name
 
             val popupWindow = PopupWindow(
                 bindingUnverifiedPointPopupWindow.root,

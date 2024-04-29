@@ -14,12 +14,13 @@ class App : Application() {
     }
     var currentUserPosition: Location? = null
     var currentCameraPosition: CameraPosition? = null
+    // Сверху вниз, от АЗС, до происшествий, последнее - это 4 типа в одном
     val listFilterStatesForPointType: MutableList<Boolean> = mutableListOf(
-        false,
-        false,
-        false,
-        false,
-        false,
+        true,
+        true,
+        true,
+        true,
+        true,
         true,
         true,
         true,
