@@ -132,7 +132,6 @@ class InteractiveMapFragment : Fragment() {
             currentPointsList = it
             addPointsToInteractiveMap(it)
         }
-        //Пять типов верифицированных, т.к. заготовка под достопримечательности
         pointIconsList = listOf(
             ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.cafe_icon_24dp),
