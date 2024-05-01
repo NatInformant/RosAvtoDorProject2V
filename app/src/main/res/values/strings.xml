@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Путеслав</string>
-    <string name="go_to_interactive_map_text">Перейти к интерактивной карте</string>
+    <string name="get_road_information">Информация о дороге</string>
+    <string name="warnings_title">Общие предупреждения:</string>
     <string name="back_to_chats_fragment_text">Вернуться к панели чатов</string>
     <string name="ros_avto_dor_bot_mame">Бот помощник рос авто дора</string>
     <string name="change_current_user_name_option">Изменить имя</string>

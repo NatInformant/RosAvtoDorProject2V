@@ -24,15 +24,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:titleTextColor="#00FFFFFF" />
 
-<!--        <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="19dp"
-            android:background="@drawable/profile_button"
-            app:layout_constraintStart_toStartOf="@+id/profile_and_search_panel"
-            app:layout_constraintTop_toTopOf="@+id/profile_and_search_panel"></ImageButton>-->
-
         <include
             android:id="@+id/go_to_interactive_map_panel"
             android:layout_width="match_parent"
@@ -42,16 +33,28 @@
             app:layout_constraintTop_toBottomOf="@+id/profile_and_search_panel"
         />
 
+        <TextView
+            android:id="@+id/warnings_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:background="@drawable/main_fragment_warnings_background"
+            android:text="@string/warnings_title"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/go_to_interactive_map_panel" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
             android:orientation="vertical"
+            android:background="@drawable/main_fragment_warnings_background"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/go_to_interactive_map_panel">
+            app:layout_constraintTop_toBottomOf="@+id/warnings_title">
         </androidx.recyclerview.widget.RecyclerView>
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

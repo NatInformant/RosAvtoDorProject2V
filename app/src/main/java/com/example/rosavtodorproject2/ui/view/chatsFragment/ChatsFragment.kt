@@ -21,11 +21,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
-import com.example.rosavtodorproject2.databinding.FragmentChatsBinding
+import com.example.rosavtodorproject2.databinding.MainFragmentBinding
 
 class ChatsFragment : Fragment() {
 
-    private lateinit var binding: FragmentChatsBinding
+    private lateinit var binding: MainFragmentBinding
     private val applicationComponent
         get() = App.getInstance().applicationComponent
 
@@ -42,7 +42,7 @@ class ChatsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        binding = FragmentChatsBinding.inflate(layoutInflater, container, false)
+        binding = MainFragmentBinding.inflate(layoutInflater, container, false)
 
         setUpToolBar()
         setUpChatsList()
@@ -106,7 +106,6 @@ class ChatsFragment : Fragment() {
     }
 
     fun setUpChatsList() {
-
         val chatsRecyclerView: RecyclerView = binding.chats
 
         chatsRecyclerView.adapter = adapter

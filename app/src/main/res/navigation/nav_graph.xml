@@ -9,7 +9,7 @@
         android:id="@+id/chatsFragment"
         android:name="com.example.rosavtodorproject2.ui.view.chatsFragment.ChatsFragment"
         android:label="fragment_chats"
-        tools:layout="@layout/fragment_chats" >
+        tools:layout="@layout/main_fragment" >
         <action
             android:id="@+id/action_chatsFragment_to_conversationFragment"
             app:destination="@id/conversationFragment" />
