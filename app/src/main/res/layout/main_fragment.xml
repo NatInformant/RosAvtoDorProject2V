@@ -40,20 +40,21 @@
             android:layout_marginTop="1dp"
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:background="@drawable/main_fragment_warnings_background"
+            android:background="@drawable/main_fragment_advertisements_background"
             android:text="@string/warnings_title"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/go_to_interactive_map_panel" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chats"
+            android:id="@+id/all_areas_advertisements_recycler_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/main_fragment_warnings_background"
+            android:background="@drawable/main_fragment_advertisements_background"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/warnings_title">
+            app:layout_constraintTop_toBottomOf="@+id/warnings_title"
+            android:paddingHorizontal="10dp">
         </androidx.recyclerview.widget.RecyclerView>
 
 
