@@ -4,9 +4,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/advertisement_element_background">
-
     <TextView
-        android:id="@+id/message_collocutor_name"
+        android:id="@+id/advertisement_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        />
+    <TextView
+        android:id="@+id/advertisement_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="6dp"

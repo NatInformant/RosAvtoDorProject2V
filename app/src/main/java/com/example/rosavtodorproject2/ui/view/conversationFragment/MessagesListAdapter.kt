@@ -1,3 +1,4 @@
+/*
 package com.example.rosavtodorproject2.ui.view.conversationFragment
 
 import android.view.Gravity
@@ -52,4 +53,4 @@ class MessagesListAdapter(
             }
         }
     }
-}
+}*/

@@ -1,7 +1,6 @@
 package com.example.rosavtodorproject2.domain.useCases
 
 import androidx.lifecycle.LiveData
-import com.example.rosavtodorproject2.data.dataSource.ChatsDataSourceHardCode
 import com.example.rosavtodorproject2.data.models.User
 import com.example.rosavtodorproject2.data.repositories.UserRepository
 import javax.inject.Inject

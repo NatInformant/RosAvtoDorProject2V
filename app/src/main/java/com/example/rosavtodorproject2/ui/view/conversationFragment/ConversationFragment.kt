@@ -30,11 +30,11 @@ class ConversationFragment : Fragment() {
 
     private val viewModel: ConversationFragmentViewModel by viewModels { applicationComponent.getConversationViewModelFactory() }
 
-    private var adapter:MessagesListAdapter? = null
-
+    /*private var adapter:MessagesListAdapter? = null
+*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = MessagesListAdapter(MessagesDiffUtil(), viewModel.currentUser.value?.id ?: -1)
+        /*adapter = MessagesListAdapter(MessagesDiffUtil(), viewModel.currentUser.value?.id ?: -1)*/
     }
 
     override fun onCreateView(
@@ -81,7 +81,7 @@ class ConversationFragment : Fragment() {
 
     private fun setUpMessagesList() {
 
-        val messagesRecyclerView: RecyclerView = binding.messagesList
+       /* val messagesRecyclerView: RecyclerView = binding.messagesList
 
         val layoutManager = LinearLayoutManager(
             requireContext(),
@@ -115,7 +115,7 @@ class ConversationFragment : Fragment() {
                     resources.getInteger(R.integer.horizontal_message_offset)
                 ),
             )
-        )
+        )*/
     }
 
     private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
