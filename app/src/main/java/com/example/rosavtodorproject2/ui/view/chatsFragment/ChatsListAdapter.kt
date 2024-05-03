@@ -1,3 +1,4 @@
+/*
 package com.example.rosavtodorproject2.ui.view.chatsFragment
 
 import android.content.Context
@@ -71,4 +72,4 @@ class ChatsListAdapter(
         private fun dpToPx(dp: Int): Int =
             (dp * Resources.getSystem().displayMetrics.density).toInt()
     }
-}
+}*/

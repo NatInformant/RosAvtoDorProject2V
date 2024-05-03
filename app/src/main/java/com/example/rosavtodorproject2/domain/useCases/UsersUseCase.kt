@@ -1,3 +1,4 @@
+/*
 package com.example.rosavtodorproject2.domain.useCases
 
 import androidx.lifecycle.LiveData
@@ -14,4 +15,4 @@ class UsersUseCase @Inject constructor(
     fun setNewNameToCurrentUser(newCurrentUserName:String){
         userRepository.setNewNameToCurrentUser(newCurrentUserName)
     }
-}
+}*/

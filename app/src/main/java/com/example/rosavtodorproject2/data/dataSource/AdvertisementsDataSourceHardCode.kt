@@ -1,9 +1,12 @@
 package com.example.rosavtodorproject2.data.dataSource
 
+import com.example.rosavtodorproject2.data.models.Advertisement
 import com.example.rosavtodorproject2.data.models.AdvertisementWithRegionName
+import java.util.SortedMap
+import java.util.TreeMap
 
 class AdvertisementsDataSourceHardCode {
-    private val advertisementsWithRegionNames: MutableList<AdvertisementWithRegionName> = mutableListOf(
+    private val advertisementsWithRegionNames: List<AdvertisementWithRegionName> = listOf(
         AdvertisementWithRegionName(
             "Буран",
             "В области страшный буран, бегите глубцы, а то оно вас сожрёт и не подавиться",
@@ -31,6 +34,9 @@ class AdvertisementsDataSourceHardCode {
         ),
     )
 
+    private var mapRegionNameToAdvertisements: SortedMap<String, List<Advertisement>> = TreeMap()
 
-    fun loadAdvertisements() = advertisementsWithRegionNames
+    fun loadAdvertisements() =
+        advertisementsWithRegionNames.groupBy(keySelector = { it.regionName },
+            valueTransform = { Advertisement(it.title, it.description) }).toSortedMap()
 }

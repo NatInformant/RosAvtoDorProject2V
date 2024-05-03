@@ -7,20 +7,4 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <ImageView
-        android:id="@+id/current_user_image"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:background="@drawable/empty_person_avatar"
-        android:contentDescription="Кто я?"
-        android:paddingTop="8dp" />
-
-    <TextView
-        android:id="@+id/current_user_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:textColor="@color/black"
-        android:text="Где я?"/>
-
 </LinearLayout>

@@ -1,3 +1,4 @@
+/*
 package com.example.rosavtodorproject2.ui.view.conversationFragment
 
 import android.graphics.Rect
@@ -19,4 +20,4 @@ class MessageElementOffsetItemDecoration(
     ) {
         outRect.set(leftOffset, topOffset, rightOffset, bottomOffset)
     }
-}
+}*/

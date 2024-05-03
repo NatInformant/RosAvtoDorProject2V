@@ -1,15 +1,16 @@
+/*
 package com.example.rosavtodorproject2.domain.useCases
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.example.rosavtodorproject2.data.models.Message
-import com.example.rosavtodorproject2.data.repositories.MessagesRepository
+import com.example.rosavtodorproject2.data.repositories.AdvertisementsRepository
 import com.example.rosavtodorproject2.data.repositories.UserRepository
 import com.example.rosavtodorproject2.domain.model.UserWithLastMessage
 import javax.inject.Inject
 
 class UserWithLastMessageUseCase @Inject constructor(
-    private val messageRepository: MessagesRepository,
+    private val messageRepository: AdvertisementsRepository,
     private val userRepository: UserRepository,
 ) {
 
@@ -24,7 +25,7 @@ class UserWithLastMessageUseCase @Inject constructor(
         _userWithLastMessage.addSource(userRepository.userContacts) {
             updateUserWithLastMessage()
         }
-        _userWithLastMessage.addSource(messageRepository.messages) {
+        _userWithLastMessage.addSource(messageRepository.advertisements) {
             updateUserWithLastMessage()
         }
 
@@ -33,12 +34,12 @@ class UserWithLastMessageUseCase @Inject constructor(
     fun updateUsersAndMessages() {
         userRepository.updateCurrentUser()
         userRepository.updateUsers()
-        messageRepository.updateMessages()
+        messageRepository.updateAdvertisements()
     }
 
     private fun updateUserWithLastMessage() {
         val conversationIdAndMessages: Map<Int, List<Message>> =
-            messageRepository.messages.value.orEmpty()
+            messageRepository.advertisements.value.orEmpty()
                 .groupBy { if (it.userSenderId == userRepository.currentUser.value?.id) it.userRecieverId else it.userSenderId }
 
         val conversationIdAndLastMessage: Map<Int, Message> =
@@ -54,4 +55,4 @@ class UserWithLastMessageUseCase @Inject constructor(
 
         _userWithLastMessage.value = result
     }
-}
+}*/

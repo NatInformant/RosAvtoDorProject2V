@@ -1,3 +1,4 @@
+/*
 package com.example.rosavtodorproject2.data.repositories
 
 import androidx.lifecycle.LiveData
@@ -26,4 +27,4 @@ class UserRepository @Inject constructor(
     fun updateCurrentUser(){
         _currentUser.value = AdvertisementsDataSourceHardCode.currentUser
     }
-}
+}*/

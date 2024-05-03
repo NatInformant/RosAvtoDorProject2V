@@ -8,7 +8,7 @@ import com.example.rosavtodorproject2.ui.view.interactiveMapFragment.Interactive
 import javax.inject.Inject
 
 class InteractiveMapViewModelFactory @Inject constructor(
-    val mapPointsUseCase: MapPointsUseCase,
+    private val mapPointsUseCase: MapPointsUseCase,
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

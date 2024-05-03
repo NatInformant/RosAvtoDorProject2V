@@ -23,18 +23,29 @@ import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.databinding.MainFragmentBinding
 
-class ChatsFragment : Fragment() {
+class MainFragment : Fragment() {
 
     private lateinit var binding: MainFragmentBinding
     private val applicationComponent
         get() = App.getInstance().applicationComponent
 
+
+
+    /* Пример использования каллбек функции, опять же потом пригодиться
     private var adapter: ChatsListAdapter = ChatsListAdapter(
         chatsDiffUtil = ChatsDiffUtil(),
         onItemClick = ::onRecyclerItemClick,
     )
 
-    private val viewModel: ChatsFragmentViewModel by viewModels { applicationComponent.getChatsViewModelFactory() }
+    //Так при этом конструктор класса выглядел:
+    class ChatsListAdapter(
+        chatsDiffUtil: ChatsDiffUtil,
+        private val onItemClick: (View, Int, String, Int) -> Unit,
+    )
+
+    */
+
+    private val viewModel: MainFragmentViewModel by viewModels { applicationComponent.getMainViewModelFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,29 +78,6 @@ class ChatsFragment : Fragment() {
         val sideBar = binding.navView
         sideBar.setupWithNavController(navController)
 
-        val profileMenuHeader = sideBar.getHeaderView(0)
-        val userNameTextView = profileMenuHeader.findViewById<TextView>(R.id.current_user_name)
-
-        viewModel.currentUser.observe(viewLifecycleOwner) {
-            userNameTextView.text = it.name
-        }
-
-        val userNameProfilePicture =
-            profileMenuHeader.findViewById<ImageView>(R.id.current_user_image)
-
-        viewModel.currentUser.observe(viewLifecycleOwner) {
-            userNameProfilePicture.setBackgroundResource(it.userPictureResourcesId)
-        }
-
-        sideBar.menu[0].setOnMenuItemClickListener {
-            CurrentUserNameEditingDialogFragment(viewModel.currentUser.value?.name)
-            { newCurrentUserName: String ->
-                viewModel.setNewCurrentUserName(newCurrentUserName)
-            }
-                .show(parentFragmentManager, "NAME EDITING")
-            true
-        }
-
         val appBarConfiguration =
             AppBarConfiguration(navController.graph, drawerLayout = binding.drawerLayout)
         val toolbar = binding.profileAndSearchPanel
@@ -106,7 +94,7 @@ class ChatsFragment : Fragment() {
     }
 
     fun setUpChatsList() {
-        val chatsRecyclerView: RecyclerView = binding.chats
+        /*val chatsRecyclerView: RecyclerView = binding.allAreasAdvertisementsRecyclerList
 
         chatsRecyclerView.adapter = adapter
 
@@ -127,9 +115,11 @@ class ChatsFragment : Fragment() {
                 requireContext(),
                 layoutManager.orientation
             )
-        )
+        )*/
     }
-    fun onRecyclerItemClick(recyclerItemView:View, collocutorId:Int,collocutorName:String,collocutorPictureResourceId:Int){
+
+    //Пример call-back функции, потом пригодиться
+    /*fun onRecyclerItemClick(recyclerItemView:View, collocutorId:Int,collocutorName:String,collocutorPictureResourceId:Int){
 
         val action = ChatsFragmentDirections.actionChatsFragmentToConversationFragment(
             collocutorId = collocutorId,
@@ -138,5 +128,5 @@ class ChatsFragment : Fragment() {
         )
 
         Navigation.findNavController(recyclerItemView).navigate(action)
-    }
+    }*/
 }

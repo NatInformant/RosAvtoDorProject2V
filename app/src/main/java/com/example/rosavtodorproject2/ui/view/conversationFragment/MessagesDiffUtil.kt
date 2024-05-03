@@ -1,3 +1,4 @@
+/*
 package com.example.rosavtodorproject2.ui.view.conversationFragment
 
 import androidx.recyclerview.widget.DiffUtil
@@ -17,4 +18,4 @@ class MessagesDiffUtil : DiffUtil.ItemCallback<MessageElementModel>() {
     ): Boolean {
         return oldItem == newItem
     }
-}
+}*/

@@ -1,12 +1,11 @@
+/*
 package com.example.rosavtodorproject2.ui.view.conversationFragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import com.example.rosavtodorproject2.data.models.User
-import com.example.rosavtodorproject2.data.repositories.UserRepository
-import com.example.rosavtodorproject2.domain.model.MessageWithUserSender
-import com.example.rosavtodorproject2.domain.useCases.MessagesUseCase
+import com.example.rosavtodorproject2.domain.useCases.AdvertisementsUseCase
 import com.example.rosavtodorproject2.domain.useCases.MessageWithUserSenderUseCase
 import com.example.rosavtodorproject2.domain.useCases.UsersUseCase
 import com.example.rosavtodorproject2.ui.model.MessageElementModel
@@ -14,7 +13,7 @@ import java.util.Date
 import javax.inject.Inject
 
 class ConversationFragmentViewModel @Inject constructor(
-    val messagesUseCase: MessagesUseCase,
+    val advertisementsUseCase: AdvertisementsUseCase,
     val usersUseCase: UsersUseCase,
     val messageWithUserSenderUseCase: MessageWithUserSenderUseCase,
 ) : ViewModel() {
@@ -34,7 +33,7 @@ class ConversationFragmentViewModel @Inject constructor(
     }
 
     fun sendMessage(userRecieverId:Int, text :String, sendDate: Date) {
-        messagesUseCase.addMessage(
+        advertisementsUseCase.addMessage(
             userSenderId = currentUser.value?.id ?: -1,
             userRecieverId = userRecieverId,
             text = text,
@@ -50,4 +49,4 @@ class ConversationFragmentViewModel @Inject constructor(
         text = message.text,
         sendDate = message.sendDate,
     )
-}
+}*/
