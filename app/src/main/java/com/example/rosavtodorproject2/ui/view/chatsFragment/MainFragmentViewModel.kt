@@ -6,13 +6,13 @@ import androidx.lifecycle.map
 import com.example.rosavtodorproject2.data.models.Advertisement
 
 import com.example.rosavtodorproject2.domain.useCases.AdvertisementsUseCase
-import com.example.rosavtodorproject2.ui.model.ChatElementModel
 import javax.inject.Inject
 
 class MainFragmentViewModel @Inject constructor(
     private val advertisementsUseCase: AdvertisementsUseCase,
 ) : ViewModel() {
-    val chats: LiveData<Map<String, List<Advertisement>>> = advertisementsUseCase.advertisements
+    val advertisements: LiveData<List<Pair<String, List<Advertisement>>>> =
+        advertisementsUseCase.advertisements.map { it.toList() }
 
     init {
         updateAdvertisements()

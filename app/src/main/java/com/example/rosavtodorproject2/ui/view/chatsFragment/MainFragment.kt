@@ -5,18 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.view.children
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rosavtodorproject2.App
@@ -45,6 +40,10 @@ class MainFragment : Fragment() {
 
     */
 
+    private var adapter: AreaAdvertisementsListAdapter = AreaAdvertisementsListAdapter(
+        areaAdvertisementsDiffUtil = AreaAdvertisementsDiffUtil(),
+    )
+
     private val viewModel: MainFragmentViewModel by viewModels { applicationComponent.getMainViewModelFactory() }
 
     override fun onCreateView(
@@ -56,7 +55,7 @@ class MainFragment : Fragment() {
         binding = MainFragmentBinding.inflate(layoutInflater, container, false)
 
         setUpToolBar()
-        setUpChatsList()
+        setUpAdvertisementsList()
 
         return binding.root
     }
@@ -71,8 +70,7 @@ class MainFragment : Fragment() {
     }
 
 
-    fun setUpToolBar() {
-
+    private fun setUpToolBar() {
         val navController = NavHostFragment.findNavController(this)
 
         val sideBar = binding.navView
@@ -80,7 +78,7 @@ class MainFragment : Fragment() {
 
         val appBarConfiguration =
             AppBarConfiguration(navController.graph, drawerLayout = binding.drawerLayout)
-        val toolbar = binding.profileAndSearchPanel
+        val toolbar = binding.toolBarPanel
 
         toolbar.setupWithNavController(navController, appBarConfiguration)
 
@@ -93,10 +91,10 @@ class MainFragment : Fragment() {
         }
     }
 
-    fun setUpChatsList() {
-        /*val chatsRecyclerView: RecyclerView = binding.allAreasAdvertisementsRecyclerList
+    fun setUpAdvertisementsList() {
+        val allAreasAdvertisementsRecyclerView: RecyclerView = binding.allAreasAdvertisementsRecyclerList
 
-        chatsRecyclerView.adapter = adapter
+        allAreasAdvertisementsRecyclerView.adapter = adapter
 
         val layoutManager = LinearLayoutManager(
             requireContext(),
@@ -104,18 +102,11 @@ class MainFragment : Fragment() {
             false
         )
 
-        chatsRecyclerView.layoutManager = layoutManager
+        allAreasAdvertisementsRecyclerView.layoutManager = layoutManager
 
-        viewModel.chats.observe(viewLifecycleOwner) { newUsersOrMessages ->
-            adapter.submitList(newUsersOrMessages)
+        viewModel.advertisements.observe(viewLifecycleOwner) { newAdvertisements ->
+            adapter.submitList(newAdvertisements)
         }
-
-        chatsRecyclerView.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                layoutManager.orientation
-            )
-        )*/
     }
 
     //Пример call-back функции, потом пригодиться
