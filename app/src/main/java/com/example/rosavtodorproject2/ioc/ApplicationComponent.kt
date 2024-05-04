@@ -1,6 +1,6 @@
 package com.example.rosavtodorproject2.ioc
 
-import com.example.rosavtodorproject2.data.dataSource.AdvertisementsDataSourceHardCode
+import com.example.rosavtodorproject2.data.dataSource.AdvertisementsRemoteDataSource
 import com.example.rosavtodorproject2.data.dataSource.MapRemoteDataSource
 import com.example.rosavtodorproject2.domain.useCases.AdvertisementsUseCase
 import com.example.rosavtodorproject2.domain.useCases.MapPointsUseCase
@@ -22,7 +22,7 @@ interface ApplicationComponent {
 object DataModule {
     @Provides
     @AppComponentScope
-    fun getAdvertisementsDataSource() = AdvertisementsDataSourceHardCode()
+    fun getAdvertisementsDataSource() = AdvertisementsRemoteDataSource()
     @Provides
     @AppComponentScope
     fun getMapDataSource() = MapRemoteDataSource()

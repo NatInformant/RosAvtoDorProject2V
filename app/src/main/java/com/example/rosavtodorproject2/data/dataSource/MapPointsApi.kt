@@ -1,6 +1,5 @@
 package com.example.rosavtodorproject2.data.dataSource
 
-import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.data.models.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -14,9 +13,9 @@ interface MapPointsApi {
         @Query("Coordinates.Latitude") latitude:Double,
         @Query("Coordinates.Longitude") longitude:Double,
         @Query("Radius") radius:Double,
-    ): Response<GetResponse>
+    ): Response<PointsGetResponse>
     @POST("unverifiedPoints")
     suspend fun addPoint(
         @Body requestBody: RequestBody,
-    ):Response<PostResponse>
+    ):Response<PointPostResponse>
 }

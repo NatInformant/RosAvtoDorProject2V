@@ -1,5 +1,5 @@
 package com.example.rosavtodorproject2.data.dataSource
 
-data class PostResponse(
+data class PointPostResponse(
     val pointId: String
 )

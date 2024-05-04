@@ -2,11 +2,13 @@ package com.example.rosavtodorproject2.data.dataSource
 
 import com.example.rosavtodorproject2.data.models.Advertisement
 import com.example.rosavtodorproject2.data.models.AdvertisementWithRegionName
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.SortedMap
 import java.util.TreeMap
 
-class AdvertisementsDataSourceHardCode {
-    private val advertisementsWithRegionNames: List<AdvertisementWithRegionName> = listOf(
+class AdvertisementsRemoteDataSource {
+    /*private val advertisementsWithRegionNames: List<AdvertisementWithRegionName> = listOf(
         AdvertisementWithRegionName(
             "Буран",
             "В области страшный буран, бегите глубцы, а то оно вас сожрёт и не подавиться",
@@ -32,11 +34,31 @@ class AdvertisementsDataSourceHardCode {
             "В Курганской области, все дороги размыло, введено черезвычайное положение, не пытайтесь даже ехать сюда.",
             "Курганская область"
         ),
-    )
+    )*/
+    private val BASE_URL = "https://smiling-striking-lionfish.ngrok-free.app/api/"
+    private val advertisementsApi: AdvertisementsApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AdvertisementsApi::class.java)
+    }
 
-    private var mapRegionNameToAdvertisements: SortedMap<String, List<Advertisement>> = TreeMap()
 
-    fun loadAdvertisements() =
-        advertisementsWithRegionNames.groupBy(keySelector = { it.regionName },
+    private val advertisementsWithRegionNames: MutableList<AdvertisementWithRegionName> =
+        mutableListOf()
+
+    suspend fun loadAdvertisements() :SortedMap<String, List<Advertisement>> {
+        val response = advertisementsApi.getAdvertisements()
+        if (response.isSuccessful) {
+            response.body()?.allRegionsAdvertisements?.forEach {
+                advertisementsWithRegionNames.add(
+                    it
+                )
+            }
+        }
+
+        return advertisementsWithRegionNames.groupBy(keySelector = { it.regionName },
             valueTransform = { Advertisement(it.title, it.description) }).toSortedMap()
+    }
 }

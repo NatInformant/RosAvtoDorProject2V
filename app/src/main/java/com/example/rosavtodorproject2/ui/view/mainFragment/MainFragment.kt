@@ -91,7 +91,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    fun setUpAdvertisementsList() {
+    private fun setUpAdvertisementsList() {
         val allAreasAdvertisementsRecyclerView: RecyclerView = binding.allAreasAdvertisementsRecyclerList
 
         allAreasAdvertisementsRecyclerView.adapter = adapter
@@ -110,6 +110,11 @@ class MainFragment : Fragment() {
         allAreasAdvertisementsRecyclerView.addItemDecoration(
             AreaAdvertisementsItemDecoration(topOffset = 10)
         )
+
+        binding.swipeRefreshLayoutForAdvertisementsList.setOnRefreshListener {
+            viewModel.updateAdvertisements()
+            binding.swipeRefreshLayoutForAdvertisementsList.isRefreshing = false
+        }
     }
 
     //Пример call-back функции, потом пригодиться
