@@ -39,7 +39,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="22sp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
             android:background="@drawable/main_fragment_advertisements_background"
             android:text="@string/warnings_title"
             android:textStyle="bold"
@@ -49,12 +51,15 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/all_areas_advertisements_recycler_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="vertical"
             android:background="@drawable/main_fragment_advertisements_background"
+            android:paddingHorizontal="10dp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/warnings_title"
-            android:paddingHorizontal="10dp">
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
         </androidx.recyclerview.widget.RecyclerView>
 
 

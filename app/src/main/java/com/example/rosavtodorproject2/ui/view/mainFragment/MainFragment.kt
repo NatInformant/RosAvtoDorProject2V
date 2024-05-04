@@ -107,6 +107,9 @@ class MainFragment : Fragment() {
         viewModel.advertisements.observe(viewLifecycleOwner) { newAdvertisements ->
             adapter.submitList(newAdvertisements)
         }
+        allAreasAdvertisementsRecyclerView.addItemDecoration(
+            AreaAdvertisementsItemDecoration(topOffset = 10)
+        )
     }
 
     //Пример call-back функции, потом пригодиться

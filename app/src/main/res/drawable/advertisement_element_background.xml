@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/one_of_three_main_background_colors"/>
-    <stroke android:color="@color/black" android:width="2dp" />
-</shape>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetBottom="-2dp">
+    <shape>
+        <solid android:color="@color/one_of_three_main_background_colors" />
+        <stroke
+            android:width="2dp"
+            android:color="@color/black" />
+    </shape>
+</inset>
