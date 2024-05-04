@@ -1,4 +1,4 @@
-package com.example.rosavtodorproject2.ui.view.chatsFragment
+package com.example.rosavtodorproject2.ui.view.mainFragment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rosavtodorproject2.data.models.Advertisement
 import com.example.rosavtodorproject2.databinding.AdvertisementElementBinding
-import com.example.rosavtodorproject2.databinding.AreaAdvertisementsElementBinding
 
 class AdvertisementsListAdapter (
     advertisementsDiffUtil: AdvertisementsDiffUtil,

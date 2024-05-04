@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#343A56"
-        tools:context=".ui.view.chatsFragment.MainFragment">
+        tools:context=".ui.view.mainFragment.MainFragment">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/tool_bar_panel"

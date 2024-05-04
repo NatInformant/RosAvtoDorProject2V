@@ -1,4 +1,4 @@
-package com.example.rosavtodorproject2.ui.view.chatsFragment
+package com.example.rosavtodorproject2.ui.view.mainFragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

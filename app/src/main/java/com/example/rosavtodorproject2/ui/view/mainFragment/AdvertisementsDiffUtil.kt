@@ -1,4 +1,4 @@
-package com.example.rosavtodorproject2.ui.view.chatsFragment
+package com.example.rosavtodorproject2.ui.view.mainFragment
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.rosavtodorproject2.data.models.Advertisement
