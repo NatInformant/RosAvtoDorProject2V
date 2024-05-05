@@ -5,7 +5,6 @@ import com.example.rosavtodorproject2.data.models.AdvertisementWithRegionName
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.SortedMap
-import java.util.TreeMap
 
 class AdvertisementsRemoteDataSource {
     /*private val advertisementsWithRegionNames: List<AdvertisementWithRegionName> = listOf(
@@ -45,10 +44,11 @@ class AdvertisementsRemoteDataSource {
     }
 
 
-    private val advertisementsWithRegionNames: MutableList<AdvertisementWithRegionName> =
+    private var advertisementsWithRegionNames: MutableList<AdvertisementWithRegionName> =
         mutableListOf()
 
     suspend fun loadAdvertisements() :SortedMap<String, List<Advertisement>> {
+        advertisementsWithRegionNames.clear()
         val response = advertisementsApi.getAdvertisements()
         if (response.isSuccessful) {
             response.body()?.allRegionsAdvertisements?.forEach {

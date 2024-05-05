@@ -23,6 +23,7 @@ class MapRemoteDataSource {
 
     fun loadPoints() = points
     suspend fun getPoints(currentLatitude: Double, currentLongitude: Double): List<MyPoint> {
+        points.clear()
         val response = mapPointsApi.getPoints(
             currentLatitude,
             currentLongitude,
