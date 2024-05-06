@@ -626,7 +626,7 @@ class InteractiveMapFragment : Fragment() {
             if (App.getInstance().currentUserPosition == null) {
                 App.getInstance().currentUserPosition = location
 
-                viewModel.updatePoints(location.latitude, location.longitude)
+                updatePoints(location)
 
                 App.getInstance().currentCameraPosition = CameraPosition(
                     Point(location.latitude, location.longitude),
@@ -652,10 +652,21 @@ class InteractiveMapFragment : Fragment() {
             val distance = App.getInstance().currentUserPosition!!.distanceTo(location)
 
             if (distance >= 5000) {
-                viewModel.updatePoints(location.latitude, location.longitude)
+                updatePoints(location)
                 App.getInstance().currentUserPosition = location
             }
         }
+    }
+
+    private fun updatePoints(location: Location) {
+        viewModel.updatePoints(
+            Toast.makeText(
+                requireContext(),
+                "Без доступа к интернету приложение не сможет работать",
+                Toast.LENGTH_LONG
+            ),
+            location.latitude, location.longitude
+        )
     }
 
     private fun listenerForFiltersButton(filtersButton: View) {
@@ -809,19 +820,28 @@ class InteractiveMapFragment : Fragment() {
 
         isPointDescriptionCreating = false
 
-        viewModel.addPoint(
-            type = currentIconNumber,
-            latitude = currentIconPlacemark!!.geometry.latitude,
-            longitude = currentIconPlacemark!!.geometry.longitude,
-            text = bindingCreateDescriptionForAddingPointPopupWindow
-                .addingPointDescription.text.toString()
-        )
+        addPoint()
 
         currentIconNumber = -1
         currentIconPlacemark = null
         binding.confirmAdditionPointToMapFab.isEnabled = false
         addingPointDescriptionPopupWindow = null
         bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.text.clear()
+    }
+
+    private fun addPoint() {
+        viewModel.addPoint(
+            toast = Toast.makeText(
+                requireContext(),
+                "Без доступа к интернету приложение не сможет работать",
+                Toast.LENGTH_LONG
+            ),
+            type = currentIconNumber,
+            latitude = currentIconPlacemark!!.geometry.latitude,
+            longitude = currentIconPlacemark!!.geometry.longitude,
+            text = bindingCreateDescriptionForAddingPointPopupWindow
+                .addingPointDescription.text.toString()
+        )
     }
 
     private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()

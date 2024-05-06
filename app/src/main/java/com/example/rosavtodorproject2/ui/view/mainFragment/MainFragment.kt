@@ -62,19 +62,6 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    private fun updateAdvertisements() {
-        if (App.getInstance().isInternetAvailable()) {
-            viewModel.updateAdvertisements()
-        } else {
-            Toast.makeText(
-                requireContext(),
-                "Без доступа к интернету приложение не сможет работать",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -82,7 +69,6 @@ class MainFragment : Fragment() {
             findNavController().navigate(R.id.action_chatsFragment_to_interactiveMapFragment)
         }
     }
-
 
     private fun setUpToolBar() {
         val navController = NavHostFragment.findNavController(this)
@@ -132,6 +118,15 @@ class MainFragment : Fragment() {
         }
     }
 
+    private fun updateAdvertisements() {
+        viewModel.updateAdvertisements(
+            Toast.makeText(
+                requireContext(),
+                "Без доступа к интернету приложение не сможет работать",
+                Toast.LENGTH_LONG
+            )
+        )
+    }
     //Пример call-back функции, потом пригодиться
     /*fun onRecyclerItemClick(recyclerItemView:View, collocutorId:Int,collocutorName:String,collocutorPictureResourceId:Int){
 
