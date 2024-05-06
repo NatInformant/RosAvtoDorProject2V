@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,7 +24,6 @@ class MainFragment : Fragment() {
     private lateinit var binding: MainFragmentBinding
     private val applicationComponent
         get() = App.getInstance().applicationComponent
-
 
 
     /* Пример использования каллбек функции, опять же потом пригодиться
@@ -57,7 +57,21 @@ class MainFragment : Fragment() {
         setUpToolBar()
         setUpAdvertisementsList()
 
+        updateAdvertisements()
+
         return binding.root
+    }
+
+    private fun updateAdvertisements() {
+        if (App.getInstance().isInternetAvailable()) {
+            viewModel.updateAdvertisements()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Без доступа к интернету приложение не сможет работать",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
 
@@ -92,7 +106,8 @@ class MainFragment : Fragment() {
     }
 
     private fun setUpAdvertisementsList() {
-        val allAreasAdvertisementsRecyclerView: RecyclerView = binding.allAreasAdvertisementsRecyclerList
+        val allAreasAdvertisementsRecyclerView: RecyclerView =
+            binding.allAreasAdvertisementsRecyclerList
 
         allAreasAdvertisementsRecyclerView.adapter = adapter
 
@@ -112,7 +127,7 @@ class MainFragment : Fragment() {
         )
 
         binding.swipeRefreshLayoutForAdvertisementsList.setOnRefreshListener {
-            viewModel.updateAdvertisements()
+            updateAdvertisements()
             binding.swipeRefreshLayoutForAdvertisementsList.isRefreshing = false
         }
     }

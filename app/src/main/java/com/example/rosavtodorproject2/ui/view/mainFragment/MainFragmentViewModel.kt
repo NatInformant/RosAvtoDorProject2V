@@ -1,5 +1,6 @@
 package com.example.rosavtodorproject2.ui.view.mainFragment
 
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
@@ -7,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.rosavtodorproject2.data.models.Advertisement
 
 import com.example.rosavtodorproject2.domain.useCases.AdvertisementsUseCase
+import com.example.rosavtodorproject2.ui.view.MainActivity
 import kotlinx.coroutines.launch
+import java.net.InetAddress
 import javax.inject.Inject
 
 class MainFragmentViewModel @Inject constructor(
@@ -16,11 +19,9 @@ class MainFragmentViewModel @Inject constructor(
     val advertisements: LiveData<List<Pair<String, List<Advertisement>>>> =
         advertisementsUseCase.advertisements.map { it.toList() }
 
-    init {
+    /*init {
         updateAdvertisements()
-    }
-
-    //Я оставляю здесь отдельный метод, чтобы в будущем добавить SwipeToRefresh, к списку обьявлений
+    }*/
     fun updateAdvertisements() {
         viewModelScope.launch {
             advertisementsUseCase.updateAdvertisements()

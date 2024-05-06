@@ -14,7 +14,6 @@ class InteractiveMapFragmentViewModel @Inject constructor(
 ) : ViewModel() {
     val points: LiveData<List<MyPoint>> = mapPointsUseCase.points
 
-    //Я оставляю здесь отдельный метод, чтобы в будущем добавить SwipeToRefresh, к точкам на карте
     fun updatePoints(currentLatitude: Double, currentLongitude: Double) {
         viewModelScope.launch {
             mapPointsUseCase.updatePoints(currentLatitude, currentLongitude)

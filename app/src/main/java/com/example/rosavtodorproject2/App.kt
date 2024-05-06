@@ -6,6 +6,7 @@ import com.example.rosavtodorproject2.ioc.ApplicationComponent
 import com.example.rosavtodorproject2.ioc.DaggerApplicationComponent
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.map.CameraPosition
+import java.net.InetAddress
 
 
 class App : Application() {
@@ -32,10 +33,18 @@ class App : Application() {
         MapKitFactory.setApiKey(BuildConfig.MY_API_KEY)
     }
 
+    fun isInternetAvailable(): Boolean {
+        return try {
+            val ipAddress = InetAddress.getByName("google.com")
+            return !ipAddress.equals("")
+        } catch (e: Exception) {
+            false
+        }
+    }
     companion object {
         private var sInstance: App? = null
         fun getInstance(): App {
-            return requireNotNull(sInstance) { "I really don't how you get there." }
+            return requireNotNull(sInstance) { "I really don't know how you get there." }
         }
     }
 }
