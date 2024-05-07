@@ -1,4 +1,4 @@
-package com.example.rosavtodorproject2.data.dataSource
+package com.example.rosavtodorproject2.data.models
 
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.google.gson.annotations.SerializedName

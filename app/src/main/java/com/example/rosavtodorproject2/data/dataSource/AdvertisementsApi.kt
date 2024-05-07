@@ -1,8 +1,8 @@
 package com.example.rosavtodorproject2.data.dataSource
 
+import com.example.rosavtodorproject2.data.models.AdvertisementsGetResponse
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Query
 
 interface AdvertisementsApi {
     @GET("regions/advertisements")

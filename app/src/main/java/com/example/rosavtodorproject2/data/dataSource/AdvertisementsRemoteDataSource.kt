@@ -1,5 +1,6 @@
 package com.example.rosavtodorproject2.data.dataSource
 
+import com.example.rosavtodorproject2.BuildConfig
 import com.example.rosavtodorproject2.data.models.Advertisement
 import com.example.rosavtodorproject2.data.models.AdvertisementWithRegionName
 import retrofit2.Retrofit
@@ -34,10 +35,9 @@ class AdvertisementsRemoteDataSource {
             "Курганская область"
         ),
     )*/
-    private val BASE_URL = "https://smiling-striking-lionfish.ngrok-free.app/api/"
     private val advertisementsApi: AdvertisementsApi by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AdvertisementsApi::class.java)

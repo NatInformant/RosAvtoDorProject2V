@@ -1,5 +1,7 @@
 package com.example.rosavtodorproject2.data.dataSource
 
+import com.example.rosavtodorproject2.data.models.PointPostResponse
+import com.example.rosavtodorproject2.data.models.PointsGetResponse
 import com.example.rosavtodorproject2.data.models.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
