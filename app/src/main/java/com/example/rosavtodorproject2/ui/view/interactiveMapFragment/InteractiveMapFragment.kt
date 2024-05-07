@@ -137,6 +137,12 @@ class InteractiveMapFragment : Fragment() {
             currentPointsList = it
             addPointsToInteractiveMap(it)
         }
+
+        if (App.getInstance().currentUserPosition != null) {
+            binding.addPointToMapFab.isEnabled = true
+            binding.filtersButton.isEnabled = true
+        }
+
         pointIconsList = listOf(
             ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.cafe_icon_24dp),
