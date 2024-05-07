@@ -90,7 +90,12 @@ class InteractiveMapFragment : Fragment() {
 
     private var pointIconsList = listOf<ImageProvider>()
 
-    private val mapUnverifiedPointTypeToNameResource: kotlin.collections.Map<Int, Int> = mapOf(
+    private val mapPointTypeToNameResource: kotlin.collections.Map<Int, Int> = mapOf(
+        Pair(0, R.string.petrol_station),
+        Pair(1, R.string.cafe),
+        Pair(2, R.string.car_service),
+        Pair(3, R.string.guesthouse),
+        Pair(4, R.string.car_recharge_station),
         Pair(5, R.string.road_accident_menu_item_title),
         Pair(6, R.string.pothole_menu_item_title),
         Pair(7, R.string.obstruction_menu_item_title),
@@ -367,8 +372,12 @@ class InteractiveMapFragment : Fragment() {
             currentPointInformation: MyPoint,
             screenPoint: ScreenPoint
         ) {
-            bindingVerifiedPointPopupWindow.verifiedPointName.text =
+            bindingVerifiedPointPopupWindow.verifiedPointName.text = getString(
+                R.string.verified_point_name_format,
+                getString(mapPointTypeToNameResource[currentPointInformation.type]!!),
                 currentPointInformation.name
+            )
+
 
             //Можно оптимизировать и не ставить слушатели нажатий каждый раз, а просто менять текущие координаты?
             bindingVerifiedPointPopupWindow.goToButton.setOnClickListener {
@@ -400,7 +409,7 @@ class InteractiveMapFragment : Fragment() {
             screenPoint: ScreenPoint
         ) {
             bindingUnverifiedPointPopupWindow.unverifiedPointName.text =
-                getString(mapUnverifiedPointTypeToNameResource[currentPointInformation.type]!!)
+                getString(mapPointTypeToNameResource[currentPointInformation.type]!!)
 
             bindingUnverifiedPointPopupWindow.unverifiedPointDescription.text =
                 currentPointInformation.name

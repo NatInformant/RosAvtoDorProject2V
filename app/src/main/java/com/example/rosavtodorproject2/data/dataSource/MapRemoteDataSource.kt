@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MapRemoteDataSource {
 
-    private val RADIUS: Double = 160.0
+    private val RADIUS: Double = 100.0
     private val mapPointsApi: MapPointsApi by lazy {
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
