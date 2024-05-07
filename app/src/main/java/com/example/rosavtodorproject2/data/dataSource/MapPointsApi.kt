@@ -10,13 +10,13 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface MapPointsApi {
-    @GET("roads/verifiedPoints")
+    @GET("api/roads/verifiedPoints")
     suspend fun getPoints(
         @Query("Coordinates.Latitude") latitude:Double,
         @Query("Coordinates.Longitude") longitude:Double,
         @Query("Radius") radius:Double,
     ): Response<PointsGetResponse>
-    @POST("unverifiedPoints")
+    @POST("api/unverifiedPoints")
     suspend fun addPoint(
         @Body requestBody: RequestBody,
     ):Response<PointPostResponse>
