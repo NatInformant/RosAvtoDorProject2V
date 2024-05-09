@@ -49,6 +49,7 @@ import com.yandex.mapkit.layers.ObjectEvent
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.CircleMapObject
 import com.yandex.mapkit.map.ClusterizedPlacemarkCollection
+import com.yandex.mapkit.map.IconStyle
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.map.MapObject
@@ -348,6 +349,12 @@ class InteractiveMapFragment : Fragment() {
             .apply {
                 geometry = Point(point.latitude, point.longitude)
                 setIcon(pointIconsList[currentIconNumber])
+                setIconStyle(
+                    IconStyle().apply {
+                        scale=1.5f
+                        zIndex = 10f
+                    }
+                )
             }
     }
 
@@ -383,7 +390,6 @@ class InteractiveMapFragment : Fragment() {
                 getString(mapPointTypeToNameResource[currentPointInformation.type]!!),
                 currentPointInformation.name
             )
-
 
             //Можно оптимизировать и не ставить слушатели нажатий каждый раз, а просто менять текущие координаты?
             bindingVerifiedPointPopupWindow.goToButton.setOnClickListener {
@@ -760,6 +766,12 @@ class InteractiveMapFragment : Fragment() {
         binding.confirmAdditionPointToMapFab.visibility = View.VISIBLE
 
         currentIconNumber = menuItem.order + 5
+
+        if (userLocationLayer?.cameraPosition()!=null) {
+            setUpCurrentIconPlacemark(userLocationLayer?.cameraPosition()!!.target)
+            binding.confirmAdditionPointToMapFab.isEnabled = true
+        }
+
         isPointAdding = true
         return true
     }
