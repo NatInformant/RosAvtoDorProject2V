@@ -24,10 +24,10 @@ class MapPointsRepository @Inject constructor(
         _points.value = loadedList
     }
     @MainThread
-    suspend fun addPoint(point: MyPoint) {
+    suspend fun addPoint(point: MyPoint, reliability:Int) {
 
         withContext(Dispatchers.IO) {
-            dataSource.addPoint(point)
+            dataSource.addPoint(point,reliability)
         }
 
         dataSource.loadPoints().add(point)

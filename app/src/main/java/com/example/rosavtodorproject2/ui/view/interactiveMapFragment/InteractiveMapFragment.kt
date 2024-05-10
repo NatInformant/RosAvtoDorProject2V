@@ -85,6 +85,7 @@ class InteractiveMapFragment : Fragment() {
     private var isPointAdding = false
     private var isPointDescriptionCreating = false
     private var currentIconNumber = -1
+    private var reliability:Int = 1
     private var addingPointDescriptionPopupWindow: PopupWindow? = null
 
     private var currentPointsList = listOf<MyPoint>()
@@ -322,7 +323,7 @@ class InteractiveMapFragment : Fragment() {
             }
 
             binding.confirmAdditionPointToMapFab.isEnabled = true
-
+            reliability = 2
             if (currentIconPlacemark == null) {
                 setUpCurrentIconPlacemark(point)
             } else {
@@ -560,7 +561,7 @@ class InteractiveMapFragment : Fragment() {
             savedInstanceState.getDouble("addingPointLongitude"),
         )
         currentIconNumber = savedInstanceState.getInt("addingPointIconNumber")
-
+        reliability = savedInstanceState.getInt("reliability")
         if (addingPointPosition.latitude != 0.0 && addingPointPosition.longitude != 0.0) {
             binding.confirmAdditionPointToMapFab.isEnabled = true
             /* Здесь ставлю только положение на карте, т.к. в любом случае после этого
@@ -785,6 +786,7 @@ class InteractiveMapFragment : Fragment() {
         binding.confirmAdditionPointToMapFab.visibility = View.INVISIBLE
         isPointAdding = false
         currentIconNumber = -1
+        reliability = 1
 
         if (currentIconPlacemark != null) {
             mapView.map.mapObjects.remove(currentIconPlacemark!!)
@@ -849,6 +851,7 @@ class InteractiveMapFragment : Fragment() {
 
         addPoint()
 
+        reliability = 1
         currentIconNumber = -1
         currentIconPlacemark = null
         binding.confirmAdditionPointToMapFab.isEnabled = false
@@ -867,7 +870,8 @@ class InteractiveMapFragment : Fragment() {
             latitude = currentIconPlacemark!!.geometry.latitude,
             longitude = currentIconPlacemark!!.geometry.longitude,
             text = bindingCreateDescriptionForAddingPointPopupWindow
-                .addingPointDescription.text.toString()
+                .addingPointDescription.text.toString(),
+            reliability = reliability
         )
     }
 
@@ -897,7 +901,9 @@ class InteractiveMapFragment : Fragment() {
             "addingPointLongitude",
             currentIconPlacemark?.geometry?.longitude ?: 0.0
         )
+
         outState.putInt("addingPointIconNumber", currentIconNumber)
+        outState.putInt("reliability", reliability)
         outState.putString(
             "savedDescriptionForAddingPoint",
             if (this::bindingCreateDescriptionForAddingPointPopupWindow.isInitialized) {

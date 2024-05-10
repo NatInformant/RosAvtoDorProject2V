@@ -17,9 +17,9 @@ class MapPointsUseCase @Inject constructor(
         }
     }
 
-    suspend fun addPoint(point: MyPoint) {
+    suspend fun addPoint(point: MyPoint,reliability:Int) {
         withContext(Dispatchers.Main) {
-            mapPointsRepository.addPoint(point)
+            mapPointsRepository.addPoint(point,reliability)
         }
     }
 }

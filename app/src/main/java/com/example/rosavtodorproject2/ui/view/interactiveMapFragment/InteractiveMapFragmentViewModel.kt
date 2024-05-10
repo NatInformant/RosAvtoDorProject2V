@@ -38,7 +38,7 @@ class InteractiveMapFragmentViewModel @Inject constructor(
         }
     }
 
-    fun addPoint(toast:Toast, type: Int, latitude: Double, longitude: Double, text: String) {
+    fun addPoint(toast:Toast, type: Int, latitude: Double, longitude: Double, text: String, reliability:Int) {
         viewModelScope.launch {
             if(!checkInternetConnection()) {
                 toast.show()
@@ -50,7 +50,8 @@ class InteractiveMapFragmentViewModel @Inject constructor(
                     type = type,
                     coordinates = Coordinates(latitude, longitude),
                     name = text,
-                )
+                ),
+                reliability = reliability
             )
         }
     }

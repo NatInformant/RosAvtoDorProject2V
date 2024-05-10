@@ -38,7 +38,7 @@ class MapRemoteDataSource {
         return points
     }
 
-    suspend fun addPoint(newPoint: MyPoint) {
+    suspend fun addPoint(newPoint: MyPoint, reliability:Int) {
 
         val response = mapPointsApi.addPoint(
             requestBody = RequestBody(
@@ -50,7 +50,8 @@ class MapRemoteDataSource {
                         6 -> "RoadDisadvantages"
                         7 -> "Roadblock"
                         else -> "ThirdPartyIllegalActions"
-                    }
+                    },
+                    reliability
                 ),
                 null
             )
