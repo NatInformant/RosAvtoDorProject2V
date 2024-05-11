@@ -2,7 +2,8 @@
     <string name="app_name">Путеслав</string>
     <string name="get_road_information">Информация о дороге</string>
     <string name="warnings_title">Общие предупреждения:</string>
-    <string name="back_to_chats_fragment_text">Вернуться к панели чатов</string>
+    <string name="roads_list_title">Выберите трассу, о которой вы хотите получить информацию:</string>
+    <string name="back_to_previous_fragment_text">Вернуться назад</string>
     <string name="ros_avto_dor_bot_mame">Бот помощник рос авто дора</string>
     <string name="change_current_user_name_option">Изменить имя</string>
     <string name="dialog_window_sentence">Чтобы изменить своё имя, просто введите новое в поле под старым.</string>

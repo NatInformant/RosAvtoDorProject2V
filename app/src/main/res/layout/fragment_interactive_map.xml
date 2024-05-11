@@ -31,7 +31,7 @@
         android:layout_height ="wrap_content"
         android:gravity="start"
         android:layout_marginStart="18dp"
-        android:text="@string/back_to_chats_fragment_text"
+        android:text="@string/back_to_previous_fragment_text"
         android:textColor="#000000"
         android:textSize="22sp"
         app:layout_constraintStart_toEndOf="@id/back_to_chats_panel_button"
