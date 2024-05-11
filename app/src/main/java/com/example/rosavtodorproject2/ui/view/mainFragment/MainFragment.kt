@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
+import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.MainFragmentBinding
 
 class MainFragment : Fragment() {
@@ -105,8 +106,26 @@ class MainFragment : Fragment() {
 
         allAreasAdvertisementsRecyclerView.layoutManager = layoutManager
 
-        viewModel.advertisements.observe(viewLifecycleOwner) { newAdvertisements ->
-            adapter.submitList(newAdvertisements)
+        viewModel.advertisements.observe(viewLifecycleOwner) { httpResponseState ->
+            when (httpResponseState){
+                is HttpResponseState.Success -> {
+                    adapter.submitList(httpResponseState.value)
+                }
+                is HttpResponseState.Failure ->{
+                    Toast.makeText(
+                        requireContext(),
+                        "Без доступа к интернету приложение не сможет работать",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "Без доступа к интернету приложение не сможет работать",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
         }
         allAreasAdvertisementsRecyclerView.addItemDecoration(
             AreaAdvertisementsItemDecoration(topOffset = 10)
@@ -119,13 +138,7 @@ class MainFragment : Fragment() {
     }
 
     private fun updateAdvertisements() {
-        viewModel.updateAdvertisements(
-            Toast.makeText(
-                requireContext(),
-                "Без доступа к интернету приложение не сможет работать",
-                Toast.LENGTH_LONG
-            )
-        )
+        viewModel.updateAdvertisements()
     }
     //Пример call-back функции, потом пригодиться
     /*fun onRecyclerItemClick(recyclerItemView:View, collocutorId:Int,collocutorName:String,collocutorPictureResourceId:Int){

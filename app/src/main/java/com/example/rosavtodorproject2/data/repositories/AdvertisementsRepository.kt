@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.rosavtodorproject2.data.dataSource.AdvertisementsRemoteDataSource
 import com.example.rosavtodorproject2.data.models.Advertisement
+import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.ioc.AppComponentScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,8 +15,15 @@ import javax.inject.Inject
 class AdvertisementsRepository @Inject constructor(
     val dataSource: AdvertisementsRemoteDataSource
 ) {
-    private val _advertisements = MutableLiveData<Map<String, List<Advertisement>>>(emptyMap())
-    val advertisements: LiveData<Map<String, List<Advertisement>>> = _advertisements
+    private val _advertisements =
+        MutableLiveData<HttpResponseState<List<Pair<String,List<Advertisement>>>>>(
+            HttpResponseState.Success(
+                emptyList()
+            )
+        )
+    val advertisements: LiveData<HttpResponseState<List<Pair<String,List<Advertisement>>>>> =
+        _advertisements
+
     @MainThread
     suspend fun updateAdvertisements() {
         val loadedList = withContext(Dispatchers.IO) {
