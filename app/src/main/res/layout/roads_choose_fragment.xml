@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#343A56"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="ui.view.roadsChooseFragment.RoadsChooseFragment">
 
     <ImageView
         android:id= "@+id/back_to_main_fragment_panel"
@@ -36,7 +38,7 @@
         app:layout_constraintTop_toTopOf="@+id/back_to_chats_panel_button"
         />
     <include
-        android:id="@+id/go_to_interactive_map_panel"
+        android:id="@+id/go_to_interactive_map_fragment_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/go_to_interactive_map_panel"
@@ -56,7 +58,7 @@
         android:background="@drawable/roads_list_title_background"
         android:text="@string/roads_list_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/go_to_interactive_map_panel" />
+        app:layout_constraintTop_toBottomOf="@+id/go_to_interactive_map_fragment_panel" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id ="@+id/swipe_refresh_layout_for_roads_list"

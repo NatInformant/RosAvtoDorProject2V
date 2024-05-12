@@ -11,8 +11,8 @@
         android:label="fragment_main"
         tools:layout="@layout/main_fragment" >
         <action
-            android:id="@+id/action_chatsFragment_to_interactiveMapFragment"
-            app:destination="@id/interactiveMapFragment" />
+            android:id="@+id/action_mainFragment_to_roadsChooseFragment"
+            app:destination="@id/roadsChooseFragment" />
     </fragment>
     <!--<fragment
         android:id="@+id/conversationFragment"
@@ -40,7 +40,18 @@
         android:label="fragment_interactive_map"
         tools:layout="@layout/fragment_interactive_map" >
         <action
-            android:id="@+id/action_interactiveMapFragment_to_chatsFragment"
+            android:id="@+id/action_interactiveMapFragment_to_roadsChooseFragment"
+            app:destination="@id/roadsChooseFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/roadsChooseFragment"
+        android:name="com.example.rosavtodorproject2.ui.view.roadsChooseFragment.RoadsChooseFragment"
+        android:label="RoadsChooseFragment" >
+        <action
+            android:id="@+id/action_roadsChooseFragment_to_interactiveMapFragment"
+            app:destination="@id/interactiveMapFragment" />
+        <action
+            android:id="@+id/action_roadsChooseFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

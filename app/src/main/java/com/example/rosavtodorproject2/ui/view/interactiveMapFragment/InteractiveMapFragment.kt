@@ -528,7 +528,7 @@ class InteractiveMapFragment : Fragment() {
         checkLocationPermission()
 
         binding.backToChatsPanelButton.setOnClickListener {
-            findNavController().navigate(R.id.action_interactiveMapFragment_to_chatsFragment)
+            findNavController().navigate(R.id.action_interactiveMapFragment_to_roadsChooseFragment)
         }
         binding.filtersButton.setOnClickListener {
             listenerForFiltersButton(it)

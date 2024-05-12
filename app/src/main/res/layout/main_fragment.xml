@@ -25,7 +25,7 @@
             app:titleTextColor="#00FFFFFF" />
 
         <include
-            android:id="@+id/go_to_interactive_map_panel"
+            android:id="@+id/go_to_roads_choose_fragment_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             layout="@layout/go_to_roads_choose_fragment_panel"
@@ -46,7 +46,7 @@
             android:text="@string/warnings_title"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/go_to_interactive_map_panel" />
+            app:layout_constraintTop_toBottomOf="@+id/go_to_roads_choose_fragment_panel" />
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id ="@+id/swipe_refresh_layout_for_advertisements_list"
             android:layout_width="match_parent"
