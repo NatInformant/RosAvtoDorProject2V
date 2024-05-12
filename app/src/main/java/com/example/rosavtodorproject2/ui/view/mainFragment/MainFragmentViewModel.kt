@@ -22,9 +22,9 @@ class MainFragmentViewModel @Inject constructor(
     val advertisements: LiveData<HttpResponseState<List<Pair<String,List<Advertisement>>>>> =
         advertisementsUseCase.advertisements
 
-    /*init {
+    init {
         updateAdvertisements()
-    }*/
+    }
     fun updateAdvertisements() {
         viewModelScope.launch {
             advertisementsUseCase.updateAdvertisements()

@@ -36,11 +36,11 @@ class RoadsChooseFragment : Fragment() {
 
     */
 
-    private var adapter: AreaAdvertisementsListAdapter = AreaAdvertisementsListAdapter(
-        areaAdvertisementsDiffUtil = AreaAdvertisementsDiffUtil(),
+    private var adapter: RoadsListAdapter = RoadsListAdapter(
+        roadsDiffUtil = RoadsDiffUtil(),
     )
 
-    private val viewModel: MainFragmentViewModel by viewModels { applicationComponent.getMainViewModelFactory() }
+    private val viewModel: RoadsChooseFragmentViewModel by viewModels { applicationComponent.getRoadsViewModelFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,8 +52,6 @@ class RoadsChooseFragment : Fragment() {
 
         setUpRoadsList()
 
-        updateAdvertisements()
-
         return binding.root
     }
 
@@ -61,13 +59,16 @@ class RoadsChooseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.goToInteractiveMapFragmentPanel.root.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_roadsChooseFragment)
+            findNavController().navigate(R.id.action_roadsChooseFragment_to_interactiveMapFragment)
+        }
+        binding.backToMainFragmentPanelButton.setOnClickListener {
+            findNavController().navigate(R.id.action_roadsChooseFragment_to_mainFragment)
         }
     }
 
     private fun setUpRoadsList() {
         val allAreasAdvertisementsRecyclerView: RecyclerView =
-            binding.allAreasAdvertisementsRecyclerList
+            binding.roadsRecyclerList
 
         allAreasAdvertisementsRecyclerView.adapter = adapter
 
@@ -79,7 +80,7 @@ class RoadsChooseFragment : Fragment() {
 
         allAreasAdvertisementsRecyclerView.layoutManager = layoutManager
 
-        viewModel.advertisements.observe(viewLifecycleOwner) { httpResponseState ->
+        viewModel.roads.observe(viewLifecycleOwner) { httpResponseState ->
             when (httpResponseState){
                 is HttpResponseState.Success -> {
                     adapter.submitList(httpResponseState.value)
@@ -101,12 +102,12 @@ class RoadsChooseFragment : Fragment() {
             }
         }
         allAreasAdvertisementsRecyclerView.addItemDecoration(
-            AreaAdvertisementsItemDecoration(topOffset = 10)
+            RoadItemDecoration(topOffset = 2)
         )
 
         binding.swipeRefreshLayoutForRoadsList.setOnRefreshListener {
-            viewModel
-            binding.swipeRefreshLayoutForAdvertisementsList.isRefreshing = false
+            viewModel.updateRoads()
+            binding.swipeRefreshLayoutForRoadsList.isRefreshing = false
         }
     }
 

@@ -58,7 +58,6 @@ class MainFragment : Fragment() {
         setUpToolBar()
         setUpAdvertisementsList()
 
-        viewModel.updateAdvertisements()
 
         return binding.root
     }

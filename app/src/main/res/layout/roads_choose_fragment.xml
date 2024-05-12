@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageButton
-        android:id = "@+id/back_to_chats_panel_button"
+        android:id = "@+id/back_to_main_fragment_panel_button"
         android:layout_width="40dp"
         android:layout_height="30dp"
         android:layout_marginTop="13dp"
@@ -34,8 +34,8 @@
         android:text="@string/back_to_previous_fragment_text"
         android:textColor="#000000"
         android:textSize="22sp"
-        app:layout_constraintStart_toEndOf="@id/back_to_chats_panel_button"
-        app:layout_constraintTop_toTopOf="@+id/back_to_chats_panel_button"
+        app:layout_constraintStart_toEndOf="@id/back_to_main_fragment_panel_button"
+        app:layout_constraintTop_toTopOf="@+id/back_to_main_fragment_panel_button"
         />
     <include
         android:id="@+id/go_to_interactive_map_fragment_panel"
@@ -75,7 +75,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="10dp"
             >
         </androidx.recyclerview.widget.RecyclerView>
 
