@@ -73,7 +73,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/roads_list_background"
             android:paddingHorizontal="10dp"
             >
         </androidx.recyclerview.widget.RecyclerView>

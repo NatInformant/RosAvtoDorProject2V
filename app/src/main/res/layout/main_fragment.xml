@@ -28,7 +28,7 @@
             android:id="@+id/go_to_interactive_map_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/go_to_interactive_map_panel"
+            layout="@layout/go_to_roads_choose_fragment_panel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tool_bar_panel"
         />

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Путеслав</string>
-    <string name="get_road_information">Информация о дороге</string>
+    <string name="go_to_roads_choose_fragment_panel_title">Информация о дороге</string>
+    <string name="got_to_interactive_map_panel_title">Интерактивная карта</string>
     <string name="warnings_title">Общие предупреждения:</string>
     <string name="roads_list_title">Выберите трассу, о которой вы хотите получить информацию:</string>
     <string name="back_to_previous_fragment_text">Вернуться назад</string>
