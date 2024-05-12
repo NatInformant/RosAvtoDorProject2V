@@ -17,6 +17,8 @@ class RoadItemDecoration (
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        outRect.set(leftOffset, topOffset, rightOffset, bottomOffset)
+        if(parent.getChildLayoutPosition(view)==0){
+            outRect.set(leftOffset, topOffset, rightOffset, bottomOffset)
+        }
     }
 }

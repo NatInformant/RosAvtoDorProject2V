@@ -36,7 +36,6 @@ class App : Application() {
         true,
         true
     )
-    private val activityScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     override fun onCreate() {
         super.onCreate()
         sInstance = this
@@ -47,10 +46,5 @@ class App : Application() {
         fun getInstance(): App {
             return requireNotNull(sInstance) { "I really don't know how you get there." }
         }
-    }
-
-    override fun onTerminate() {
-        super.onTerminate()
-        activityScope.cancel()
     }
 }

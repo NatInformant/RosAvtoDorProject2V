@@ -14,7 +14,7 @@ import javax.inject.Inject
 class RoadsChooseFragmentViewModel @Inject constructor(
     private val roadsUseCase: RoadsUseCase,
 ) : ViewModel() {
-    val roads: LiveData<HttpResponseState<List<Road>>> =roadsUseCase.roads
+    val roads: LiveData<HttpResponseState<List<Road>>> = roadsUseCase.roads
 
     init {
         updateRoads()

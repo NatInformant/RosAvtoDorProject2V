@@ -16,16 +16,8 @@ class RoadsRemoteDataSource {
     }
 
 
-    /*private var roads: MutableList<Road> =
-        mutableListOf()*/
-
     private var roads: MutableList<Road> =
-        mutableListOf(
-            Road("М-5ПКЕ: Челябинск-Екатеринбург"),
-            Road("A-310: Челябинск - Троицк"),
-            Road("Р-254: Челябинск - Курган"),
-            Road("Р-354: Екатеринбург - Курган")
-        )
+        mutableListOf()
 
     suspend fun loadRoads(): HttpResponseState<List<Road>> {
         roads.clear()

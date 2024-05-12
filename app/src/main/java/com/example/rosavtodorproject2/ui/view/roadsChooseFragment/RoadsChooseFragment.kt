@@ -1,5 +1,6 @@
 package com.example.rosavtodorproject2.ui.view.roadsChooseFragment
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -67,10 +68,10 @@ class RoadsChooseFragment : Fragment() {
     }
 
     private fun setUpRoadsList() {
-        val allAreasAdvertisementsRecyclerView: RecyclerView =
+        val roadsListRecyclerView: RecyclerView =
             binding.roadsRecyclerList
 
-        allAreasAdvertisementsRecyclerView.adapter = adapter
+        roadsListRecyclerView.adapter = adapter
 
         val layoutManager = LinearLayoutManager(
             requireContext(),
@@ -78,7 +79,7 @@ class RoadsChooseFragment : Fragment() {
             false
         )
 
-        allAreasAdvertisementsRecyclerView.layoutManager = layoutManager
+        roadsListRecyclerView.layoutManager = layoutManager
 
         viewModel.roads.observe(viewLifecycleOwner) { httpResponseState ->
             when (httpResponseState){
@@ -101,15 +102,13 @@ class RoadsChooseFragment : Fragment() {
                 }
             }
         }
-        allAreasAdvertisementsRecyclerView.addItemDecoration(
-            RoadItemDecoration(topOffset = 2)
-        )
 
         binding.swipeRefreshLayoutForRoadsList.setOnRefreshListener {
             viewModel.updateRoads()
             binding.swipeRefreshLayoutForRoadsList.isRefreshing = false
         }
     }
+    private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
 
     //Пример call-back функции, потом пригодиться
     /*fun onRecyclerItemClick(recyclerItemView:View, collocutorId:Int,collocutorName:String,collocutorPictureResourceId:Int){
