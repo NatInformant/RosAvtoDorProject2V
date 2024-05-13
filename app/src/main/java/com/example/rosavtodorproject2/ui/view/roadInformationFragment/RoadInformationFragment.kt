@@ -25,8 +25,7 @@ class RoadInformationFragment : Fragment() {
         binding = RoadInformationFragmentBinding.inflate(layoutInflater, container, false)
         val roadName = arguments?.getString("roadName")
         Toast.makeText(requireContext(),roadName,Toast.LENGTH_LONG).show()
+        binding.roadWarningsTitle.text = "Предупреждения по трассе: $roadName"
         return binding.root
     }
-
-
 }
