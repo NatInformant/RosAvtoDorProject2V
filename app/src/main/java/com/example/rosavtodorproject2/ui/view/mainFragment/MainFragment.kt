@@ -106,6 +106,9 @@ class MainFragment : Fragment() {
         allAreasAdvertisementsRecyclerView.layoutManager = layoutManager
 
         viewModel.advertisements.observe(viewLifecycleOwner) { httpResponseState ->
+            //Для справки самому себе - в первый раз мы проваливаемся сюда
+            //НЕ при изменении значения, за которым следим, а когда фрагмент инициализировался,
+            //а уже дальше проваливаемся только при изменениях!
             when (httpResponseState){
                 is HttpResponseState.Success -> {
                     adapter.submitList(httpResponseState.value)

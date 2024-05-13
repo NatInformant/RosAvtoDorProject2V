@@ -3,9 +3,7 @@ package com.example.rosavtodorproject2.data.repositories
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.rosavtodorproject2.data.dataSource.AdvertisementsRemoteDataSource
 import com.example.rosavtodorproject2.data.dataSource.RoadsRemoteDataSource
-import com.example.rosavtodorproject2.data.models.Advertisement
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.Road
 import com.example.rosavtodorproject2.ioc.AppComponentScope
@@ -28,9 +26,9 @@ class RoadsRepository @Inject constructor(
 
     @MainThread
     suspend fun updateRoads() {
-        val loadedList = withContext(Dispatchers.IO) {
+        val responseState = withContext(Dispatchers.IO) {
             dataSource.loadRoads()
         }
-        _roads.value = loadedList
+        _roads.value = responseState
     }
 }

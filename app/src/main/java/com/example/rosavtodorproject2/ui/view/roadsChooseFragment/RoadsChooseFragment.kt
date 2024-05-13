@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.HttpResponseState
+import com.example.rosavtodorproject2.data.models.Road
 import com.example.rosavtodorproject2.databinding.RoadsChooseFragmentBinding
 
 class RoadsChooseFragment : Fragment() {
@@ -82,6 +83,9 @@ class RoadsChooseFragment : Fragment() {
         roadsListRecyclerView.layoutManager = layoutManager
 
         viewModel.roads.observe(viewLifecycleOwner) { httpResponseState ->
+            //Для справки самому себе - в первый раз мы проваливаемся сюда
+            //НЕ при изменении значения, за которым следим, а когда фрагмент инициализировался,
+            //а уже дальше проваливаемся только при изменениях!
             when (httpResponseState){
                 is HttpResponseState.Success -> {
                     adapter.submitList(httpResponseState.value)

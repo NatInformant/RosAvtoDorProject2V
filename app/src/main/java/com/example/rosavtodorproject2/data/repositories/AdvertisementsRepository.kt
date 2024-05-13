@@ -26,9 +26,9 @@ class AdvertisementsRepository @Inject constructor(
 
     @MainThread
     suspend fun updateAdvertisements() {
-        val loadedList = withContext(Dispatchers.IO) {
+        val responseState = withContext(Dispatchers.IO) {
             dataSource.loadAdvertisements()
         }
-        _advertisements.value = loadedList
+        _advertisements.value = responseState
     }
 }
