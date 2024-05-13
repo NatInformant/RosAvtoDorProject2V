@@ -23,23 +23,9 @@ class RoadsChooseFragment : Fragment() {
     private val applicationComponent
         get() = App.getInstance().applicationComponent
 
-
-    /* Пример использования каллбек функции, опять же потом пригодиться
-    private var adapter: ChatsListAdapter = ChatsListAdapter(
-        chatsDiffUtil = ChatsDiffUtil(),
-        onItemClick = ::onRecyclerItemClick,
-    )
-
-    //Так при этом конструктор класса выглядел:
-    class ChatsListAdapter(
-        chatsDiffUtil: ChatsDiffUtil,
-        private val onItemClick: (View, Int, String, Int) -> Unit,
-    )
-
-    */
-
     private var adapter: RoadsListAdapter = RoadsListAdapter(
         roadsDiffUtil = RoadsDiffUtil(),
+        onItemClick = ::onRoadItemClick,
     )
 
     private val viewModel: RoadsChooseFragmentViewModel by viewModels { applicationComponent.getRoadsViewModelFactory() }
@@ -86,17 +72,19 @@ class RoadsChooseFragment : Fragment() {
             //Для справки самому себе - в первый раз мы проваливаемся сюда
             //НЕ при изменении значения, за которым следим, а когда фрагмент инициализировался,
             //а уже дальше проваливаемся только при изменениях!
-            when (httpResponseState){
+            when (httpResponseState) {
                 is HttpResponseState.Success -> {
                     adapter.submitList(httpResponseState.value)
                 }
-                is HttpResponseState.Failure ->{
+
+                is HttpResponseState.Failure -> {
                     Toast.makeText(
                         requireContext(),
                         "Без доступа к интернету приложение не сможет работать",
                         Toast.LENGTH_LONG
                     ).show()
                 }
+
                 else -> {
                     Toast.makeText(
                         requireContext(),
@@ -113,15 +101,11 @@ class RoadsChooseFragment : Fragment() {
         }
     }
 
-    //Пример call-back функции, потом пригодиться
-    fun onRoadItemClick(recyclerItemView:View,roadName:String){
-
-        /*val action = ChatsFragmentDirections.actionChatsFragmentToConversationFragment(
-            collocutorId = collocutorId,
-            collocutorName = collocutorName,
-            collocutorPictureResourceId = collocutorPictureResourceId,
-        )*/
-
-        /*findNavController().navigate(action)*/
+    //call-back функция, для нажатий на элемент списка
+    private fun onRoadItemClick(roadName: String) {
+        val action = RoadsChooseFragmentDirections.actionRoadsChooseFragmentToRoadInformationFragment(
+           roadName
+        )
+        findNavController().navigate(action)
     }
 }
