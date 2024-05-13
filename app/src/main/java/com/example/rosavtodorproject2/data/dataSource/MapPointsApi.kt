@@ -2,7 +2,7 @@ package com.example.rosavtodorproject2.data.dataSource
 
 import com.example.rosavtodorproject2.data.models.PointPostResponse
 import com.example.rosavtodorproject2.data.models.PointsGetResponse
-import com.example.rosavtodorproject2.data.models.RequestBody
+import com.example.rosavtodorproject2.data.models.RequestPointBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -18,6 +18,6 @@ interface MapPointsApi {
     ): Response<PointsGetResponse>
     @POST("api/unverifiedPoints")
     suspend fun addPoint(
-        @Body requestBody: RequestBody,
+        @Body requestPointBody: RequestPointBody,
     ):Response<PointPostResponse>
 }

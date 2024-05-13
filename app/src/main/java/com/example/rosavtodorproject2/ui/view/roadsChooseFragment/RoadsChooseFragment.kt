@@ -112,17 +112,16 @@ class RoadsChooseFragment : Fragment() {
             binding.swipeRefreshLayoutForRoadsList.isRefreshing = false
         }
     }
-    private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
 
     //Пример call-back функции, потом пригодиться
-    /*fun onRecyclerItemClick(recyclerItemView:View, collocutorId:Int,collocutorName:String,collocutorPictureResourceId:Int){
+    fun onRoadItemClick(recyclerItemView:View,roadName:String){
 
-        val action = ChatsFragmentDirections.actionChatsFragmentToConversationFragment(
+        /*val action = ChatsFragmentDirections.actionChatsFragmentToConversationFragment(
             collocutorId = collocutorId,
             collocutorName = collocutorName,
             collocutorPictureResourceId = collocutorPictureResourceId,
-        )
+        )*/
 
-        Navigation.findNavController(recyclerItemView).navigate(action)
-    }*/
+        /*findNavController().navigate(action)*/
+    }
 }
