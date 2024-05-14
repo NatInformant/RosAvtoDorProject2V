@@ -54,19 +54,22 @@
             android:id="@+id/action_roadsChooseFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
         <action
-            android:id="@+id/action_roadsChooseFragment_to_road_information_fragment"
-            app:destination="@id/road_information_fragment" />
+            android:id="@+id/action_roadsChooseFragment_to_roadInformationFragment"
+            app:destination="@id/roadInformationFragment" />
     </fragment>
     <fragment
-        android:id="@+id/road_information_fragment"
+        android:id="@+id/roadInformationFragment"
         android:name="com.example.rosavtodorproject2.ui.view.roadInformationFragment.RoadInformationFragment"
         android:label="road_information_fragment"
         tools:layout="@layout/road_information_fragment" >
         <action
-            android:id="@+id/action_road_information_fragment_to_interactiveMapFragment"
+            android:id="@+id/action_roadInformationFragment_to_interactiveMapFragment"
             app:destination="@id/interactiveMapFragment" />
         <argument
             android:name="roadName"
             android:defaultValue="no name" />
+        <action
+            android:id="@+id/action_roadInformationFragment_to_roadsChooseFragment"
+            app:destination="@id/roadsChooseFragment" />
     </fragment>
 </navigation>

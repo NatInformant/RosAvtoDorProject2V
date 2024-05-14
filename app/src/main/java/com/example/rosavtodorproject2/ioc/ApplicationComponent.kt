@@ -2,9 +2,11 @@ package com.example.rosavtodorproject2.ioc
 
 import com.example.rosavtodorproject2.data.dataSource.AdvertisementsRemoteDataSource
 import com.example.rosavtodorproject2.data.dataSource.MapRemoteDataSource
+import com.example.rosavtodorproject2.data.dataSource.RoadAdvertisementsRemoteDataSource
 import com.example.rosavtodorproject2.data.dataSource.RoadsRemoteDataSource
 import com.example.rosavtodorproject2.domain.useCases.AdvertisementsUseCase
 import com.example.rosavtodorproject2.domain.useCases.MapPointsUseCase
+import com.example.rosavtodorproject2.domain.useCases.RoadAdvertisementsUseCase
 import com.example.rosavtodorproject2.domain.useCases.RoadsUseCase
 import dagger.Provides
 import javax.inject.Scope
@@ -12,12 +14,13 @@ import javax.inject.Scope
 @Scope
 annotation class AppComponentScope
 
-@dagger.Component(modules = [DataModule::class, MainViewModelModule::class, RoadsViewModelModule::class, InteractiveMapViewModelModule::class])
+@dagger.Component(modules = [DataModule::class, MainViewModelModule::class, RoadsViewModelModule::class, RoadsInformationViewModelModule::class,InteractiveMapViewModelModule::class])
 @AppComponentScope
 interface ApplicationComponent {
     fun getMainViewModelFactory(): MainViewModelFactory
     fun getInteractiveMapViewModelFactory(): InteractiveMapViewModelFactory
     fun getRoadsViewModelFactory(): RoadsViewModelFactory
+    fun getRoadInformationViewModelFactory(): RoadInformationViewModelFactory
     /*  fun getConversationViewModelFactory(): ConversationViewModelFactory*/
 }
 
@@ -32,6 +35,9 @@ object DataModule {
     @Provides
     @AppComponentScope
     fun getRoadsDataSource() = RoadsRemoteDataSource()
+    @Provides
+    @AppComponentScope
+    fun getRoadAdvertisementsDataSource() = RoadAdvertisementsRemoteDataSource()
 }
 
 @dagger.Module
@@ -52,6 +58,16 @@ object RoadsViewModelModule{
         roadsUseCase: RoadsUseCase,
     ): RoadsViewModelFactory {
         return RoadsViewModelFactory(roadsUseCase)
+    }
+}
+@dagger.Module
+object RoadsInformationViewModelModule {
+    @Provides
+    @AppComponentScope
+    fun getRoadInformationViewModelFactory(
+        roadAdvertisementsUseCase: RoadAdvertisementsUseCase,
+    ): RoadInformationViewModelFactory {
+        return RoadInformationViewModelFactory(roadAdvertisementsUseCase)
     }
 }
 @dagger.Module
