@@ -16,6 +16,7 @@ import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.Road
 import com.example.rosavtodorproject2.databinding.RoadsChooseFragmentBinding
+import com.example.rosavtodorproject2.ui.view.roadInformationFragment.RoadInformationFragmentDirections
 
 class RoadsChooseFragment : Fragment() {
 

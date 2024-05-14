@@ -17,6 +17,7 @@ import com.example.rosavtodorproject2.databinding.RoadInformationFragmentBinding
 import com.example.rosavtodorproject2.ui.view.mainFragment.AdvertisementsDiffUtil
 import com.example.rosavtodorproject2.ui.view.mainFragment.AreaAdvertisementsDiffUtil
 import com.example.rosavtodorproject2.ui.view.mainFragment.AreaAdvertisementsListAdapter
+import com.example.rosavtodorproject2.ui.view.roadsChooseFragment.RoadsChooseFragmentDirections
 
 class RoadInformationFragment : Fragment() {
 
@@ -48,7 +49,10 @@ class RoadInformationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.goToInteractiveMapFragmentPanel.root.setOnClickListener {
-            findNavController().navigate(R.id.action_roadInformationFragment_to_interactiveMapFragment)
+            val action = RoadInformationFragmentDirections.actionRoadInformationFragmentToInteractiveMapFragment(
+                roadName?:""
+            )
+            findNavController().navigate(action)
         }
         binding.backToRoadsChooseFragmentPanelButton.setOnClickListener {
             findNavController().navigate(R.id.action_roadInformationFragment_to_roadsChooseFragment)

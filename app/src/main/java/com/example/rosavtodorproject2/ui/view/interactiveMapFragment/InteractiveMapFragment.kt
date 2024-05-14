@@ -40,6 +40,7 @@ import com.example.rosavtodorproject2.databinding.FilterPointsCheckboxPopupWindo
 import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
 import com.example.rosavtodorproject2.databinding.UnverifiedPointPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.VerifiedPointPopupWindowBinding
+import com.example.rosavtodorproject2.ui.view.roadsChooseFragment.RoadsChooseFragmentDirections
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.ScreenPoint
@@ -114,11 +115,14 @@ class InteractiveMapFragment : Fragment() {
     private var userLocationLayer: UserLocationLayer? = null
     private val LOCATION_UPDATES_TIME_INTERVAL: Long = 1000 // 1 секунда
     private val LOCATION_UPDATES_MIN_DISTANCE: Float = 10f // 10 метров
+    private var roadName:String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentInteractiveMapBinding.inflate(layoutInflater, container, false)
+
+        roadName = arguments?.getString("roadName")
 
         //Хз правильно ли, но так хотя бы всегда обьект для popupWindow подгруженный будет и
         //останется только сам обьект view создать и всё
@@ -526,9 +530,17 @@ class InteractiveMapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         checkLocationPermission()
-
-        binding.backToChatsPanelButton.setOnClickListener {
-            findNavController().navigate(R.id.action_interactiveMapFragment_to_roadsChooseFragment)
+        if(roadName!=null){
+            binding.backToChatsPanelButton.setOnClickListener {
+                val action = InteractiveMapFragmentDirections.actionInteractiveMapFragmentToRoadInformationFragment(
+                    roadName?: ""
+                )
+                findNavController().navigate(action)
+            }
+        } else {
+            binding.backToChatsPanelButton.setOnClickListener {
+                findNavController().navigate(R.id.action_interactiveMapFragment_to_roadsChooseFragment)
+            }
         }
         binding.filtersButton.setOnClickListener {
             listenerForFiltersButton(it)

@@ -42,6 +42,11 @@
         <action
             android:id="@+id/action_interactiveMapFragment_to_roadsChooseFragment"
             app:destination="@id/roadsChooseFragment" />
+        <argument
+            android:name="roadName" />
+        <action
+            android:id="@+id/action_interactiveMapFragment_to_roadInformationFragment"
+            app:destination="@id/roadInformationFragment" />
     </fragment>
     <fragment
         android:id="@+id/roadsChooseFragment"
