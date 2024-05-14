@@ -56,7 +56,7 @@ class RoadInformationFragment : Fragment() {
     }
     private fun setUpRoadAdvertisementsList() {
         val roadsListRecyclerView: RecyclerView =
-            binding.roadsRecyclerList
+            binding.roadAdvertisementsRecyclerList
 
         roadsListRecyclerView.adapter = adapter
 
