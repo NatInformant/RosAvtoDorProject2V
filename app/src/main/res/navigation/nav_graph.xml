@@ -76,5 +76,17 @@
         <action
             android:id="@+id/action_roadInformationFragment_to_roadsChooseFragment"
             app:destination="@id/roadsChooseFragment" />
+        <action
+            android:id="@+id/action_roadInformationFragment_to_roadPlacesInformation"
+            app:destination="@id/roadPlacesInformation" />
+    </fragment>
+    <fragment
+        android:id="@+id/roadPlacesInformation"
+        android:name="com.example.rosavtodorproject2.ui.view.roadPlaceInformationFragment.RoadPlacesInformationFragment"
+        android:label="road_place_information_fragment"
+        tools:layout="@layout/road_places_information_fragment" >
+        <action
+            android:id="@+id/action_roadPlacesInformation_to_roadInformationFragment"
+            app:destination="@id/roadInformationFragment" />
     </fragment>
 </navigation>

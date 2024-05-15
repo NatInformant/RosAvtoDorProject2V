@@ -4,8 +4,9 @@
     <string name="got_to_interactive_map_panel_title">Интерактивная карта</string>
     <string name="warnings_title">Общие предупреждения:</string>
     <string name="roads_list_title">Выберите трассу, о которой вы хотите получить информацию:</string>
+    <string name="road_place_go_to_yandex_map_title">Нажмите на кнопку, чтобы составить маршрут в ЯндексКартах:</string>
+    <string name="go_to_yandex_map_button_title">Перейти в ЯндексКарты</string>
     <string name="know_road_information_title">Узнать:</string>
-
     <string name="know_road_cafe_information">Где можно поесть?</string>
     <string name="know_road_guesthouse_information">Где можно переночевать?</string>
     <string name="know_road_petrol_station_information">Где можно заправить машину?</string>
