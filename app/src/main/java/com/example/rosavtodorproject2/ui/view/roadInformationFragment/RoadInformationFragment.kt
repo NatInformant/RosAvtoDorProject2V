@@ -69,6 +69,10 @@ class RoadInformationFragment : Fragment() {
         binding.backToRoadsChooseFragmentPanelButton.setOnClickListener {
             findNavController().navigate(R.id.action_roadInformationFragment_to_roadsChooseFragment)
         }
+
+        binding.knowRoadCafeInformation.setOnClickListener {
+
+        }
     }
     private fun setUpRoadAdvertisementsList() {
         val roadsListRecyclerView: RecyclerView =
