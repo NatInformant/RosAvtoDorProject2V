@@ -1,10 +1,14 @@
 package com.example.rosavtodorproject2.ui.view.roadInformationFragment
 
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -37,6 +41,14 @@ class RoadInformationFragment : Fragment() {
     ): View {
         binding = RoadInformationFragmentBinding.inflate(layoutInflater, container, false)
         roadName = arguments?.getString("roadName")
+
+        if (resources.configuration.orientation != Configuration.ORIENTATION_PORTRAIT) {
+            val layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dpToPx(resources.getInteger(R.integer.know_road_information_panel_scroll_view_height_landscape_orientation))
+            )
+            binding.knowRoadInformationPanelScrollView.layoutParams = layoutParams
+        }
 
         viewModel.updateRoadAdvertisements(roadName?:"")
 
@@ -104,4 +116,5 @@ class RoadInformationFragment : Fragment() {
             binding.swipeRefreshLayoutForRoadAdvertisementsList.isRefreshing = false
         }
     }
+    private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
 }
