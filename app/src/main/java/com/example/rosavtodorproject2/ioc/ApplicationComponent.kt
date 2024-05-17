@@ -3,10 +3,12 @@ package com.example.rosavtodorproject2.ioc
 import com.example.rosavtodorproject2.data.dataSource.AdvertisementsRemoteDataSource
 import com.example.rosavtodorproject2.data.dataSource.MapRemoteDataSource
 import com.example.rosavtodorproject2.data.dataSource.RoadAdvertisementsRemoteDataSource
+import com.example.rosavtodorproject2.data.dataSource.RoadPlacesRemoteDataSource
 import com.example.rosavtodorproject2.data.dataSource.RoadsRemoteDataSource
 import com.example.rosavtodorproject2.domain.useCases.AdvertisementsUseCase
 import com.example.rosavtodorproject2.domain.useCases.MapPointsUseCase
 import com.example.rosavtodorproject2.domain.useCases.RoadAdvertisementsUseCase
+import com.example.rosavtodorproject2.domain.useCases.RoadPlacesUseCase
 import com.example.rosavtodorproject2.domain.useCases.RoadsUseCase
 import dagger.Provides
 import javax.inject.Scope
@@ -14,13 +16,14 @@ import javax.inject.Scope
 @Scope
 annotation class AppComponentScope
 
-@dagger.Component(modules = [DataModule::class, MainViewModelModule::class, RoadsViewModelModule::class, RoadsInformationViewModelModule::class,InteractiveMapViewModelModule::class])
+@dagger.Component(modules = [DataModule::class, MainViewModelModule::class, RoadsViewModelModule::class, RoadsInformationViewModelModule::class, RoadPlacesInformationViewModelModule::class, InteractiveMapViewModelModule::class])
 @AppComponentScope
 interface ApplicationComponent {
     fun getMainViewModelFactory(): MainViewModelFactory
     fun getInteractiveMapViewModelFactory(): InteractiveMapViewModelFactory
     fun getRoadsViewModelFactory(): RoadsViewModelFactory
     fun getRoadInformationViewModelFactory(): RoadInformationViewModelFactory
+    fun getRoadPlacesInformationViewModelFactory(): RoadPlacesInformationViewModelFactory
     /*  fun getConversationViewModelFactory(): ConversationViewModelFactory*/
 }
 
@@ -29,15 +32,22 @@ object DataModule {
     @Provides
     @AppComponentScope
     fun getAdvertisementsDataSource() = AdvertisementsRemoteDataSource()
+
     @Provides
     @AppComponentScope
     fun getMapDataSource() = MapRemoteDataSource()
+
     @Provides
     @AppComponentScope
     fun getRoadsDataSource() = RoadsRemoteDataSource()
+
     @Provides
     @AppComponentScope
     fun getRoadAdvertisementsDataSource() = RoadAdvertisementsRemoteDataSource()
+
+    @Provides
+    @AppComponentScope
+    fun getRoadPlacesDataSource() = RoadPlacesRemoteDataSource()
 }
 
 @dagger.Module
@@ -50,8 +60,9 @@ object MainViewModelModule {
         return MainViewModelFactory(advertisementsUseCase)
     }
 }
+
 @dagger.Module
-object RoadsViewModelModule{
+object RoadsViewModelModule {
     @Provides
     @AppComponentScope
     fun getRoadsViewModelFactory(
@@ -60,6 +71,7 @@ object RoadsViewModelModule{
         return RoadsViewModelFactory(roadsUseCase)
     }
 }
+
 @dagger.Module
 object RoadsInformationViewModelModule {
     @Provides
@@ -70,6 +82,18 @@ object RoadsInformationViewModelModule {
         return RoadInformationViewModelFactory(roadAdvertisementsUseCase)
     }
 }
+
+@dagger.Module
+object RoadPlacesInformationViewModelModule {
+    @Provides
+    @AppComponentScope
+    fun getRoadPlacesInformationViewModelFactory(
+        roadPlacesUseCase: RoadPlacesUseCase,
+    ): RoadPlacesInformationViewModelFactory {
+        return RoadPlacesInformationViewModelFactory(roadPlacesUseCase)
+    }
+}
+
 @dagger.Module
 object InteractiveMapViewModelModule {
     @Provides
