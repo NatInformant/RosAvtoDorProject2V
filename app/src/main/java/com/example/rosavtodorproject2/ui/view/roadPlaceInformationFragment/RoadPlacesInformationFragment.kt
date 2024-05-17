@@ -20,6 +20,9 @@ class RoadPlacesInformationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
+
         return inflater.inflate(R.layout.road_places_information_fragment, container, false)
     }
 
