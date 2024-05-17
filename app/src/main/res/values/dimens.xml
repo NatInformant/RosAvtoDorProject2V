@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="horizontal_message_offset" type="integer">16</item>
+    <item name="bottom_message_offset" type="integer">15</item>
+    <item name="filters_popup_window_bottom_offset" type="integer">5</item>
+    <item name="filters_popup_window_width" type="integer">170</item>
+    <item name="filters_popup_window_height_vertical_orientation" type="integer">299</item>
+    <item name="filters_popup_window_width_landscape_orientation" type="integer">160</item>
+    <item name="know_road_information_panel_scroll_view_height_landscape_orientation" type="integer">80</item>
+    <string name="toolbar_icons_scale">1.5</string>
+</resources>

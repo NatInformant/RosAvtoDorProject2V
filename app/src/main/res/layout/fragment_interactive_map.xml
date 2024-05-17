@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.view.InteractiveMapWindow.InteractiveMapFragment">
+    tools:context=".ui.view.interactiveMapFragment.InteractiveMapFragment">
 
     <ImageView
         android:id= "@+id/back_to_chats_panel"
@@ -27,12 +27,11 @@
         />
 
     <TextView
-        android:id="@+id/collocutor_name"
         android:layout_width="wrap_content"
         android:layout_height ="wrap_content"
         android:gravity="start"
         android:layout_marginStart="18dp"
-        android:text="@string/back_to_chats_fragment_text"
+        android:text="@string/back_to_previous_fragment_text"
         android:textColor="#000000"
         android:textSize="22sp"
         app:layout_constraintStart_toEndOf="@id/back_to_chats_panel_button"
@@ -47,17 +46,88 @@
         app:layout_constraintTop_toBottomOf="@+id/back_to_chats_panel"
         app:layout_constraintBottom_toBottomOf="parent"
         />
+    <TextView
+        android:id="@+id/filters_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/filtres_title"
+        android:paddingHorizontal="5dp"
+        android:paddingVertical="2dp"
+        android:textSize="18sp"
+        android:enabled="false"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/filters_button_background"
+        app:layout_constraintBottom_toTopOf="@id/add_point_to_map_fab"
+        app:layout_constraintEnd_toEndOf="@id/add_point_to_map_fab"
+        />
+    <View
+        android:id="@+id/anchor_view_for_popup_menu"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        app:layout_constraintBottom_toTopOf="@id/add_point_to_map_fab"
+        app:layout_constraintEnd_toEndOf="@id/add_point_to_map_fab"
+        />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/show_current_user_position_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:backgroundTint="@color/white"
+        android:enabled="false"
+        android:contentDescription="@string/add_point_to_interactive_map"
+        android:src="@drawable/show_current_user_position_fab_icon"
+        app:tint = "@drawable/show_current_user_position_fab_icon_tint"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toTopOf="@id/filters_button"
+        app:layout_constraintEnd_toEndOf="@id/filters_button"
+        app:maxImageSize="48dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_point_to_map_button"
+        android:id="@+id/add_point_to_map_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="22dp"
+        android:backgroundTint="@color/white"
+        android:enabled="false"
+        android:contentDescription="@string/add_point_to_interactive_map"
+        android:src="@drawable/add_point_to_map_fab_icon"
+        app:tint = "@drawable/add_point_to_map_fab_icon_tint"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="48dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/confirm_addition_point_to_map_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="22dp"
+        android:layout_marginEnd="80dp"
+        android:src="@drawable/confirm_addition_point_to_map_button_icon"
+        android:backgroundTint="@color/white"
+        app:tint = "@drawable/confirm_addition_point_to_map_fab_icon_tint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:borderWidth="0dp"
+        android:enabled="false"
+        android:contentDescription="@string/add_point_to_interactive_map"
+        app:maxImageSize="48dp"
+        android:visibility="invisible"
+        />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/cancel_addition_point_to_map_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="22dp"
         android:layout_marginEnd="10dp"
-        android:src="@drawable/add_point_to_map_button_icon"
+        android:src="@drawable/cancel_addition_point_to_map_button_icon"
         android:backgroundTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:borderWidth="0dp"
-        android:contentDescription="@string/add_point_to_interactive_map" />
+        android:contentDescription="@string/add_point_to_interactive_map"
+        app:maxImageSize="48dp"
+        android:visibility="invisible"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

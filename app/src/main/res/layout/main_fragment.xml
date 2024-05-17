@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#343A56"
+        android:orientation="vertical"
+        tools:context=".ui.view.mainFragment.MainFragment">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tool_bar_panel"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#4E53D3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:titleTextColor="#00FFFFFF" />
+
+        <include
+            android:id="@+id/go_to_roads_choose_fragment_panel"
+            layout="@layout/go_to_roads_choose_fragment_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tool_bar_panel" />
+
+        <TextView
+            android:id="@+id/warnings_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/main_fragment_advertisements_background"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
+            android:text="@string/warnings_title"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/go_to_roads_choose_fragment_panel" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout_for_advertisements_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/warnings_title">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/all_areas_advertisements_recycler_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/main_fragment_advertisements_background"
+                android:orientation="vertical"
+                android:paddingHorizontal="10dp"/>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/profile_menu_header"
+        app:menu="@menu/profile_menu" />
+</androidx.drawerlayout.widget.DrawerLayout>

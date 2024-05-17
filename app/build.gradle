@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
-    id("androidx.navigation.safeargs.kotlin")
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -22,11 +22,13 @@ android {
     buildTypes {
         release {
             buildConfigField "String", "MY_API_KEY", "\"${my_api_key}\""
+            buildConfigField "String", "BASE_URL", "\"${base_url}\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             buildConfigField "String", "MY_API_KEY", "\"${my_api_key}\""
+            buildConfigField "String", "BASE_URL", "\"${base_url}\""
         }
     }
     compileOptions {
@@ -39,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     def nav_version = "2.7.6"
 
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
@@ -52,6 +55,9 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")

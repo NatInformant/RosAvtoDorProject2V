@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/chat_background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.view.ConversationWindow.ConversationFragment">
+    tools:context=".ui.view.conversationFragment.ConversationFragment">
 
     <ImageView
         android:id= "@+id/collocuttor_profile_panel"

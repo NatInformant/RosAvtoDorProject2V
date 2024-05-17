@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="one_of_three_main_background_colors">#399FEA</color>
+    <color name="know_road_information_background">#69C9FF</color>
+    <color name="disabled_confirm_addition_point_fab_icon_color">#8031B431</color>
+    <color name="enabled_confirm_addition_point_fab_icon_color">#31B431</color>
+    <color name="disabled_add_point_fab_icon_color">#80000000</color>
+    <color name="enabled_add_point_fab_icon_color">#000000</color>
+    <color name="user_area_circle_fill_color">#00000000</color>
+    <color name="user_area_circle_stroke_color">#FF0000</color>
+    <color name="advertisements_list_background_color">#F37777</color>
+    <color name="divider_color">#000000</color>
 </resources>

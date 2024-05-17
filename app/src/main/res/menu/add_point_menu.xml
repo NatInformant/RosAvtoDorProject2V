@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
         android:id="@+id/road_accident_menu_item"
         android:title="@string/road_accident_menu_item_title"
-        android:icon="@drawable/option_icon"
+        android:icon="@drawable/ic_car_accident_24dp"
+        android:orderInCategory="0"
         />
     <item
         android:id="@+id/pothole_menu_item"
         android:title="@string/pothole_menu_item_title"
-
-        android:icon="@drawable/option_icon"
+        android:icon="@drawable/ic_car_accident_24dp"
+        android:orderInCategory="1"
         />
     <item
         android:id="@+id/obstruction_menu_item"
         android:title="@string/obstruction_menu_item_title"
-        android:icon="@drawable/option_icon"
+        android:icon="@drawable/ic_car_accident_24dp"
+        android:orderInCategory="2"
         />
     <item
         android:id="@+id/bandit_menu_item"
         android:title="@string/bandit_menu_item_title"
-        android:icon="@drawable/option_icon"
+        android:icon="@drawable/ic_car_accident_24dp"
+        android:orderInCategory="3"
         />
 </menu>
