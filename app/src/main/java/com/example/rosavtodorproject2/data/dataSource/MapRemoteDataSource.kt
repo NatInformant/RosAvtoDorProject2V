@@ -10,7 +10,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MapRemoteDataSource {
 
-    private val RADIUS: Double = 100.0
     private val mapPointsApi: MapPointsApi by lazy {
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
@@ -27,7 +26,6 @@ class MapRemoteDataSource {
         val response = mapPointsApi.getPoints(
             currentLatitude,
             currentLongitude,
-            RADIUS
         )
         if (response.isSuccessful) {
             response.body()?.points?.forEach {

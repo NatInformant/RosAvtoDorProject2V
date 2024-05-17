@@ -53,7 +53,7 @@ class RoadInformationFragment : Fragment() {
         viewModel.updateRoadAdvertisements(roadName?:"")
 
         setUpRoadAdvertisementsList()
-
+        //надо поменять
         binding.roadWarningsTitle.text = "Предупреждения по трассе: $roadName"
         return binding.root
     }

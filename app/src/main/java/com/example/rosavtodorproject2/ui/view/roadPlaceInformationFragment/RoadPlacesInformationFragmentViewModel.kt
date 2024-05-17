@@ -3,6 +3,7 @@ package com.example.rosavtodorproject2.ui.view.roadPlaceInformationFragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.RoadPlace
 import com.example.rosavtodorproject2.domain.useCases.RoadPlacesUseCase
@@ -15,9 +16,13 @@ class RoadPlacesInformationFragmentViewModel @Inject constructor(
     val roadPlaces: LiveData<HttpResponseState<List<RoadPlace>>> =
         roadPlacesUseCase.roadPlaces
 
-    fun updateRoadPlaces(roadName:String) {
+    fun updateRoadPlaces(
+        roadName: String,
+        roadPlacesType: String,
+        currentUserPosition: Coordinates
+    ) {
         viewModelScope.launch {
-            roadPlacesUseCase.updateRoadPlaces(roadName)
+            roadPlacesUseCase.updateRoadPlaces(roadName, roadPlacesType, currentUserPosition)
         }
     }
 }

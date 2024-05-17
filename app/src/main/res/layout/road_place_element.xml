@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/road_place_element_background"
     android:orientation="vertical"
-    android:paddingBottom="4dp">
+    android:paddingBottom="6dp">
 
 
     <TextView

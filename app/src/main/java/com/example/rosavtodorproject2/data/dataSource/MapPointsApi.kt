@@ -14,7 +14,7 @@ interface MapPointsApi {
     suspend fun getPoints(
         @Query("Coordinates.Latitude") latitude:Double,
         @Query("Coordinates.Longitude") longitude:Double,
-        @Query("Radius") radius:Double,
+        @Query("Radius") radius:Double = 100.0,
     ): Response<PointsGetResponse>
     @POST("api/unverifiedPoints")
     suspend fun addPoint(

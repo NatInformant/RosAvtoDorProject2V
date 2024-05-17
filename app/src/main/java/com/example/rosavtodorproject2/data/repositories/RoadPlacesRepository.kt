@@ -4,6 +4,7 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.rosavtodorproject2.data.dataSource.RoadPlacesRemoteDataSource
+import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.RoadPlace
 import com.example.rosavtodorproject2.ioc.AppComponentScope
@@ -25,9 +26,13 @@ class RoadPlacesRepository @Inject constructor(
         _roadPlaces
 
     @MainThread
-    suspend fun updateRoadPlaces(roadName:String) {
+    suspend fun updateRoadPlaces(
+        roadName: String,
+        roadPlacesType: String,
+        currentUserPosition: Coordinates
+    ) {
         val responseState = withContext(Dispatchers.IO) {
-            dataSource.loadRoadPlaces(roadName)
+            dataSource.loadRoadPlaces(roadName, roadPlacesType, currentUserPosition)
         }
         _roadPlaces.value = responseState
     }
