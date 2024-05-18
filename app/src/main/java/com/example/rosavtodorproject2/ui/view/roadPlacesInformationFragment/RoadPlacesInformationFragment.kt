@@ -95,6 +95,9 @@ class RoadPlacesInformationFragment : Fragment() {
             //Для справки самому себе - в первый раз мы проваливаемся сюда
             //НЕ при изменении значения, за которым следим, а когда фрагмент инициализировался,
             //а уже дальше проваливаемся только при изменениях!
+
+            binding.swipeRefreshLayoutForRoadPlacesList.isRefreshing = false
+
             when (httpResponseState) {
                 is HttpResponseState.Success -> {
                     adapter.submitList(httpResponseState.value)
@@ -120,9 +123,6 @@ class RoadPlacesInformationFragment : Fragment() {
 
         binding.swipeRefreshLayoutForRoadPlacesList.setOnRefreshListener {
             updateOnlyRoadPlaces()
-            //А это точно здесь должно быть?.....
-            //Скорее всего нет
-            binding.swipeRefreshLayoutForRoadPlacesList.isRefreshing = false
         }
     }
 
@@ -138,7 +138,6 @@ class RoadPlacesInformationFragment : Fragment() {
                 App.getInstance().currentUserPosition!!.longitude
             )
         )
-
     }
 
     private fun updateRoadPlacesAndMapPoints() {

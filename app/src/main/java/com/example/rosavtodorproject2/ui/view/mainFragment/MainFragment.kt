@@ -27,20 +27,6 @@ class MainFragment : Fragment() {
         get() = App.getInstance().applicationComponent
 
 
-    /* Пример использования каллбек функции, опять же потом пригодиться
-    private var adapter: ChatsListAdapter = ChatsListAdapter(
-        chatsDiffUtil = ChatsDiffUtil(),
-        onItemClick = ::onRecyclerItemClick,
-    )
-
-    //Так при этом конструктор класса выглядел:
-    class ChatsListAdapter(
-        chatsDiffUtil: ChatsDiffUtil,
-        private val onItemClick: (View, Int, String, Int) -> Unit,
-    )
-
-    */
-
     private var adapter: AreaAdvertisementsListAdapter = AreaAdvertisementsListAdapter(
         areaAdvertisementsDiffUtil = AreaAdvertisementsDiffUtil(),
     )
@@ -109,6 +95,9 @@ class MainFragment : Fragment() {
             //Для справки самому себе - в первый раз мы проваливаемся сюда
             //НЕ при изменении значения, за которым следим, а когда фрагмент инициализировался,
             //а уже дальше проваливаемся только при изменениях!
+
+            binding.swipeRefreshLayoutForAdvertisementsList.isRefreshing = false
+
             when (httpResponseState){
                 is HttpResponseState.Success -> {
                     adapter.submitList(httpResponseState.value)
@@ -135,19 +124,6 @@ class MainFragment : Fragment() {
 
         binding.swipeRefreshLayoutForAdvertisementsList.setOnRefreshListener {
             viewModel.updateAdvertisements()
-            binding.swipeRefreshLayoutForAdvertisementsList.isRefreshing = false
         }
     }
-
-    //Пример call-back функции, потом пригодиться
-    /*fun onRecyclerItemClick(recyclerItemView:View, collocutorId:Int,collocutorName:String,collocutorPictureResourceId:Int){
-
-        val action = ChatsFragmentDirections.actionChatsFragmentToConversationFragment(
-            collocutorId = collocutorId,
-            collocutorName = collocutorName,
-            collocutorPictureResourceId = collocutorPictureResourceId,
-        )
-
-        Navigation.findNavController(recyclerItemView).navigate(action)
-    }*/
 }

@@ -70,6 +70,9 @@ class RoadsChooseFragment : Fragment() {
             //Для справки самому себе - в первый раз мы проваливаемся сюда
             //НЕ при изменении значения, за которым следим, а когда фрагмент инициализировался,
             //а уже дальше проваливаемся только при изменениях!
+
+            binding.swipeRefreshLayoutForRoadsList.isRefreshing = false
+
             when (httpResponseState) {
                 is HttpResponseState.Success -> {
                     adapter.submitList(httpResponseState.value)
@@ -95,7 +98,6 @@ class RoadsChooseFragment : Fragment() {
 
         binding.swipeRefreshLayoutForRoadsList.setOnRefreshListener {
             viewModel.updateRoads()
-            binding.swipeRefreshLayoutForRoadsList.isRefreshing = false
         }
     }
 

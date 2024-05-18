@@ -71,7 +71,6 @@ class RoadInformationFragment : Fragment() {
         }
 
 
-
         binding.knowRoadCafeInformation.setOnClickListener {
             knowRoadInformationButtonsListener("Cafe", R.string.cafe_road_places_list_title)
         }
@@ -132,6 +131,9 @@ class RoadInformationFragment : Fragment() {
             //Для справки самому себе - в первый раз мы проваливаемся сюда
             //НЕ при изменении значения, за которым следим, а когда фрагмент инициализировался,
             //а уже дальше проваливаемся только при изменениях!
+
+            binding.swipeRefreshLayoutForRoadAdvertisementsList.isRefreshing = false
+
             when (httpResponseState) {
                 is HttpResponseState.Success -> {
                     adapter.submitList(httpResponseState.value)
@@ -157,7 +159,6 @@ class RoadInformationFragment : Fragment() {
 
         binding.swipeRefreshLayoutForRoadAdvertisementsList.setOnRefreshListener {
             viewModel.updateRoadAdvertisements(roadName ?: "")
-            binding.swipeRefreshLayoutForRoadAdvertisementsList.isRefreshing = false
         }
     }
 
