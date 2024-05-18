@@ -106,7 +106,7 @@ class RoadInformationFragment : Fragment() {
         roadPlacesListTitleStringResource: Int
     ) {
         val action =
-            RoadInformationFragmentDirections.actionRoadInformationFragmentToRoadPlacesInformation(
+            RoadInformationFragmentDirections.actionRoadInformationFragmentToRoadPlacesInformationFragment(
                 roadName ?: "",
                 roadPlaceType,
                 roadPlacesListTitleStringResource

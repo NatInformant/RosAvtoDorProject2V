@@ -113,8 +113,6 @@ class InteractiveMapFragment : Fragment() {
     private val userAreaCircleRadius = 100000f
     private var locationManager: LocationManager? = null
     private var userLocationLayer: UserLocationLayer? = null
-    private val LOCATION_UPDATES_TIME_INTERVAL: Long = 1000 // 1 секунда
-    private val LOCATION_UPDATES_MIN_DISTANCE: Float = 10f // 10 метров
     private var roadName:String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -453,15 +451,6 @@ class InteractiveMapFragment : Fragment() {
         }
 
         private fun goToYandexMaps(currentPointCoordinates: Coordinates) {
-            if (App.getInstance().currentUserPosition == null) {
-                Toast
-                    .makeText(
-                        requireContext(),
-                        "не зная вашего местоположения мы не можем работать",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                return
-            }
             val url =
                 "https://yandex.ru/maps/?rtext=" +
                         "${App.getInstance().currentUserPosition?.latitude}," +// точка
@@ -530,6 +519,7 @@ class InteractiveMapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         checkLocationPermission()
+
         if(roadName!=null){
             binding.backToChatsPanelButton.setOnClickListener {
                 val action = InteractiveMapFragmentDirections.actionInteractiveMapFragmentToRoadInformationFragment(
@@ -616,8 +606,8 @@ class InteractiveMapFragment : Fragment() {
             // Если разрешение предоставлено, запрашиваем обновления местоположения
             locationManager?.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
-                LOCATION_UPDATES_TIME_INTERVAL,
-                LOCATION_UPDATES_MIN_DISTANCE,
+                App.getInstance().LOCATION_UPDATES_TIME_INTERVAL,
+                App.getInstance().LOCATION_UPDATES_MIN_DISTANCE,
                 locationListener
             )
             setUpCurrentUserPositionIcon()
@@ -633,8 +623,8 @@ class InteractiveMapFragment : Fragment() {
                 // Разрешение на использование местоположения предоставлено
                 locationManager?.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    LOCATION_UPDATES_TIME_INTERVAL,
-                    LOCATION_UPDATES_MIN_DISTANCE,
+                    App.getInstance().LOCATION_UPDATES_TIME_INTERVAL,
+                    App.getInstance().LOCATION_UPDATES_MIN_DISTANCE,
                     locationListener
                 )
                 setUpCurrentUserPositionIcon()
@@ -686,8 +676,9 @@ class InteractiveMapFragment : Fragment() {
             val distance = App.getInstance().currentUserPosition!!.distanceTo(location)
 
             if (distance >= 5000) {
-                updatePoints(location)
                 App.getInstance().currentUserPosition = location
+
+                updatePoints(location)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.example.rosavtodorproject2.ui.view.roadPlaceInformationFragment
+package com.example.rosavtodorproject2.ui.view.roadPlacesInformationFragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

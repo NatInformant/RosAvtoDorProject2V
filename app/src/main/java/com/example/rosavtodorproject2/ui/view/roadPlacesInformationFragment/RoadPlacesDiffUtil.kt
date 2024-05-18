@@ -1,4 +1,4 @@
-package com.example.rosavtodorproject2.ui.view.roadPlaceInformationFragment
+package com.example.rosavtodorproject2.ui.view.roadPlacesInformationFragment
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.rosavtodorproject2.data.models.RoadPlace

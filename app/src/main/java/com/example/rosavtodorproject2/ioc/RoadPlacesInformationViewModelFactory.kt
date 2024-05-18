@@ -3,7 +3,7 @@ package com.example.rosavtodorproject2.ioc
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.rosavtodorproject2.domain.useCases.RoadPlacesUseCase
-import com.example.rosavtodorproject2.ui.view.roadPlaceInformationFragment.RoadPlacesInformationFragmentViewModel
+import com.example.rosavtodorproject2.ui.view.roadPlacesInformationFragment.RoadPlacesInformationFragmentViewModel
 import javax.inject.Inject
 
 class RoadPlacesInformationViewModelFactory @Inject constructor(

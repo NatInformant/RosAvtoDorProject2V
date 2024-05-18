@@ -1,6 +1,13 @@
-package com.example.rosavtodorproject2.ui.view.roadPlaceInformationFragment
+package com.example.rosavtodorproject2.ui.view.roadPlacesInformationFragment
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,6 +15,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +26,8 @@ import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.RoadPlacesInformationFragmentBinding
+import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
 
 class RoadPlacesInformationFragment : Fragment() {
 
@@ -34,8 +45,6 @@ class RoadPlacesInformationFragment : Fragment() {
     private val viewModel: RoadPlacesInformationFragmentViewModel by viewModels { applicationComponent.getRoadPlacesInformationViewModelFactory() }
     private var roadName: String? = null
     private var roadPlaceType: String? = null
-    private val BASE_LATITUDE: Double = 55.154
-    private val BASE_LONGITUDE: Double = 61.4291
     private val roadPlaceTypeToNameResource: Map<String, Int> = mapOf(
         Pair("Cafe", R.string.cafe),
         Pair("Hotel", R.string.guesthouse),
@@ -44,7 +53,7 @@ class RoadPlacesInformationFragment : Fragment() {
         Pair("ElectricFillingStation", R.string.car_recharge_station),
         Pair("Event", R.string.event),
     )
-
+    private var locationManager: LocationManager? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,29 +64,17 @@ class RoadPlacesInformationFragment : Fragment() {
         val roadPlacesListTitleStringResource =
             arguments?.getInt("roadPlacesListTitleStringResource")
 
-        viewModel.updateRoadPlaces(
-            roadName ?: "",
-            roadPlaceType ?: "",
-            Coordinates(BASE_LATITUDE, BASE_LONGITUDE)
-        )
-
         setUpRoadPlacesList()
+
+        locationManager =
+            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+
+        //А надо это здесь делать?
+        updateRoadPlaces()
 
         binding.roadPlacesListTitle.text =
             getString(roadPlacesListTitleStringResource ?: R.string.error_road_places_list_title)
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.backToRoadInformationFragmentPanelButton.setOnClickListener {
-            val action =
-                RoadPlacesInformationFragmentDirections.actionRoadPlacesInformationFragmentToRoadInformationFragment(
-                    roadName ?: ""
-                )
-            findNavController().navigate(action)
-        }
     }
 
     private fun setUpRoadPlacesList() {
@@ -122,15 +119,106 @@ class RoadPlacesInformationFragment : Fragment() {
         }
 
         binding.swipeRefreshLayoutForRoadPlacesList.setOnRefreshListener {
-            viewModel.updateRoadPlaces(
-                roadName ?: "",
-                roadPlaceType ?: "",
-                Coordinates(BASE_LATITUDE, BASE_LONGITUDE)
-            )
+            updateRoadPlaces()
+            //А это точно здесь должно быть?.....
             binding.swipeRefreshLayoutForRoadPlacesList.isRefreshing = false
         }
     }
+    private fun updateRoadPlaces() {
+        if (App.getInstance().currentUserPosition != null) {
+            viewModel.updateRoadPlaces(
+                roadName ?: "",
+                roadPlaceType ?: "",
+                Coordinates(
+                    App.getInstance().currentUserPosition!!.latitude,
+                    App.getInstance().currentUserPosition!!.longitude
+                )
+            )
+        }
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        checkLocationPermission()
+
+        binding.backToRoadInformationFragmentPanelButton.setOnClickListener {
+            val action =
+                RoadPlacesInformationFragmentDirections.actionRoadPlacesInformationFragmentToRoadInformationFragment(
+                    roadName ?: ""
+                )
+            findNavController().navigate(action)
+        }
+    }
+    private fun checkLocationPermission() {
+        // Проверяем разрешение на использование местоположения
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Если разрешение не предоставлено, запрашиваем его
+            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        } else {
+            // Если разрешение предоставлено, запрашиваем обновления местоположения
+            locationManager?.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                App.getInstance().LOCATION_UPDATES_TIME_INTERVAL,
+                App.getInstance().LOCATION_UPDATES_MIN_DISTANCE,
+                locationListener
+            )
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    val requestLocationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                // Разрешение на использование местоположения предоставлено
+                locationManager?.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER,
+                    App.getInstance().LOCATION_UPDATES_TIME_INTERVAL,
+                    App.getInstance().LOCATION_UPDATES_MIN_DISTANCE,
+                    locationListener
+                )
+            } else {
+                // Разрешение на использование местоположения не предоставлено
+                Toast.makeText(
+                    requireContext(),
+                    "Без доступа к местоположению мы не сможем отправить вам точки",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    private val locationListener = object : LocationListener {
+        override fun onLocationChanged(location: Location) {
+            if (App.getInstance().currentUserPosition == null) {
+                App.getInstance().currentUserPosition = location
+
+                updateRoadPlaces()
+
+                //Оно здесь нужно, на случай если это будет первым окном,
+                //в котором мы определили позицию пользователя.
+                App.getInstance().currentCameraPosition = CameraPosition(
+                    Point(location.latitude, location.longitude),
+                    /* zoom = */ 8f,
+                    /* azimuth = */ 0f,
+                    /* tilt = */ 0f
+                )
+
+                return
+            }
+
+            val distance = App.getInstance().currentUserPosition!!.distanceTo(location)
+
+            if (distance >= 5000) {
+                App.getInstance().currentUserPosition = location
+
+                updateRoadPlaces()
+            }
+        }
+    }
     private fun getRoadPlaceTitle(roadPlaceName: String) =
         getString(
             R.string.verified_point_name_format,
@@ -145,21 +233,11 @@ class RoadPlacesInformationFragment : Fragment() {
         )
 
     private fun goToYandexMapButtonClick(currentRoadPlaceCoordinates: Coordinates) {
-        //пока не нужно
-        /*if (App.getInstance().currentUserPosition == null) {
-            Toast
-                .makeText(
-                    requireContext(),
-                    "не зная вашего местоположения мы не можем работать",
-                    Toast.LENGTH_SHORT
-                ).show()
-            return
-        }*/
         val url =
             "https://yandex.ru/maps/?rtext=" +
                     //пока так, потом верну как было
-                    "${BASE_LATITUDE}," +// точка
-                    "${BASE_LONGITUDE}" +// начала пути
+                    "${App.getInstance().currentUserPosition!!.latitude}," +// точка
+                    "${App.getInstance().currentUserPosition!!.longitude}" +// начала пути
                     "~" +
                     "${currentRoadPlaceCoordinates.latitude}," +//точка
                     "${currentRoadPlaceCoordinates.longitude}" +//конца пути

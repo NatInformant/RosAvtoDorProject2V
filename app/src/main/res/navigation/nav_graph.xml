@@ -77,12 +77,12 @@
             android:id="@+id/action_roadInformationFragment_to_roadsChooseFragment"
             app:destination="@id/roadsChooseFragment" />
         <action
-            android:id="@+id/action_roadInformationFragment_to_roadPlacesInformation"
+            android:id="@+id/action_roadInformationFragment_to_roadPlacesInformationFragment"
             app:destination="@id/roadPlacesInformationFragment" />
     </fragment>
     <fragment
         android:id="@+id/roadPlacesInformationFragment"
-        android:name="com.example.rosavtodorproject2.ui.view.roadPlaceInformationFragment.RoadPlacesInformationFragment"
+        android:name="com.example.rosavtodorproject2.ui.view.roadPlacesInformationFragment.RoadPlacesInformationFragment"
         android:label="road_place_information_fragment"
         tools:layout="@layout/road_places_information_fragment" >
         <action

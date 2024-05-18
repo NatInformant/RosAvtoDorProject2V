@@ -24,6 +24,13 @@ class App : Application() {
     var currentUserPosition: Location? = null
     var currentCameraPosition: CameraPosition? = null
 
+
+    inline val LOCATION_UPDATES_TIME_INTERVAL: Long
+        get() = 5000 // 5 секунд
+
+    inline val LOCATION_UPDATES_MIN_DISTANCE: Float
+        get() = 100f // 100 метров
+
     // Сверху вниз, от АЗС, до происшествий, последнее - это 4 типа в одном
     val listFilterStatesForPointType: MutableList<Boolean> = mutableListOf(
         true,

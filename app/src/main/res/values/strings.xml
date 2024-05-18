@@ -43,7 +43,7 @@
     <string name="car_service_road_places_list_title">Ближайшие места, где можно починить  автомобиль:</string>
     <string name="car_recharge_station_road_places_list_title">Ближайшие места, где можно зарядить электромобиль:</string>
     <string name="event_road_places_list_title">Ближайшие cобытия:</string>
-    <string name="error_road_places_list_title">Случалась какая-то ошибка, попробуйте перезапустить это окно</string>
+    <string name="error_road_places_list_title">Случилась какая-то ошибка, попробуйте перезапустить это окно</string>
 
     <string name="verified_point_name_format">%1$s: %2$s</string>
     <string name="road_warnings_title_format">Предупреждения по трассе: %s</string>
