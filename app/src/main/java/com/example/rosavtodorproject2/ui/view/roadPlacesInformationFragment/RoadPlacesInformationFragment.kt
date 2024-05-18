@@ -70,7 +70,7 @@ class RoadPlacesInformationFragment : Fragment() {
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager?
 
         //А надо это здесь делать?
-        updateRoadPlaces()
+        updateOnlyRoadPlaces()
 
         binding.roadPlacesListTitle.text =
             getString(roadPlacesListTitleStringResource ?: R.string.error_road_places_list_title)
@@ -119,23 +119,39 @@ class RoadPlacesInformationFragment : Fragment() {
         }
 
         binding.swipeRefreshLayoutForRoadPlacesList.setOnRefreshListener {
-            updateRoadPlaces()
+            updateOnlyRoadPlaces()
             //А это точно здесь должно быть?.....
+            //Скорее всего нет
             binding.swipeRefreshLayoutForRoadPlacesList.isRefreshing = false
         }
     }
-    private fun updateRoadPlaces() {
-        if (App.getInstance().currentUserPosition != null) {
-            viewModel.updateRoadPlaces(
-                roadName ?: "",
-                roadPlaceType ?: "",
-                Coordinates(
-                    App.getInstance().currentUserPosition!!.latitude,
-                    App.getInstance().currentUserPosition!!.longitude
-                )
-            )
+
+    private fun updateOnlyRoadPlaces() {
+        if (App.getInstance().currentUserPosition == null) {
+            return
         }
+        viewModel.updateOnlyRoadPlaces(
+            roadName ?: "",
+            roadPlaceType ?: "",
+            Coordinates(
+                App.getInstance().currentUserPosition!!.latitude,
+                App.getInstance().currentUserPosition!!.longitude
+            )
+        )
+
     }
+
+    private fun updateRoadPlacesAndMapPoints() {
+        viewModel.updateRoadPlacesAndMapPoints(
+            roadName ?: "",
+            roadPlaceType ?: "",
+            Coordinates(
+                App.getInstance().currentUserPosition!!.latitude,
+                App.getInstance().currentUserPosition!!.longitude
+            )
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -149,6 +165,7 @@ class RoadPlacesInformationFragment : Fragment() {
             findNavController().navigate(action)
         }
     }
+
     private fun checkLocationPermission() {
         // Проверяем разрешение на использование местоположения
         if (ActivityCompat.checkSelfPermission(
@@ -196,7 +213,7 @@ class RoadPlacesInformationFragment : Fragment() {
             if (App.getInstance().currentUserPosition == null) {
                 App.getInstance().currentUserPosition = location
 
-                updateRoadPlaces()
+                updateRoadPlacesAndMapPoints()
 
                 //Оно здесь нужно, на случай если это будет первым окном,
                 //в котором мы определили позицию пользователя.
@@ -215,10 +232,11 @@ class RoadPlacesInformationFragment : Fragment() {
             if (distance >= 5000) {
                 App.getInstance().currentUserPosition = location
 
-                updateRoadPlaces()
+                updateRoadPlacesAndMapPoints()
             }
         }
     }
+
     private fun getRoadPlaceTitle(roadPlaceName: String) =
         getString(
             R.string.verified_point_name_format,

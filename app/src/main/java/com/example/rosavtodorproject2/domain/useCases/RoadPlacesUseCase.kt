@@ -4,24 +4,33 @@ import androidx.lifecycle.LiveData
 import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.RoadPlace
-import com.example.rosavtodorproject2.data.repositories.RoadPlacesRepository
+import com.example.rosavtodorproject2.data.repositories.PointsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RoadPlacesUseCase @Inject constructor(
-    private val roadPlacesRepository: RoadPlacesRepository,
+    private val pointsRepository: PointsRepository,
 ) {
     val roadPlaces: LiveData<HttpResponseState<List<RoadPlace>>> =
-        roadPlacesRepository.roadPlaces
+        pointsRepository.roadPlaces
 
-    suspend fun updateRoadPlaces(
+    suspend fun updateOnlyRoadPlaces(
         roadName: String,
         roadPlacesType: String,
         currentUserPosition: Coordinates
     ) {
         withContext(Dispatchers.Main) {
-            roadPlacesRepository.updateRoadPlaces(roadName, roadPlacesType, currentUserPosition)
+            pointsRepository.updateOnlyRoadPlaces(roadName, roadPlacesType, currentUserPosition)
+        }
+    }
+    suspend fun updateRoadPlacesAndMapPoints(
+        roadName: String,
+        roadPlacesType: String,
+        currentUserPosition: Coordinates
+    ) {
+        withContext(Dispatchers.Main) {
+            pointsRepository.updateRoadPlacesAndMapPoints(roadName, roadPlacesType, currentUserPosition)
         }
     }
 }

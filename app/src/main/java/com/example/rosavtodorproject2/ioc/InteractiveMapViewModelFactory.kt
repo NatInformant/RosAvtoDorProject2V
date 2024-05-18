@@ -2,7 +2,6 @@ package com.example.rosavtodorproject2.ioc
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.rosavtodorproject2.data.repositories.MapPointsRepository
 import com.example.rosavtodorproject2.domain.useCases.MapPointsUseCase
 import com.example.rosavtodorproject2.ui.view.interactiveMapFragment.InteractiveMapFragmentViewModel
 import javax.inject.Inject
