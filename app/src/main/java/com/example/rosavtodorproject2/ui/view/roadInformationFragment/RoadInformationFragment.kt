@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.viewModels
@@ -19,9 +18,6 @@ import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.RoadInformationFragmentBinding
 import com.example.rosavtodorproject2.ui.view.mainFragment.AdvertisementsDiffUtil
-import com.example.rosavtodorproject2.ui.view.mainFragment.AreaAdvertisementsDiffUtil
-import com.example.rosavtodorproject2.ui.view.mainFragment.AreaAdvertisementsListAdapter
-import com.example.rosavtodorproject2.ui.view.roadsChooseFragment.RoadsChooseFragmentDirections
 
 class RoadInformationFragment : Fragment() {
 
@@ -50,30 +46,74 @@ class RoadInformationFragment : Fragment() {
             binding.knowRoadInformationPanelScrollView.layoutParams = layoutParams
         }
 
-        viewModel.updateRoadAdvertisements(roadName?:"")
+        viewModel.updateRoadAdvertisements(roadName ?: "")
 
         setUpRoadAdvertisementsList()
-        //надо поменять
-        binding.roadWarningsTitle.text = "Предупреждения по трассе: $roadName"
+
+        binding.roadWarningsTitle.text =
+            getString(R.string.road_warnings_title_format, roadName)
+
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.goToInteractiveMapFragmentPanel.root.setOnClickListener {
-            val action = RoadInformationFragmentDirections.actionRoadInformationFragmentToInteractiveMapFragment(
-                roadName?:""
-            )
+            val action =
+                RoadInformationFragmentDirections.actionRoadInformationFragmentToInteractiveMapFragment(
+                    roadName ?: ""
+                )
             findNavController().navigate(action)
         }
         binding.backToRoadsChooseFragmentPanelButton.setOnClickListener {
             findNavController().navigate(R.id.action_roadInformationFragment_to_roadsChooseFragment)
         }
 
-        binding.knowRoadCafeInformation.setOnClickListener {
 
+
+        binding.knowRoadCafeInformation.setOnClickListener {
+            knowRoadInformationButtonsListener("Cafe", R.string.cafe_road_places_list_title)
+        }
+        binding.knowRoadGuesthouseInformation.setOnClickListener {
+            knowRoadInformationButtonsListener("Hotel", R.string.guesthouse_road_places_list_title)
+        }
+        binding.knowRoadPetrolStationInformation.setOnClickListener {
+            knowRoadInformationButtonsListener(
+                "GasStation",
+                R.string.petrol_station_road_places_list_title
+            )
+        }
+        binding.knowRoadCarServiceInformation.setOnClickListener {
+            knowRoadInformationButtonsListener(
+                "CarService",
+                R.string.car_service_road_places_list_title
+            )
+        }
+        binding.knowRoadCarRechargeStationInformation.setOnClickListener {
+            knowRoadInformationButtonsListener(
+                "ElectricFillingStation",
+                R.string.car_recharge_station_road_places_list_title
+            )
+        }
+        binding.knowRoadEventsInformation.setOnClickListener {
+            knowRoadInformationButtonsListener("Event", R.string.event_road_places_list_title)
         }
     }
+
+    private fun knowRoadInformationButtonsListener(
+        roadPlaceType: String,
+        roadPlacesListTitleStringResource: Int
+    ) {
+        val action =
+            RoadInformationFragmentDirections.actionRoadInformationFragmentToRoadPlacesInformation(
+                roadName ?: "",
+                roadPlaceType,
+                roadPlacesListTitleStringResource
+            )
+        findNavController().navigate(action)
+    }
+
     private fun setUpRoadAdvertisementsList() {
         val roadsListRecyclerView: RecyclerView =
             binding.roadAdvertisementsRecyclerList
@@ -116,9 +156,10 @@ class RoadInformationFragment : Fragment() {
         }
 
         binding.swipeRefreshLayoutForRoadAdvertisementsList.setOnRefreshListener {
-            viewModel.updateRoadAdvertisements(roadName?:"")
+            viewModel.updateRoadAdvertisements(roadName ?: "")
             binding.swipeRefreshLayoutForRoadAdvertisementsList.isRefreshing = false
         }
     }
+
     private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
 }

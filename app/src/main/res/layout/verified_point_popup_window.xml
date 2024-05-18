@@ -24,6 +24,7 @@
         android:paddingHorizontal="15dp"
         android:paddingVertical="5dp"
         android:text="@string/verified_point_popup_window_goto_button_text"
+        android:textColor="@color/black"
         android:textAlignment="center"
         android:textSize="21sp" />
 </LinearLayout>

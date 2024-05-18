@@ -1,6 +1,5 @@
 package com.example.rosavtodorproject2.ui.view.roadsChooseFragment
 
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.HttpResponseState
-import com.example.rosavtodorproject2.data.models.Road
 import com.example.rosavtodorproject2.databinding.RoadsChooseFragmentBinding
-import com.example.rosavtodorproject2.ui.view.roadInformationFragment.RoadInformationFragmentDirections
 
 class RoadsChooseFragment : Fragment() {
 
@@ -26,7 +23,7 @@ class RoadsChooseFragment : Fragment() {
 
     private var adapter: RoadsListAdapter = RoadsListAdapter(
         roadsDiffUtil = RoadsDiffUtil(),
-        onItemClick = ::onRoadItemClick,
+        onRoadItemClick = ::onRoadItemClick,
     )
 
     private val viewModel: RoadsChooseFragmentViewModel by viewModels { applicationComponent.getRoadsViewModelFactory() }

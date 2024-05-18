@@ -9,5 +9,5 @@ data class RoadPlace (
     @SerializedName("name") val name: String,
     @SerializedName("type") val type: Int,
     @SerializedName("coordinates") val coordinates: Coordinates,
-    @SerializedName("distanceFromUser") val distanceFromUser: Int,
+    @SerializedName("distanceFromUser") val distanceFromUser: Double,
 )

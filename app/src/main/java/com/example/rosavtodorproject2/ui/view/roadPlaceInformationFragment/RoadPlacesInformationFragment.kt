@@ -1,6 +1,7 @@
 package com.example.rosavtodorproject2.ui.view.roadPlaceInformationFragment
 
-import android.content.res.Resources
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
+import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.RoadPlacesInformationFragmentBinding
 
@@ -24,11 +26,25 @@ class RoadPlacesInformationFragment : Fragment() {
 
     private var adapter: RoadPlacesListAdapter = RoadPlacesListAdapter(
         roadPlacesDiffUtil = RoadPlacesDiffUtil(),
+        getRoadPlaceTitle = ::getRoadPlaceTitle,
+        getDistanceToRoadPlace = ::getDistanceToRoadPlace,
+        onRoadPlaceItemButtonClick = ::goToYandexMapButtonClick,
     )
 
     private val viewModel: RoadPlacesInformationFragmentViewModel by viewModels { applicationComponent.getRoadPlacesInformationViewModelFactory() }
     private var roadName: String? = null
     private var roadPlaceType: String? = null
+    private val BASE_LATITUDE: Double = 55.154
+    private val BASE_LONGITUDE: Double = 61.4291
+    private val roadPlaceTypeToNameResource: Map<String, Int> = mapOf(
+        Pair("Cafe", R.string.cafe),
+        Pair("Hotel", R.string.guesthouse),
+        Pair("GasStation", R.string.petrol_station),
+        Pair("CarService", R.string.car_service),
+        Pair("ElectricFillingStation", R.string.car_recharge_station),
+        Pair("Event", R.string.event),
+    )
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,12 +52,19 @@ class RoadPlacesInformationFragment : Fragment() {
         binding = RoadPlacesInformationFragmentBinding.inflate(layoutInflater, container, false)
         roadName = arguments?.getString("roadName")
         roadPlaceType = arguments?.getString("roadPlaceType")
+        val roadPlacesListTitleStringResource =
+            arguments?.getInt("roadPlacesListTitleStringResource")
 
-        //viewModel.updateRoadPlaces(roadName ?: "")
+        viewModel.updateRoadPlaces(
+            roadName ?: "",
+            roadPlaceType ?: "",
+            Coordinates(BASE_LATITUDE, BASE_LONGITUDE)
+        )
 
         setUpRoadPlacesList()
 
-        binding.roadPlacesListTitle.text = "Предупреждения по трассе: $roadName"
+        binding.roadPlacesListTitle.text =
+            getString(roadPlacesListTitleStringResource ?: R.string.error_road_places_list_title)
         return binding.root
     }
 
@@ -49,9 +72,12 @@ class RoadPlacesInformationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.backToRoadInformationFragmentPanelButton.setOnClickListener {
-            findNavController().navigate(R.id.action_roadInformationFragment_to_roadsChooseFragment)
+            val action =
+                RoadPlacesInformationFragmentDirections.actionRoadPlacesInformationFragmentToRoadInformationFragment(
+                    roadName ?: ""
+                )
+            findNavController().navigate(action)
         }
-
     }
 
     private fun setUpRoadPlacesList() {
@@ -96,11 +122,53 @@ class RoadPlacesInformationFragment : Fragment() {
         }
 
         binding.swipeRefreshLayoutForRoadPlacesList.setOnRefreshListener {
-            viewModel.updateRoadPlaces(roadName ?: "")
+            viewModel.updateRoadPlaces(
+                roadName ?: "",
+                roadPlaceType ?: "",
+                Coordinates(BASE_LATITUDE, BASE_LONGITUDE)
+            )
             binding.swipeRefreshLayoutForRoadPlacesList.isRefreshing = false
         }
     }
 
-    private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
+    private fun getRoadPlaceTitle(roadPlaceName: String) =
+        getString(
+            R.string.verified_point_name_format,
+            getString(roadPlaceTypeToNameResource[roadPlaceType]!!),
+            roadPlaceName
+        )
 
+    private fun getDistanceToRoadPlace(distance: Double) =
+        getString(
+            R.string.distance_to_road_place_format,
+            distance
+        )
+
+    private fun goToYandexMapButtonClick(currentRoadPlaceCoordinates: Coordinates) {
+        //пока не нужно
+        /*if (App.getInstance().currentUserPosition == null) {
+            Toast
+                .makeText(
+                    requireContext(),
+                    "не зная вашего местоположения мы не можем работать",
+                    Toast.LENGTH_SHORT
+                ).show()
+            return
+        }*/
+        val url =
+            "https://yandex.ru/maps/?rtext=" +
+                    //пока так, потом верну как было
+                    "${BASE_LATITUDE}," +// точка
+                    "${BASE_LONGITUDE}" +// начала пути
+                    "~" +
+                    "${currentRoadPlaceCoordinates.latitude}," +//точка
+                    "${currentRoadPlaceCoordinates.longitude}" +//конца пути
+                    "&rtt=auto"
+
+        val intent = Intent(Intent.ACTION_VIEW) // Создаем новый Intent
+
+        intent.data = Uri.parse(url) // Устанавливаем URL-адрес для Intent
+
+        startActivity(intent) // Запускаем новое Activity с помощью Intent
+    }
 }
