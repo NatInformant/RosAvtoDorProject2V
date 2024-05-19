@@ -34,6 +34,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.Coordinates
+import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.databinding.CreateDescriptionForAddingPointPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.FilterPointsCheckboxPopupWindowBinding
@@ -137,9 +138,36 @@ class InteractiveMapFragment : Fragment() {
         mapView.map.addInputListener(addingNewPointListener)
 
         viewModel.points.observe(viewLifecycleOwner)
-        {
-            currentPointsList = it
-            addPointsToInteractiveMap(it)
+        {httpResponseState ->
+            when (httpResponseState) {
+                is HttpResponseState.Success -> {
+                    currentPointsList = httpResponseState.value
+                    addPointsToInteractiveMap(httpResponseState.value)
+                }
+
+                is HttpResponseState.Failure -> {
+
+                    currentPointsList = emptyList()
+                    addPointsToInteractiveMap(emptyList())
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Без доступа к интернету приложение не сможет работать",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+                else -> {
+                    currentPointsList = emptyList()
+                    addPointsToInteractiveMap(emptyList())
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Без доступа к интернету приложение не сможет работать",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
         }
 
         if (App.getInstance().currentUserPosition != null) {
@@ -650,7 +678,7 @@ class InteractiveMapFragment : Fragment() {
             if (App.getInstance().currentUserPosition == null) {
                 App.getInstance().currentUserPosition = location
 
-                updatePoints(location)
+                viewModel.updatePoints(location.latitude, location.longitude)
 
                 App.getInstance().currentCameraPosition = CameraPosition(
                     Point(location.latitude, location.longitude),
@@ -678,20 +706,9 @@ class InteractiveMapFragment : Fragment() {
             if (distance >= 5000) {
                 App.getInstance().currentUserPosition = location
 
-                updatePoints(location)
+                viewModel.updatePoints(location.latitude, location.longitude)
             }
         }
-    }
-
-    private fun updatePoints(location: Location) {
-        viewModel.updatePoints(
-            Toast.makeText(
-                requireContext(),
-                "Без доступа к интернету приложение не сможет работать",
-                Toast.LENGTH_LONG
-            ),
-            location.latitude, location.longitude
-        )
     }
 
     private fun listenerForFiltersButton(filtersButton: View) {
@@ -852,23 +869,7 @@ class InteractiveMapFragment : Fragment() {
 
         isPointDescriptionCreating = false
 
-        addPoint()
-
-        reliability = 1
-        currentIconNumber = -1
-        currentIconPlacemark = null
-        binding.confirmAdditionPointToMapFab.isEnabled = false
-        addingPointDescriptionPopupWindow = null
-        bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.text.clear()
-    }
-
-    private fun addPoint() {
         viewModel.addPoint(
-            toast = Toast.makeText(
-                requireContext(),
-                "Без доступа к интернету приложение не сможет работать",
-                Toast.LENGTH_LONG
-            ),
             type = currentIconNumber,
             latitude = currentIconPlacemark!!.geometry.latitude,
             longitude = currentIconPlacemark!!.geometry.longitude,
@@ -876,6 +877,13 @@ class InteractiveMapFragment : Fragment() {
                 .addingPointDescription.text.toString(),
             reliability = reliability
         )
+
+        reliability = 1
+        currentIconNumber = -1
+        currentIconPlacemark = null
+        binding.confirmAdditionPointToMapFab.isEnabled = false
+        addingPointDescriptionPopupWindow = null
+        bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.text.clear()
     }
 
     private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()

@@ -45,6 +45,8 @@ class RoadPlacesRemoteDataSource {
                             roadPlace
                         )
                     }
+                    //toList() нужен, чтобы мы ссылку на roads в liveData не передавали, а
+                    // то иначе она будет реагировать на его очистку и работать не корректно
                     return HttpResponseState.Success(roadPlaces.toList())
                 } else {
                     return HttpResponseState.Failure(response.message() ?: "")

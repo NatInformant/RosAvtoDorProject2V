@@ -1,9 +1,11 @@
 package com.example.rosavtodorproject2.data.dataSource
 
 import com.example.rosavtodorproject2.BuildConfig
+import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.data.models.RequestPointBody
 import com.example.rosavtodorproject2.data.models.RequestPoint
+import com.example.rosavtodorproject2.data.models.RoadPlace
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -20,30 +22,47 @@ class MapRemoteDataSource {
 
     private val points: MutableList<MyPoint> = mutableListOf()
 
-    fun loadPoints() = points
-    suspend fun getPoints(currentLatitude: Double, currentLongitude: Double): List<MyPoint> {
+    fun loadPoints() = HttpResponseState.Success(points)
+    suspend fun getPoints(
+        currentLatitude: Double,
+        currentLongitude: Double
+    ): HttpResponseState<List<MyPoint>> {
         points.clear()
-        val response = mapPointsApi.getPoints(
-            currentLatitude,
-            currentLongitude,
-        )
-        if (response.isSuccessful) {
-            response.body()?.points?.forEach {
-                points.add(it)
+        kotlin.runCatching {
+            mapPointsApi.getPoints(
+                currentLatitude,
+                currentLongitude,
+            )
+        }.fold(
+            onSuccess = { response ->
+                if (response.isSuccessful) {
+                    response.body()?.points?.forEach {
+                        points.add(it)
+                    }
+
+                    return HttpResponseState.Success(points.toList())
+                } else {
+                    return HttpResponseState.Failure(response.message() ?: "")
+                }
+            },
+            onFailure = {
+                return HttpResponseState.Failure(it.message ?: "")
             }
-        }
-        //toList()?
-        return points
+        )
     }
 
-    suspend fun addPoint(newPoint: MyPoint, reliability:Int) {
+    suspend fun addPoint(newPoint: MyPoint, reliability: Int) {
 
         val response = mapPointsApi.addPoint(
             requestPointBody = RequestPointBody(
                 RequestPoint(
-                    type = newPoint.type -5,
+                    type = newPoint.type - 5,
                     coordinates = newPoint.coordinates,
-                    description = if(newPoint.name == "") { null } else {newPoint.name},
+                    description = if (newPoint.name == "") {
+                        null
+                    } else {
+                        newPoint.name
+                    },
                     /*reliability = reliability*/
                 )
             )

@@ -19,8 +19,8 @@ class PointsRepository @Inject constructor(
     val mapPointsDataSource: MapRemoteDataSource,
     val roadPlacesDataSource: RoadPlacesRemoteDataSource
 ) {
-    private val _points = MutableLiveData<List<MyPoint>>(emptyList())
-    val points: LiveData<List<MyPoint>> = _points
+    private val _points = MutableLiveData<HttpResponseState<List<MyPoint>>>(HttpResponseState.Success(emptyList()))
+    val points: LiveData<HttpResponseState<List<MyPoint>>> = _points
 
     private val _roadPlaces =
         MutableLiveData<HttpResponseState<List<RoadPlace>>>(
@@ -47,7 +47,7 @@ class PointsRepository @Inject constructor(
             mapPointsDataSource.addPoint(point, reliability)
         }
 
-        mapPointsDataSource.loadPoints().add(point)
+        mapPointsDataSource.loadPoints().value.add(point)
         _points.value = mapPointsDataSource.loadPoints()
     }
 

@@ -60,6 +60,8 @@ class RoadAdvertisementsRemoteDataSource {
                             Advertisement(advertisement.title, advertisement.description)
                         )
                     }
+                    //toList() нужен, чтобы мы ссылку на roads в liveData не передавали, а
+                    // то иначе она будет реагировать на его очистку и работать не корректно
                     return HttpResponseState.Success(
                         roadAdvertisements.toList()
                     )

@@ -4,7 +4,7 @@
     android:insetRight="-2dp"
     android:insetTop="-2dp">
     <shape>
-        <solid android:color="@color/one_of_three_main_background_colors" />
+        <solid android:color="@color/know_road_information_background" />
         <stroke
             android:width="2dp"
             android:color="@color/black" />
