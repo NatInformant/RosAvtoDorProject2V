@@ -21,7 +21,8 @@ class MapRemoteDataSource {
     }
 
     private val points: MutableList<MyPoint> = mutableListOf()
-
+    private val BASE_LATITUDE: Double = 55.154
+    private val BASE_LONGITUDE: Double = 61.4291
     fun loadPoints() = HttpResponseState.Success(points)
     suspend fun getPoints(
         currentLatitude: Double,
@@ -30,8 +31,9 @@ class MapRemoteDataSource {
         points.clear()
         kotlin.runCatching {
             mapPointsApi.getPoints(
-                currentLatitude,
-                currentLongitude,
+                //ЗНАЧЕНИЯ ЗАГЛУШКИ,УБЕРИ ПЕРЕД СБОРКОЙ!
+                BASE_LATITUDE,
+                BASE_LONGITUDE,
             )
         }.fold(
             onSuccess = { response ->

@@ -100,10 +100,11 @@ class InteractiveMapFragment : Fragment() {
         Pair(2, R.string.car_service),
         Pair(3, R.string.guesthouse),
         Pair(4, R.string.car_recharge_station),
-        Pair(5, R.string.road_accident_menu_item_title),
-        Pair(6, R.string.pothole_menu_item_title),
-        Pair(7, R.string.obstruction_menu_item_title),
-        Pair(8, R.string.bandit_menu_item_title),
+        Pair(5, R.string.event),
+        Pair(6, R.string.road_accident_menu_item_title),
+        Pair(7, R.string.pothole_menu_item_title),
+        Pair(8, R.string.obstruction_menu_item_title),
+        Pair(9, R.string.bandit_menu_item_title),
     )
 
     private var changedFilterStatePointType: Int = -1
@@ -181,6 +182,7 @@ class InteractiveMapFragment : Fragment() {
             ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.car_recharge_station_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.car_recharge_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
@@ -245,7 +247,7 @@ class InteractiveMapFragment : Fragment() {
     private val checkedChangeListener = object : CompoundButton.OnCheckedChangeListener {
         override fun onCheckedChanged(button: CompoundButton?, isChecked: Boolean) {
             if (button?.text == getString(R.string.incidents)) {
-                for (x in 5..8) {
+                for (x in 6..9) {
                     changedFilterStatePointType = x
                     App.getInstance().listFilterStatesForPointType[changedFilterStatePointType] =
                         isChecked
@@ -264,6 +266,7 @@ class InteractiveMapFragment : Fragment() {
                 getString(R.string.car_service) -> changedFilterStatePointType = 2
                 getString(R.string.guesthouse) -> changedFilterStatePointType = 3
                 getString(R.string.car_recharge_station) -> changedFilterStatePointType = 4
+                getString(R.string.event) -> changedFilterStatePointType = 5
             }
 
             App.getInstance().listFilterStatesForPointType[changedFilterStatePointType] = isChecked
@@ -403,7 +406,7 @@ class InteractiveMapFragment : Fragment() {
             //переводим координаты из координат на карте в координаты на экране
             val screenPoint = mapView.mapWindow.worldToScreen(point) ?: return true
 
-            if (currentPointInformation.type < 5) {
+            if (currentPointInformation.type < 6) {
                 onVerifiedPointTap(currentPointInformation, screenPoint)
             } else {
                 onUnverifiedPointTap(currentPointInformation, screenPoint)
@@ -786,7 +789,7 @@ class InteractiveMapFragment : Fragment() {
         binding.cancelAdditionPointToMapFab.visibility = View.VISIBLE
         binding.confirmAdditionPointToMapFab.visibility = View.VISIBLE
 
-        currentIconNumber = menuItem.order + 5
+        currentIconNumber = menuItem.order + 6
 
         if (userLocationLayer?.cameraPosition()!=null) {
             setUpCurrentIconPlacemark(userLocationLayer?.cameraPosition()!!.target)

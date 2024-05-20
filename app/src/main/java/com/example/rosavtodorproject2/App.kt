@@ -41,6 +41,7 @@ class App : Application() {
         true,
         true,
         true,
+        true,
         true
     )
     override fun onCreate() {

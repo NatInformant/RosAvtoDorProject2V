@@ -31,6 +31,8 @@ class InteractiveMapFragmentViewModel @Inject constructor(
                     type = type,
                     coordinates = Coordinates(latitude, longitude),
                     name = text,
+                    //Xз нормально ли, но пока так.
+                    description = ""
                 ),
                 reliability = reliability
             )

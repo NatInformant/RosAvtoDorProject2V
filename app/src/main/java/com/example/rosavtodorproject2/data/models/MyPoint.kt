@@ -7,4 +7,5 @@ data class MyPoint(
     @SerializedName("coordinates") val coordinates: Coordinates,
     @SerializedName("name") val name: String,
     @SerializedName("type") val type: Int,
+    @SerializedName("description") val description: String,
 )

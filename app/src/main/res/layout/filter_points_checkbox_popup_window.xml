@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minWidth="160dp"
+            android:checked="true"
             android:paddingHorizontal="10dp"
             android:text="@string/petrol_station"
             android:textSize="17sp" />
@@ -31,6 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minWidth="160dp"
+            android:checked="true"
             android:paddingHorizontal="10dp"
             android:text="@string/cafe"
             android:textSize="17sp" />
@@ -45,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minWidth="160dp"
+            android:checked="true"
             android:paddingHorizontal="10dp"
             android:text="@string/car_service"
             android:textSize="17sp" />
@@ -59,6 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minWidth="160dp"
+            android:checked="true"
             android:paddingHorizontal="10dp"
             android:text="@string/guesthouse"
             android:textSize="17sp"
@@ -74,6 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minWidth="160dp"
+            android:checked="true"
             android:paddingHorizontal="10dp"
             android:text="@string/car_recharge_station"
             android:textSize="17sp"
@@ -84,6 +89,21 @@
             android:layout_height="2dp"
             android:background="@color/divider_color" />
 
+        <CheckBox
+            android:id="@+id/event_check_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="160dp"
+            android:checked="true"
+            android:paddingHorizontal="10dp"
+            android:text="@string/event"
+            android:textSize="17sp"
+            />
+
+        <View
+            android:layout_width="170dp"
+            android:layout_height="2dp"
+            android:background="@color/divider_color" />
         <CheckBox
             android:id="@+id/incidents_check_box"
             android:layout_width="match_parent"
