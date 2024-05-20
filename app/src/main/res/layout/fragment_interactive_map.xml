@@ -83,6 +83,22 @@
         app:maxImageSize="48dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/update_map_points_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="22dp"
+        android:backgroundTint="@color/white"
+        android:enabled="false"
+        android:contentDescription="@string/add_point_to_interactive_map"
+        android:src="@drawable/update_map_points_fab_icon"
+        app:tint = "@drawable/add_point_to_map_fab_icon_tint"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:maxImageSize="48dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_point_to_map_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -87,7 +87,7 @@ class InteractiveMapFragment : Fragment() {
     private var isPointAdding = false
     private var isPointDescriptionCreating = false
     private var currentIconNumber = -1
-    private var reliability:Int = 1
+    private var reliability: Int = 1
     private var addingPointDescriptionPopupWindow: PopupWindow? = null
 
     private var currentPointsList = listOf<MyPoint>()
@@ -115,7 +115,7 @@ class InteractiveMapFragment : Fragment() {
     private val userAreaCircleRadius = 100000f
     private var locationManager: LocationManager? = null
     private var userLocationLayer: UserLocationLayer? = null
-    private var roadName:String? = null
+    private var roadName: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -139,7 +139,7 @@ class InteractiveMapFragment : Fragment() {
         mapView.map.addInputListener(addingNewPointListener)
 
         viewModel.points.observe(viewLifecycleOwner)
-        {httpResponseState ->
+        { httpResponseState ->
             when (httpResponseState) {
                 is HttpResponseState.Success -> {
                     currentPointsList = httpResponseState.value
@@ -172,6 +172,7 @@ class InteractiveMapFragment : Fragment() {
         }
 
         if (App.getInstance().currentUserPosition != null) {
+            binding.updateMapPointsFab.isEnabled = true
             binding.addPointToMapFab.isEnabled = true
             binding.filtersButton.isEnabled = true
         }
@@ -385,7 +386,7 @@ class InteractiveMapFragment : Fragment() {
                 setIcon(pointIconsList[currentIconNumber])
                 setIconStyle(
                     IconStyle().apply {
-                        scale=1.5f
+                        scale = 1.5f
                         zIndex = 10f
                     }
                 )
@@ -551,11 +552,12 @@ class InteractiveMapFragment : Fragment() {
 
         checkLocationPermission()
 
-        if(roadName!=null){
+        if (roadName != null) {
             binding.backToChatsPanelButton.setOnClickListener {
-                val action = InteractiveMapFragmentDirections.actionInteractiveMapFragmentToRoadInformationFragment(
-                    roadName?: ""
-                )
+                val action =
+                    InteractiveMapFragmentDirections.actionInteractiveMapFragmentToRoadInformationFragment(
+                        roadName ?: ""
+                    )
                 findNavController().navigate(action)
             }
         } else {
@@ -571,6 +573,12 @@ class InteractiveMapFragment : Fragment() {
         }
         binding.addPointToMapFab.setOnClickListener {
             listenerForAddPointToMapFab(binding.anchorViewForPopupMenu)
+        }
+        binding.updateMapPointsFab.setOnClickListener {
+            viewModel.updatePoints(
+                App.getInstance().currentUserPosition!!.latitude,
+                App.getInstance().currentUserPosition!!.longitude
+            )
         }
         binding.confirmAdditionPointToMapFab.setOnClickListener {
             listenerForConfirmAdditionPointFab()
@@ -609,6 +617,7 @@ class InteractiveMapFragment : Fragment() {
 
         if (isPointAdding || isPointDescriptionCreating) {
             binding.addPointToMapFab.visibility = View.INVISIBLE
+            binding.updateMapPointsFab.visibility = View.INVISIBLE
             binding.showCurrentUserPositionFab.visibility = View.INVISIBLE
             binding.filtersButton.visibility = View.INVISIBLE
             binding.cancelAdditionPointToMapFab.visibility = View.VISIBLE
@@ -695,12 +704,14 @@ class InteractiveMapFragment : Fragment() {
                     null
                 )
 
+                binding.updateMapPointsFab.isEnabled = true
                 binding.addPointToMapFab.isEnabled = true
                 binding.filtersButton.isEnabled = true
 
                 return
             }
 
+            binding.updateMapPointsFab.isEnabled = true
             binding.addPointToMapFab.isEnabled = true
             binding.filtersButton.isEnabled = true
 
@@ -782,6 +793,7 @@ class InteractiveMapFragment : Fragment() {
     }
 
     private fun listenerForMenuItemClick(menuItem: MenuItem): Boolean {
+        binding.updateMapPointsFab.visibility = View.INVISIBLE
         binding.addPointToMapFab.visibility = View.INVISIBLE
         binding.showCurrentUserPositionFab.visibility = View.INVISIBLE
         binding.filtersButton.visibility = View.INVISIBLE
@@ -791,7 +803,7 @@ class InteractiveMapFragment : Fragment() {
 
         currentIconNumber = menuItem.order + 6
 
-        if (userLocationLayer?.cameraPosition()!=null) {
+        if (userLocationLayer?.cameraPosition() != null) {
             setUpCurrentIconPlacemark(userLocationLayer?.cameraPosition()!!.target)
             binding.confirmAdditionPointToMapFab.isEnabled = true
         }
@@ -801,6 +813,7 @@ class InteractiveMapFragment : Fragment() {
     }
 
     private fun listenerForCancelAdditionPointFab(): Boolean {
+        binding.updateMapPointsFab.visibility = View.VISIBLE
         binding.addPointToMapFab.visibility = View.VISIBLE
         binding.showCurrentUserPositionFab.visibility = View.VISIBLE
         binding.filtersButton.visibility = View.VISIBLE
@@ -863,6 +876,7 @@ class InteractiveMapFragment : Fragment() {
     private fun listenerForConfirmDescriptionAddingButton() {
         addingPointDescriptionPopupWindow?.dismiss()
 
+        binding.updateMapPointsFab.visibility = View.VISIBLE
         binding.addPointToMapFab.visibility = View.VISIBLE
         binding.showCurrentUserPositionFab.visibility = View.VISIBLE
         binding.filtersButton.visibility = View.VISIBLE
