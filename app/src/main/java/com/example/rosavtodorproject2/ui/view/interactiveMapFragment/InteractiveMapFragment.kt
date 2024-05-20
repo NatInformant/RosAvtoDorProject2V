@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.CompoundButton
+import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.PopupWindow
 import android.widget.Toast
@@ -37,6 +38,7 @@ import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.databinding.CreateDescriptionForAddingPointPopupWindowBinding
+import com.example.rosavtodorproject2.databinding.EventPointPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.FilterPointsCheckboxPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
 import com.example.rosavtodorproject2.databinding.UnverifiedPointPopupWindowBinding
@@ -46,6 +48,7 @@ import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.ScreenPoint
 import com.yandex.mapkit.geometry.Circle
+import com.yandex.mapkit.geometry.LinearRing
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.layers.ObjectEvent
 import com.yandex.mapkit.map.CameraPosition
@@ -73,6 +76,7 @@ class InteractiveMapFragment : Fragment() {
     private lateinit var binding: FragmentInteractiveMapBinding
     private lateinit var bindingFilterPointsCheckboxPopupWindow: FilterPointsCheckboxPopupWindowBinding
     private lateinit var bindingVerifiedPointPopupWindow: VerifiedPointPopupWindowBinding
+    private lateinit var bindingEventPointPopupWindow: EventPointPopupWindowBinding
     private lateinit var bindingUnverifiedPointPopupWindow: UnverifiedPointPopupWindowBinding
     private lateinit var bindingCreateDescriptionForAddingPointPopupWindow: CreateDescriptionForAddingPointPopupWindowBinding
     private val applicationComponent
@@ -183,7 +187,7 @@ class InteractiveMapFragment : Fragment() {
             ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.car_recharge_station_icon),
-            ImageProvider.fromResource(requireContext(), R.drawable.car_recharge_station_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.event_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
@@ -232,6 +236,7 @@ class InteractiveMapFragment : Fragment() {
         bindingVerifiedPointPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater)
         bindingUnverifiedPointPopupWindow =
             UnverifiedPointPopupWindowBinding.inflate(layoutInflater)
+        bindingEventPointPopupWindow = EventPointPopupWindowBinding.inflate(layoutInflater)
 
         bindingCreateDescriptionForAddingPointPopupWindow =
             CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater)
@@ -407,8 +412,10 @@ class InteractiveMapFragment : Fragment() {
             //переводим координаты из координат на карте в координаты на экране
             val screenPoint = mapView.mapWindow.worldToScreen(point) ?: return true
 
-            if (currentPointInformation.type < 6) {
+            if (currentPointInformation.type < 5) {
                 onVerifiedPointTap(currentPointInformation, screenPoint)
+            } else if (currentPointInformation.type == 5) {
+                onEventPointTap(currentPointInformation, screenPoint)
             } else {
                 onUnverifiedPointTap(currentPointInformation, screenPoint)
             }
@@ -430,25 +437,28 @@ class InteractiveMapFragment : Fragment() {
             bindingVerifiedPointPopupWindow.goToButton.setOnClickListener {
                 goToYandexMaps(currentPointInformation.coordinates)
             }
-            val popupWindow = PopupWindow(
-                bindingVerifiedPointPopupWindow.root,
-                LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT,
-                true
+            showPopupWindow(bindingVerifiedPointPopupWindow.root, screenPoint)
+        }
+
+        private fun onEventPointTap(
+            currentPointInformation: MyPoint,
+            screenPoint: ScreenPoint
+        ) {
+            bindingEventPointPopupWindow.eventPointName.text = getString(
+                R.string.verified_point_name_format,
+                getString(mapPointTypeToNameResource[currentPointInformation.type]!!),
+                currentPointInformation.name
             )
 
-            popupWindow.contentView.measure(
-                View.MeasureSpec.UNSPECIFIED,
-                View.MeasureSpec.UNSPECIFIED
-            )
-            val windowWidth = popupWindow.contentView.measuredWidth
-            val windowHeight = popupWindow.contentView.measuredHeight
-            popupWindow.showAtLocation(
-                mapView,
-                Gravity.NO_GRAVITY,
-                (screenPoint.x - windowWidth / 2).toInt(),
-                (screenPoint.y + binding.backToChatsPanel.height + windowHeight / 2).toInt()
-            )
+            bindingEventPointPopupWindow.eventPointDescription.text =
+                currentPointInformation.description
+
+            //Можно оптимизировать и не ставить слушатели нажатий каждый раз, а просто менять текущие координаты?
+            bindingEventPointPopupWindow.goToButton.setOnClickListener {
+                goToYandexMaps(currentPointInformation.coordinates)
+            }
+
+            showPopupWindow(bindingEventPointPopupWindow.root, screenPoint)
         }
 
         private fun onUnverifiedPointTap(
@@ -461,8 +471,12 @@ class InteractiveMapFragment : Fragment() {
             bindingUnverifiedPointPopupWindow.unverifiedPointDescription.text =
                 currentPointInformation.name
 
+            showPopupWindow(bindingUnverifiedPointPopupWindow.root, screenPoint)
+        }
+
+        private fun showPopupWindow(popupWindowRoot: LinearLayout, screenPoint: ScreenPoint) {
             val popupWindow = PopupWindow(
-                bindingUnverifiedPointPopupWindow.root,
+                popupWindowRoot,
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT,
                 true
