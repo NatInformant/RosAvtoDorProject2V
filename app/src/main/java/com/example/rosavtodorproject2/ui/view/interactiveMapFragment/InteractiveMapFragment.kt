@@ -184,8 +184,8 @@ class InteractiveMapFragment : Fragment() {
         pointIconsList = listOf(
             ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.cafe_icon_24dp),
-            ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
-            ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.car_service_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.guesthouse_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.car_recharge_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.event_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
@@ -227,8 +227,13 @@ class InteractiveMapFragment : Fragment() {
         }.setOnCheckedChangeListener(
             checkedChangeListener
         )
-        bindingFilterPointsCheckboxPopupWindow.incidentsCheckBox.also {
+        bindingFilterPointsCheckboxPopupWindow.eventCheckBox.also {
             it.isChecked = App.getInstance().listFilterStatesForPointType[5]
+        }.setOnCheckedChangeListener(
+            checkedChangeListener
+        )
+        bindingFilterPointsCheckboxPopupWindow.incidentsCheckBox.also {
+            it.isChecked = App.getInstance().listFilterStatesForPointType[6]
         }.setOnCheckedChangeListener(
             checkedChangeListener
         )
