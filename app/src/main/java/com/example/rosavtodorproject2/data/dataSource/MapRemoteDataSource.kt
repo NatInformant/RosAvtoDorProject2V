@@ -31,9 +31,8 @@ class MapRemoteDataSource {
         points.clear()
         kotlin.runCatching {
             mapPointsApi.getPoints(
-                //ЗНАЧЕНИЯ ЗАГЛУШКИ,УБЕРИ ПЕРЕД СБОРКОЙ!
-                BASE_LATITUDE,
-                BASE_LONGITUDE,
+                currentLatitude,
+                currentLongitude,
             )
         }.fold(
             onSuccess = { response ->

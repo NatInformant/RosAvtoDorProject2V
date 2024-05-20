@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -35,7 +36,13 @@ class RoadPlacesInformationFragment : Fragment() {
     private val applicationComponent
         get() = App.getInstance().applicationComponent
 
-    private var adapter: RoadPlacesListAdapter = RoadPlacesListAdapter(
+    private var roadPlacesAdapter: RoadPlacesListAdapter = RoadPlacesListAdapter(
+        roadPlacesDiffUtil = RoadPlacesDiffUtil(),
+        getRoadPlaceTitle = ::getRoadPlaceTitle,
+        getDistanceToRoadPlace = ::getDistanceToRoadPlace,
+        onRoadPlaceItemButtonClick = ::goToYandexMapButtonClick,
+    )
+    private var eventRoadPlacesAdapter: EventRoadPlacesListAdapter = EventRoadPlacesListAdapter(
         roadPlacesDiffUtil = RoadPlacesDiffUtil(),
         getRoadPlaceTitle = ::getRoadPlaceTitle,
         getDistanceToRoadPlace = ::getDistanceToRoadPlace,
@@ -64,7 +71,13 @@ class RoadPlacesInformationFragment : Fragment() {
         val roadPlacesListTitleStringResource =
             arguments?.getInt("roadPlacesListTitleStringResource")
 
-        setUpRoadPlacesList()
+        //Знаю, что так делать не хорошо, и костыль, но пока так, потом пофикшу
+        if(roadPlaceType!="Event"){
+            setUpRoadPlacesList()
+        }
+        else{
+            setUpEventRoadPlacesList()
+        }
 
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager?
@@ -81,7 +94,7 @@ class RoadPlacesInformationFragment : Fragment() {
         val roadsListRecyclerView: RecyclerView =
             binding.roadPlacesRecyclerList
 
-        roadsListRecyclerView.adapter = adapter
+        roadsListRecyclerView.adapter = roadPlacesAdapter
 
         val layoutManager = LinearLayoutManager(
             requireContext(),
@@ -100,7 +113,55 @@ class RoadPlacesInformationFragment : Fragment() {
 
             when (httpResponseState) {
                 is HttpResponseState.Success -> {
-                    adapter.submitList(httpResponseState.value)
+                    roadPlacesAdapter.submitList(httpResponseState.value)
+                }
+
+                is HttpResponseState.Failure -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "Без доступа к интернету приложение не сможет работать",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+                else -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "Без доступа к интернету приложение не сможет работать",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+
+        binding.swipeRefreshLayoutForRoadPlacesList.setOnRefreshListener {
+            updateOnlyRoadPlaces()
+        }
+    }
+    private fun setUpEventRoadPlacesList() {
+        val roadsListRecyclerView: RecyclerView =
+            binding.roadPlacesRecyclerList
+
+        roadsListRecyclerView.adapter = eventRoadPlacesAdapter
+
+        val layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+
+        roadsListRecyclerView.layoutManager = layoutManager
+
+        viewModel.roadPlaces.observe(viewLifecycleOwner) { httpResponseState ->
+            //Для справки самому себе - в первый раз мы проваливаемся сюда
+            //НЕ при изменении значения, за которым следим, а когда фрагмент инициализировался,
+            //а уже дальше проваливаемся только при изменениях!
+
+            binding.swipeRefreshLayoutForRoadPlacesList.isRefreshing = false
+
+            when (httpResponseState) {
+                is HttpResponseState.Success -> {
+                    eventRoadPlacesAdapter.submitList(httpResponseState.value)
                 }
 
                 is HttpResponseState.Failure -> {
