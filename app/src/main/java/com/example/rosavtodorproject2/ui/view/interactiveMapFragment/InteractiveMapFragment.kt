@@ -794,6 +794,8 @@ class InteractiveMapFragment : Fragment() {
                 Animation(Animation.Type.SMOOTH, 2f),
                 null
             )
+
+            return
         }
 
         mapView.map.move(
