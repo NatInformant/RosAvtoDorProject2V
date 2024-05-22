@@ -385,7 +385,9 @@ class InteractiveMapFragment : Fragment() {
             binding.showCurrentUserPositionFab.isEnabled = true
         }
 
-        override fun onObjectRemoved(p0: UserLocationView) {}
+        override fun onObjectRemoved(p0: UserLocationView) {
+        }
+
         override fun onObjectUpdated(p0: UserLocationView, p1: ObjectEvent) {}
     }
 
@@ -609,6 +611,7 @@ class InteractiveMapFragment : Fragment() {
         setUpFragmentCurrentState(savedInstanceState)
     }
 
+
     private fun setUpFragmentCurrentState(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             return
@@ -776,6 +779,23 @@ class InteractiveMapFragment : Fragment() {
     }
 
     private fun listenerForShowCurrentUserPositionFab() {
+
+        if (userLocationLayer?.cameraPosition() == null) {
+            mapView.map.move(
+                CameraPosition(
+                    Point(
+                        App.getInstance().currentUserPosition!!.latitude,
+                        App.getInstance().currentUserPosition!!.longitude
+                    ),
+                    /* zoom = */App.getInstance().currentCameraPosition!!.zoom,
+                    /* azimuth = */ App.getInstance().currentCameraPosition!!.azimuth,
+                    /* tilt = */ App.getInstance().currentCameraPosition!!.tilt
+                ),
+                Animation(Animation.Type.SMOOTH, 2f),
+                null
+            )
+        }
+
         mapView.map.move(
             CameraPosition(
                 userLocationLayer!!.cameraPosition()!!.target,
