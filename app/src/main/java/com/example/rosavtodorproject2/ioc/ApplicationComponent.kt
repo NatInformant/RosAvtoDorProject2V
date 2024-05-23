@@ -29,6 +29,8 @@ interface ApplicationComponent {
 
 @dagger.Module
 object DataModule {
+    //Убрать и заменить на provides методы для Retrofit обьектов,
+    // а то иначе они попросту бессымленны!
     @Provides
     @AppComponentScope
     fun getAdvertisementsDataSource() = AdvertisementsRemoteDataSource()
