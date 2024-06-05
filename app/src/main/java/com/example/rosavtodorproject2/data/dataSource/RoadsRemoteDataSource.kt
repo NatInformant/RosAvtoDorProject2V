@@ -23,7 +23,7 @@ class RoadsRemoteDataSource {
         roads.clear()
 
         kotlin.runCatching {
-            roadsApi.getAdvertisements()
+            roadsApi.getRoads()
         }.fold(
             onSuccess = { response ->
                 if (response.isSuccessful) {

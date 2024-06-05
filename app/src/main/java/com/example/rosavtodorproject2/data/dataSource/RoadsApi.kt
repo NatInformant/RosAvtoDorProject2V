@@ -6,5 +6,5 @@ import retrofit2.http.GET
 
 interface RoadsApi {
     @GET("/api/roads")
-    suspend fun getAdvertisements(): Response<RoadsGetResponse>
+    suspend fun getRoads(): Response<RoadsGetResponse>
 }
