@@ -43,12 +43,10 @@ import com.example.rosavtodorproject2.databinding.FilterPointsCheckboxPopupWindo
 import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
 import com.example.rosavtodorproject2.databinding.UnverifiedPointPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.VerifiedPointPopupWindowBinding
-import com.example.rosavtodorproject2.ui.view.roadsChooseFragment.RoadsChooseFragmentDirections
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.ScreenPoint
 import com.yandex.mapkit.geometry.Circle
-import com.yandex.mapkit.geometry.LinearRing
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.layers.ObjectEvent
 import com.yandex.mapkit.map.CameraPosition
@@ -183,15 +181,15 @@ class InteractiveMapFragment : Fragment() {
 
         pointIconsList = listOf(
             ImageProvider.fromResource(requireContext(), R.drawable.petrol_station_icon),
-            ImageProvider.fromResource(requireContext(), R.drawable.cafe_icon_24dp),
+            ImageProvider.fromResource(requireContext(), R.drawable.cafe_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.car_service_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.guesthouse_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.car_recharge_station_icon),
             ImageProvider.fromResource(requireContext(), R.drawable.event_icon),
-            ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
-            ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
-            ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
-            ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_24dp),
+            ImageProvider.fromResource(requireContext(), R.drawable.image_car_accident_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.image_pothole_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.image_stone_on_road_icon),
+            ImageProvider.fromResource(requireContext(), R.drawable.image_pistol_icon),
         )
 
         return binding.root
