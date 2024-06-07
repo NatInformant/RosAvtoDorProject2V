@@ -17,7 +17,7 @@
             android:id="@+id/tool_bar_panel"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="#4E53D3"
+            android:background="@color/tool_bar_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"

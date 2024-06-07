@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="tool_bar_color">#4E53D3</color>
     <color name="one_of_three_main_background_colors">#399FEA</color>
     <color name="know_road_information_background">#69C9FF</color>
     <color name="disabled_confirm_addition_point_fab_icon_color">#8031B431</color>
