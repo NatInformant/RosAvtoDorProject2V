@@ -947,7 +947,7 @@ class InteractiveMapFragment : Fragment() {
         )
     }
     private val pickMultipleMedia =
-        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
+        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
             // Callback is invoked after the user selects a media item or closes the photo picker.
             photosListAdapter.submitList(uris.map {PhotoElementModel(it)})
         }
