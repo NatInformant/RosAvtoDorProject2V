@@ -26,6 +26,7 @@ import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.PopupWindow
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -92,6 +93,16 @@ class InteractiveMapFragment : Fragment() {
     private var reliability: Int = 1
     private var addingPointDescriptionPopupWindow: PopupWindow? = null
 
+    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        // Callback is invoked after the user selects a media item or closes the
+        // photo picker.
+        if (uri != null) {
+            Log.d("PhotoPicker", "Selected URI: $uri")
+        } else {
+            Log.d("PhotoPicker", "No media selected")
+        }
+    }
+
     private var currentPointsList = listOf<MyPoint>()
 
     private var pointIconsList = listOf<ImageProvider>()
@@ -118,6 +129,13 @@ class InteractiveMapFragment : Fragment() {
     private var locationManager: LocationManager? = null
     private var userLocationLayer: UserLocationLayer? = null
     private var roadName: String? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        //Хз правильно ли, но так хотя бы всегда обьект для popupWindow подгруженный будет и
+        //останется только сам обьект view создать и всё
+        setUpBindingsForPopupWindows()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -125,10 +143,6 @@ class InteractiveMapFragment : Fragment() {
         binding = FragmentInteractiveMapBinding.inflate(layoutInflater, container, false)
 
         roadName = arguments?.getString("roadName")
-
-        //Хз правильно ли, но так хотя бы всегда обьект для popupWindow подгруженный будет и
-        //останется только сам обьект view создать и всё
-        setUpBindingsForPopupWindows()
 
         MapKitFactory.initialize(getApplicationContext())
         mapView = binding.mapview
@@ -243,6 +257,11 @@ class InteractiveMapFragment : Fragment() {
 
         bindingCreateDescriptionForAddingPointPopupWindow =
             CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater)
+        bindingCreateDescriptionForAddingPointPopupWindow.addPhotoToPointButton.setOnClickListener {
+            // Launch the photo picker and let the user choose only images.
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+
         bindingCreateDescriptionForAddingPointPopupWindow
             .confirmDescriptionAddingButton.setOnClickListener {
                 listenerForConfirmDescriptionAddingButton()
