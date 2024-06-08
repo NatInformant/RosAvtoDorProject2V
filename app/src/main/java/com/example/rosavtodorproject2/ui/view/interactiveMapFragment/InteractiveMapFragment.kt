@@ -937,6 +937,7 @@ class InteractiveMapFragment : Fragment() {
 
         isPointDescriptionCreating = false
         isPointAdding = true
+        photosListAdapter.submitList(emptyList())
     }
 
     private fun launchPhotosPicker() {
@@ -980,6 +981,7 @@ class InteractiveMapFragment : Fragment() {
         binding.confirmAdditionPointToMapFab.isEnabled = false
         addingPointDescriptionPopupWindow = null
         bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.text.clear()
+        photosListAdapter.submitList(emptyList())
     }
 
     private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
