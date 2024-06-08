@@ -33,6 +33,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.Coordinates
@@ -44,6 +45,7 @@ import com.example.rosavtodorproject2.databinding.FilterPointsCheckboxPopupWindo
 import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
 import com.example.rosavtodorproject2.databinding.UnverifiedPointPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.VerifiedPointPopupWindowBinding
+import com.example.rosavtodorproject2.ui.model.PhotoElementModel
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.ScreenPoint
@@ -92,6 +94,10 @@ class InteractiveMapFragment : Fragment() {
     private var currentIconNumber = -1
     private var reliability: Int = 1
     private var addingPointDescriptionPopupWindow: PopupWindow? = null
+
+    private var photosListAdapter: PhotosListAdapter = PhotosListAdapter(
+        photosDiffUtil = PhotosDiffUtil(),
+    )
 
     private var currentPointsList = listOf<MyPoint>()
 
@@ -244,6 +250,16 @@ class InteractiveMapFragment : Fragment() {
 
         bindingCreateDescriptionForAddingPointPopupWindow =
             CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater)
+
+        bindingCreateDescriptionForAddingPointPopupWindow.addedPhotosList.adapter =
+            photosListAdapter
+        bindingCreateDescriptionForAddingPointPopupWindow.addedPhotosList.layoutManager =
+            LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+
         bindingCreateDescriptionForAddingPointPopupWindow.addPhotoToPointButton.setOnClickListener {
             // Launch the photo picker and let the user choose only images.
             launchPhotosPicker()
@@ -917,6 +933,7 @@ class InteractiveMapFragment : Fragment() {
         isPointDescriptionCreating = false
         isPointAdding = true
     }
+
     private fun launchPhotosPicker() {
         pickMultipleMedia.launch(
             PickVisualMediaRequest(
@@ -928,8 +945,9 @@ class InteractiveMapFragment : Fragment() {
     private val pickMultipleMedia =
         registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
             // Callback is invoked after the user selects a media item or closes the photo picker.
-
+            photosListAdapter.submitList(uris.map { PhotoElementModel(it) })
         }
+
     private fun listenerForConfirmDescriptionAddingButton() {
         addingPointDescriptionPopupWindow?.dismiss()
 

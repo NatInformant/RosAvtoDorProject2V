@@ -50,11 +50,13 @@
             app:layout_constraintTop_toBottomOf="@id/adding_point_description"
             app:layout_constraintStart_toStartOf="@id/adding_point_description"/>
             />
-        <ImageView
-            android:id="@+id/chosen_photo_preview"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/added_photos_list"
+            android:orientation="horizontal"
             android:layout_marginStart="4dp"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/add_photo_to_point_button"
             app:layout_constraintTop_toTopOf="@id/add_photo_to_point_button"
             />
