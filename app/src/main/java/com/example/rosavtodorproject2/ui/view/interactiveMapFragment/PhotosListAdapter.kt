@@ -1,9 +1,11 @@
 package com.example.rosavtodorproject2.ui.view.interactiveMapFragment
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.rosavtodorproject2.databinding.PhotoElementBinding
 import com.example.rosavtodorproject2.ui.model.PhotoElementModel
 
@@ -38,10 +40,19 @@ class PhotosListAdapter(
             removeCurrentElementCallBack: (PhotoElementModel) -> Unit,
             photoElementModel: PhotoElementModel
         ) {
-            photoElementBinding.chosenPhotoPreview.setImageURI(photoElementModel.uri)
+            Glide.with(photoElementBinding.root)
+                .load(photoElementModel.uri)
+                .override(dpToPx(60), dpToPx(60))
+                .centerCrop()
+                .into(photoElementBinding.chosenPhotoPreview)
+
             photoElementBinding.deleteChosenPhotoButton.setOnClickListener {
                 removeCurrentElementCallBack(photoElementModel)
             }
         }
+
+        private fun dpToPx(dp: Int): Int =
+            (dp * Resources.getSystem().displayMetrics.density).toInt()
     }
+
 }
