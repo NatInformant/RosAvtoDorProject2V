@@ -13,6 +13,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.Gravity
@@ -672,6 +673,11 @@ class InteractiveMapFragment : Fragment() {
                     createAddingPointDescriptionPopupWindow(savedDescription ?: "")
                 }
             }
+
+            val addedPhotosList = savedInstanceState.getParcelableArray("addedPhotosList")
+            if(addedPhotosList?.isArrayOf<PhotoElementModel>() == true){
+                photosListAdapter.submitList((addedPhotosList as Array<PhotoElementModel>).toList())
+            }
         }
     }
 
@@ -912,7 +918,6 @@ class InteractiveMapFragment : Fragment() {
 
         addingPointDescriptionPopupWindow?.softInputMode =
             WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
-        bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.requestFocus()
 
         bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.setText(
             savedDescription
@@ -941,11 +946,10 @@ class InteractiveMapFragment : Fragment() {
             )
         )
     }
-
     private val pickMultipleMedia =
         registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
             // Callback is invoked after the user selects a media item or closes the photo picker.
-            photosListAdapter.submitList(uris.map { PhotoElementModel(it) })
+            photosListAdapter.submitList(uris.map {PhotoElementModel(it)})
         }
 
     private fun listenerForConfirmDescriptionAddingButton() {
@@ -1015,6 +1019,7 @@ class InteractiveMapFragment : Fragment() {
                 ""
             }
         )
+        outState.putParcelableArray("addedPhotosList",photosListAdapter.currentList.toTypedArray())
     }
 
     override fun onDestroyView() {

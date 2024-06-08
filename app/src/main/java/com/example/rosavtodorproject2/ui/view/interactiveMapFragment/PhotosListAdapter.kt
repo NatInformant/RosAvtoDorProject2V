@@ -18,15 +18,30 @@ class PhotosListAdapter(
     }
 
     override fun onBindViewHolder(holder: PhotoElementViewHolder, position: Int) {
-        holder.onBind(currentList[position])
+        holder.onBind(::deleteCurrentElement, currentList[position])
+    }
+
+    private fun deleteCurrentElement(element: PhotoElementModel) {
+        //Да, я прекрасно понимаю, что выглядит как костыль, но альтернативы мне кажутся хуже.
+        //Тем более список максимум на 5 элементов.
+        this.submitList(currentList.toMutableList()
+            .also
+            {
+                it.remove(element)
+            }
+        )
     }
 
     class PhotoElementViewHolder(val photoElementBinding: PhotoElementBinding) :
         RecyclerView.ViewHolder(photoElementBinding.root) {
-        fun onBind(photoElementModel: PhotoElementModel) {
+        fun onBind(
+            removeCurrentElementCallBack: (PhotoElementModel) -> Unit,
+            photoElementModel: PhotoElementModel
+        ) {
             photoElementBinding.chosenPhotoPreview.setImageURI(photoElementModel.uri)
+            photoElementBinding.deleteChosenPhotoButton.setOnClickListener {
+                removeCurrentElementCallBack(photoElementModel)
+            }
         }
     }
-
-
 }
