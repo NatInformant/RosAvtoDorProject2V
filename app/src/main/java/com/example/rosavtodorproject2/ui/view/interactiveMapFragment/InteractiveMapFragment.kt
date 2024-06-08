@@ -93,16 +93,6 @@ class InteractiveMapFragment : Fragment() {
     private var reliability: Int = 1
     private var addingPointDescriptionPopupWindow: PopupWindow? = null
 
-    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        // Callback is invoked after the user selects a media item or closes the
-        // photo picker.
-        if (uri != null) {
-            Log.d("PhotoPicker", "Selected URI: $uri")
-        } else {
-            Log.d("PhotoPicker", "No media selected")
-        }
-    }
-
     private var currentPointsList = listOf<MyPoint>()
 
     private var pointIconsList = listOf<ImageProvider>()
@@ -129,13 +119,6 @@ class InteractiveMapFragment : Fragment() {
     private var locationManager: LocationManager? = null
     private var userLocationLayer: UserLocationLayer? = null
     private var roadName: String? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //Хз правильно ли, но так хотя бы всегда обьект для popupWindow подгруженный будет и
-        //останется только сам обьект view создать и всё
-        setUpBindingsForPopupWindows()
-    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -146,6 +129,10 @@ class InteractiveMapFragment : Fragment() {
 
         MapKitFactory.initialize(getApplicationContext())
         mapView = binding.mapview
+
+        //Хз правильно ли, но так хотя бы всегда обьект для popupWindow подгруженный будет и
+        //останется только сам обьект view создать и всё
+        setUpBindingsForPopupWindows()
 
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager?
@@ -259,7 +246,7 @@ class InteractiveMapFragment : Fragment() {
             CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater)
         bindingCreateDescriptionForAddingPointPopupWindow.addPhotoToPointButton.setOnClickListener {
             // Launch the photo picker and let the user choose only images.
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            launchPhotosPicker()
         }
 
         bindingCreateDescriptionForAddingPointPopupWindow
@@ -930,7 +917,19 @@ class InteractiveMapFragment : Fragment() {
         isPointDescriptionCreating = false
         isPointAdding = true
     }
+    private fun launchPhotosPicker() {
+        pickMultipleMedia.launch(
+            PickVisualMediaRequest(
+                ActivityResultContracts.PickVisualMedia.ImageAndVideo
+            )
+        )
+    }
 
+    private val pickMultipleMedia =
+        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
+            // Callback is invoked after the user selects a media item or closes the photo picker.
+
+        }
     private fun listenerForConfirmDescriptionAddingButton() {
         addingPointDescriptionPopupWindow?.dismiss()
 
