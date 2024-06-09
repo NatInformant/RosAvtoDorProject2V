@@ -943,7 +943,7 @@ class InteractiveMapFragment : Fragment() {
     private fun launchPhotosPicker() {
         pickMultipleMedia.launch(
             PickVisualMediaRequest(
-                ActivityResultContracts.PickVisualMedia.ImageAndVideo
+                ActivityResultContracts.PickVisualMedia.ImageOnly
             )
         )
     }
