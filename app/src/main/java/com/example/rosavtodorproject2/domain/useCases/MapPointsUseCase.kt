@@ -1,5 +1,6 @@
 package com.example.rosavtodorproject2.domain.useCases
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.MyPoint
@@ -18,9 +19,9 @@ class MapPointsUseCase @Inject constructor(
         }
     }
 
-    suspend fun addPoint(point: MyPoint,reliability:Int) {
+    suspend fun addPoint(point: MyPoint,reliability:Int, fileUris:List<Uri>) {
         withContext(Dispatchers.Main) {
-            pointsRepository.addPoint(point,reliability)
+            pointsRepository.addPoint(point,reliability,fileUris)
         }
     }
 }

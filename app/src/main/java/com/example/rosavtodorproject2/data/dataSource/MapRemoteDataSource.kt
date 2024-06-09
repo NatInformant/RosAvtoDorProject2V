@@ -1,5 +1,6 @@
 package com.example.rosavtodorproject2.data.dataSource
 
+import android.net.Uri
 import com.example.rosavtodorproject2.BuildConfig
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.MyPoint
@@ -52,7 +53,9 @@ class MapRemoteDataSource {
         )
     }
 
-    suspend fun addPoint(newPoint: MyPoint, reliability: Int) {
+    suspend fun addPoint(newPoint: MyPoint, reliability: Int, fileUris: List<Uri>) {
+
+
 
         val response = mapPointsApi.addPoint(
             requestPointBody = RequestPointBody(

@@ -972,7 +972,8 @@ class InteractiveMapFragment : Fragment() {
             longitude = currentIconPlacemark!!.geometry.longitude,
             text = bindingCreateDescriptionForAddingPointPopupWindow
                 .addingPointDescription.text.toString(),
-            reliability = reliability
+            reliability = reliability,
+            fileUris = photosListAdapter.currentList.map { it.uri }
         )
 
         reliability = 1

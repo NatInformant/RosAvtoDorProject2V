@@ -1,5 +1,6 @@
 package com.example.rosavtodorproject2.ui.view.interactiveMapFragment
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -24,7 +25,7 @@ class InteractiveMapFragmentViewModel @Inject constructor(
         }
     }
 
-    fun addPoint(type: Int, latitude: Double, longitude: Double, text: String, reliability:Int) {
+    fun addPoint(type: Int, latitude: Double, longitude: Double, text: String, reliability:Int, fileUris:List<Uri>) {
         viewModelScope.launch {
             mapPointsUseCase.addPoint(
                 MyPoint(
@@ -34,7 +35,8 @@ class InteractiveMapFragmentViewModel @Inject constructor(
                     //Xз нормально ли, но пока так.
                     description = ""
                 ),
-                reliability = reliability
+                reliability = reliability,
+                fileUris = fileUris,
             )
         }
     }
