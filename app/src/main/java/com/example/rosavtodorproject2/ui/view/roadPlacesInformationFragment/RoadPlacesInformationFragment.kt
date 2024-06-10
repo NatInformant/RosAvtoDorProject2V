@@ -73,12 +73,21 @@ class RoadPlacesInformationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = RoadPlacesInformationFragmentBinding.inflate(layoutInflater, container, false)
-        roadName = arguments?.getString("roadName")
-        roadPlaceType = arguments?.getString("roadPlaceType")
+
         val roadPlacesListTitleStringResource =
             arguments?.getInt("roadPlacesListTitleStringResource")
 
-        //Знаю, что так делать не хорошо, и костыль, но пока так, потом пофикшу
+        binding.roadPlacesListTitle.text =
+            getString(roadPlacesListTitleStringResource ?: R.string.error_road_places_list_title)
+
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        roadName = arguments?.getString("roadName")
+        roadPlaceType = arguments?.getString("roadPlaceType")
+
         if (roadPlaceType != "Event") {
             setUpRoadPlacesList()
         } else {
@@ -88,14 +97,18 @@ class RoadPlacesInformationFragment : Fragment() {
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager?
 
-        //А надо это здесь делать?
         updateOnlyRoadPlaces()
 
-        binding.roadPlacesListTitle.text =
-            getString(roadPlacesListTitleStringResource ?: R.string.error_road_places_list_title)
-        return binding.root
-    }
+        checkLocationPermission()
 
+        binding.backToRoadInformationFragmentPanelButton.setOnClickListener {
+            val action =
+                RoadPlacesInformationFragmentDirections.actionRoadPlacesInformationFragmentToRoadInformationFragment(
+                    roadName ?: ""
+                )
+            findNavController().navigate(action)
+        }
+    }
     private fun setUpRoadPlacesList() {
         val roadsListRecyclerView: RecyclerView =
             binding.roadPlacesRecyclerList
@@ -213,20 +226,6 @@ class RoadPlacesInformationFragment : Fragment() {
                 requireContext().applicationInstance.currentUserPosition!!.longitude
             )
         )
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        checkLocationPermission()
-
-        binding.backToRoadInformationFragmentPanelButton.setOnClickListener {
-            val action =
-                RoadPlacesInformationFragmentDirections.actionRoadPlacesInformationFragmentToRoadInformationFragment(
-                    roadName ?: ""
-                )
-            findNavController().navigate(action)
-        }
     }
 
     private fun checkLocationPermission() {

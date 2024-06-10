@@ -42,16 +42,14 @@ class RoadsChooseFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = RoadsChooseFragmentBinding.inflate(layoutInflater, container, false)
-
-        setUpRoadsList()
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setUpRoadsList()
 
         binding.goToInteractiveMapFragmentPanel.root.setOnClickListener {
             findNavController().navigate(R.id.action_roadsChooseFragment_to_interactiveMapFragment)

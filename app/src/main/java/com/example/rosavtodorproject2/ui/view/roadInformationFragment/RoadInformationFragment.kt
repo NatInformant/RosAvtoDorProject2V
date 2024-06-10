@@ -54,10 +54,6 @@ class RoadInformationFragment : Fragment() {
             binding.knowRoadInformationPanelScrollView.layoutParams = layoutParams
         }
 
-        viewModel.updateRoadAdvertisements(roadName ?: "")
-
-        setUpRoadAdvertisementsList()
-
         binding.roadWarningsTitle.text =
             getString(R.string.road_warnings_title_format, roadName)
 
@@ -66,6 +62,10 @@ class RoadInformationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.updateRoadAdvertisements(roadName ?: "")
+
+        setUpRoadAdvertisementsList()
 
         binding.goToInteractiveMapFragmentPanel.root.setOnClickListener {
             val action =

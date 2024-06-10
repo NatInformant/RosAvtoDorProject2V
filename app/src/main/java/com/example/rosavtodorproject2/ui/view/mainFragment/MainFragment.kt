@@ -44,24 +44,12 @@ class MainFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = MainFragmentBinding.inflate(layoutInflater, container, false)
 
         setUpToolBar()
-        setUpAdvertisementsList()
-
 
         return binding.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.goToRoadsChooseFragmentPanel.root.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_roadsChooseFragment)
-        }
-    }
-
     private fun setUpToolBar() {
         val navController = NavHostFragment.findNavController(this)
 
@@ -80,6 +68,15 @@ class MainFragment : Fragment() {
                 it.scaleX = scale
                 it.scaleY = scale
             }
+        }
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setUpAdvertisementsList()
+
+        binding.goToRoadsChooseFragmentPanel.root.setOnClickListener {
+            findNavController().navigate(R.id.action_mainFragment_to_roadsChooseFragment)
         }
     }
 
