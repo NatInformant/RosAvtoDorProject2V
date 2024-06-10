@@ -15,19 +15,10 @@ import javax.inject.Inject
 class AdvertisementsRepository @Inject constructor(
     val dataSource: AdvertisementsRemoteDataSource
 ) {
-    private val _advertisements =
-        MutableLiveData<HttpResponseState<List<Pair<String,List<Advertisement>>>>>(
-            HttpResponseState.Success(
-                emptyList()
-            )
-        )
-    val advertisements: LiveData<HttpResponseState<List<Pair<String,List<Advertisement>>>>> =
-        _advertisements
 
-    suspend fun updateAdvertisements() {
-        val responseState = withContext(Dispatchers.IO) {
+    suspend fun updateAdvertisements():HttpResponseState<List<Pair<String, List<Advertisement>>>> {
+        return withContext(Dispatchers.IO) {
             dataSource.loadAdvertisements()
         }
-        _advertisements.postValue(responseState)
     }
 }

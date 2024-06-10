@@ -2,6 +2,7 @@ package com.example.rosavtodorproject2.ui.view.mainFragment
 
 import android.widget.Toast
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
@@ -19,15 +20,19 @@ import javax.inject.Inject
 class MainFragmentViewModel @Inject constructor(
     private val advertisementsUseCase: AdvertisementsUseCase,
 ) : ViewModel() {
+    private val _advertisements =
+        MutableLiveData<HttpResponseState<List<Pair<String,List<Advertisement>>>>>(
+            HttpResponseState.Loading
+        )
     val advertisements: LiveData<HttpResponseState<List<Pair<String,List<Advertisement>>>>> =
-        advertisementsUseCase.advertisements
+        _advertisements
 
     init {
         updateAdvertisements()
     }
     fun updateAdvertisements() {
         viewModelScope.launch {
-            advertisementsUseCase.updateAdvertisements()
+            _advertisements.postValue(advertisementsUseCase.updateAdvertisements())
         }
     }
 }

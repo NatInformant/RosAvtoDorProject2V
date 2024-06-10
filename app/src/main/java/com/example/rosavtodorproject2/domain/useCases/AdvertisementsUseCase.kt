@@ -12,11 +12,9 @@ import javax.inject.Inject
 class AdvertisementsUseCase @Inject constructor(
     private val advertisementsRepository: AdvertisementsRepository,
 ) {
-    val advertisements: LiveData<HttpResponseState<List<Pair<String,List<Advertisement>>>>> =
-        advertisementsRepository.advertisements
 
-    suspend fun updateAdvertisements() {
-        withContext(Dispatchers.IO) {
+    suspend fun updateAdvertisements(): HttpResponseState<List<Pair<String, List<Advertisement>>>> {
+        return withContext(Dispatchers.IO) {
             advertisementsRepository.updateAdvertisements()
         }
     }
