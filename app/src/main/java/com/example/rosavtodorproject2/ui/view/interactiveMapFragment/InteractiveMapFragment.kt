@@ -204,7 +204,7 @@ class InteractiveMapFragment : Fragment() {
 
     private fun setUpBindingsForPopupWindows() {
         bindingFilterPointsCheckboxPopupWindow =
-            FilterPointsCheckboxPopupWindowBinding.inflate(layoutInflater)
+            FilterPointsCheckboxPopupWindowBinding.inflate(layoutInflater, binding.root, false)
 
         bindingFilterPointsCheckboxPopupWindow.petrolStationCheckBox.also {
             it.isChecked = requireContext().applicationInstance.listFilterStatesForPointType[0]
@@ -243,13 +243,13 @@ class InteractiveMapFragment : Fragment() {
             checkedChangeListener
         )
 
-        bindingVerifiedPointPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater)
+        bindingVerifiedPointPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater, binding.root, false)
         bindingUnverifiedPointPopupWindow =
-            UnverifiedPointPopupWindowBinding.inflate(layoutInflater)
-        bindingEventPointPopupWindow = EventPointPopupWindowBinding.inflate(layoutInflater)
+            UnverifiedPointPopupWindowBinding.inflate(layoutInflater, binding.root, false)
+        bindingEventPointPopupWindow = EventPointPopupWindowBinding.inflate(layoutInflater, binding.root, false)
 
         bindingCreateDescriptionForAddingPointPopupWindow =
-            CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater)
+            CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater, binding.root, false)
 
         bindingCreateDescriptionForAddingPointPopupWindow.addedPhotosList.adapter =
             photosListAdapter
