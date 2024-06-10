@@ -19,33 +19,28 @@ class PointsRepository @Inject constructor(
     val mapPointsDataSource: MapRemoteDataSource,
     val roadPlacesDataSource: RoadPlacesRemoteDataSource
 ) {
-    private val _points = MutableLiveData<HttpResponseState<List<MyPoint>>>(HttpResponseState.Success(emptyList()))
+    private val _points =
+        MutableLiveData<HttpResponseState<List<MyPoint>>>(HttpResponseState.Loading)
     val points: LiveData<HttpResponseState<List<MyPoint>>> = _points
 
     private val _roadPlaces =
         MutableLiveData<HttpResponseState<List<RoadPlace>>>(
-            HttpResponseState.Success(
-                emptyList()
-            )
+            HttpResponseState.Loading
         )
     val roadPlaces: LiveData<HttpResponseState<List<RoadPlace>>> =
         _roadPlaces
 
     suspend fun updatePoints(currentLatitude: Double, currentLongitude: Double) {
-        val loadedList =
-            withContext(Dispatchers.IO) {
-                mapPointsDataSource.getPoints(currentLatitude, currentLongitude)
-            }
+        val loadedList = withContext(Dispatchers.IO) {
+            mapPointsDataSource.getPoints(currentLatitude, currentLongitude)
+        }
         _points.postValue(loadedList)
     }
 
-    suspend fun addPoint(point: MyPoint, reliability: Int, filePaths:List<String>) {
-
+    suspend fun addPoint(point: MyPoint, reliability: Int, filePaths: List<String>) {
         withContext(Dispatchers.IO) {
-            mapPointsDataSource.addPoint(point, reliability,filePaths)
+            mapPointsDataSource.addPoint(point, reliability, filePaths)
         }
-
-        mapPointsDataSource.loadPoints().value.add(point)
         _points.postValue(mapPointsDataSource.loadPoints())
     }
 

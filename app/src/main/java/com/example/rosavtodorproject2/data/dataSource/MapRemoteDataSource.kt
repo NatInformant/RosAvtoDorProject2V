@@ -22,16 +22,16 @@ class MapRemoteDataSource {
             .build()
             .create(MapPointsApi::class.java)
     }
-
+    private val addedByUserPoints: MutableList<MyPoint> = mutableListOf()
     private val points: MutableList<MyPoint> = mutableListOf()
-    private val BASE_LATITUDE: Double = 55.154
-    private val BASE_LONGITUDE: Double = 61.4291
-    fun loadPoints() = HttpResponseState.Success(points)
+    fun loadPoints() = HttpResponseState.Success(points + addedByUserPoints)
     suspend fun getPoints(
         currentLatitude: Double,
         currentLongitude: Double
     ): HttpResponseState<List<MyPoint>> {
+
         points.clear()
+
         kotlin.runCatching {
             mapPointsApi.getPoints(
                 currentLatitude,
@@ -44,7 +44,7 @@ class MapRemoteDataSource {
                         points.add(it)
                     }
 
-                    return HttpResponseState.Success(points.toList())
+                    return HttpResponseState.Success(points + addedByUserPoints)
                 } else {
                     return HttpResponseState.Failure(response.message() ?: "")
                 }
@@ -56,6 +56,8 @@ class MapRemoteDataSource {
     }
 
     suspend fun addPoint(newPoint: MyPoint, reliability: Int, filePaths: List<String>) {
+
+        addedByUserPoints.add(newPoint)
 
         val response = mapPointsApi.addPoint(
             requestPointBody = RequestPointBody(

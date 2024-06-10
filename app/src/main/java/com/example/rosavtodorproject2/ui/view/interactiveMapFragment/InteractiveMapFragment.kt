@@ -155,9 +155,7 @@ class InteractiveMapFragment : Fragment() {
                     currentPointsList = httpResponseState.value
                     addPointsToInteractiveMap(httpResponseState.value)
                 }
-
                 is HttpResponseState.Failure -> {
-
                     currentPointsList = emptyList()
                     addPointsToInteractiveMap(emptyList())
 
@@ -167,16 +165,10 @@ class InteractiveMapFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                 }
-
                 else -> {
                     currentPointsList = emptyList()
                     addPointsToInteractiveMap(emptyList())
 
-                    Toast.makeText(
-                        requireContext(),
-                        "Без доступа к интернету приложение не сможет работать",
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
             }
         }

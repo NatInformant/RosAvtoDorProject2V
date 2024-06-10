@@ -115,7 +115,6 @@ class RoadPlacesInformationFragment : Fragment() {
                 is HttpResponseState.Success -> {
                     roadPlacesAdapter.submitList(httpResponseState.value)
                 }
-
                 is HttpResponseState.Failure -> {
                     Toast.makeText(
                         requireContext(),
@@ -123,13 +122,8 @@ class RoadPlacesInformationFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                 }
-
                 else -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Без доступа к интернету приложение не сможет работать",
-                        Toast.LENGTH_LONG
-                    ).show()
+
                 }
             }
         }
