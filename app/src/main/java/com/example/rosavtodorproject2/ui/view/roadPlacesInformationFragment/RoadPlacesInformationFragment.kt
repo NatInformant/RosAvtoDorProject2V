@@ -27,9 +27,12 @@ import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.RoadPlacesInformationFragmentBinding
+import com.example.rosavtodorproject2.ioc.RoadInformationViewModelFactory
+import com.example.rosavtodorproject2.ioc.RoadPlacesInformationViewModelFactory
 import com.example.rosavtodorproject2.ioc.applicationInstance
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
+import javax.inject.Inject
 
 class RoadPlacesInformationFragment : Fragment() {
 
@@ -47,8 +50,9 @@ class RoadPlacesInformationFragment : Fragment() {
         getDistanceToRoadPlace = ::getDistanceToRoadPlace,
         onRoadPlaceItemButtonClick = ::goToYandexMapButtonClick,
     )
-
-    private val viewModel: RoadPlacesInformationFragmentViewModel by viewModels { requireContext().applicationInstance.applicationComponent.getRoadPlacesInformationViewModelFactory() }
+    @Inject
+    lateinit var viewModelFactory: RoadPlacesInformationViewModelFactory
+    private val viewModel: RoadPlacesInformationFragmentViewModel by viewModels { viewModelFactory }
     private var roadName: String? = null
     private var roadPlaceType: String? = null
     private val roadPlaceTypeToNameResource: Map<String, Int> = mapOf(
@@ -60,6 +64,10 @@ class RoadPlacesInformationFragment : Fragment() {
         Pair("Event", R.string.event),
     )
     private var locationManager: LocationManager? = null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.applicationInstance.applicationComponent.injectRoadPlacesInformationFragment(this)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

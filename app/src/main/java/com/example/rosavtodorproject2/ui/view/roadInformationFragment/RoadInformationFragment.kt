@@ -1,5 +1,6 @@
 package com.example.rosavtodorproject2.ui.view.roadInformationFragment
 
+import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
@@ -17,8 +18,11 @@ import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.RoadInformationFragmentBinding
+import com.example.rosavtodorproject2.ioc.MainViewModelFactory
+import com.example.rosavtodorproject2.ioc.RoadInformationViewModelFactory
 import com.example.rosavtodorproject2.ioc.applicationInstance
 import com.example.rosavtodorproject2.ui.view.mainFragment.AdvertisementsDiffUtil
+import javax.inject.Inject
 
 class RoadInformationFragment : Fragment() {
 
@@ -27,9 +31,14 @@ class RoadInformationFragment : Fragment() {
     private var adapter: RoadAdvertisementsListAdapter = RoadAdvertisementsListAdapter(
         advertisementsDiffUtil = AdvertisementsDiffUtil(),
     )
-
-    private val viewModel: RoadInformationFragmentViewModel by viewModels { requireContext().applicationInstance.applicationComponent.getRoadInformationViewModelFactory() }
+    @Inject
+    lateinit var viewModelFactory: RoadInformationViewModelFactory
+    private val viewModel: RoadInformationFragmentViewModel by viewModels { viewModelFactory }
     var roadName: String? = null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.applicationInstance.applicationComponent.injectRoadInformationFragment(this)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

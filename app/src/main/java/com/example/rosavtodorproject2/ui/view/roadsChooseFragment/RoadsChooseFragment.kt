@@ -1,5 +1,6 @@
 package com.example.rosavtodorproject2.ui.view.roadsChooseFragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,10 @@ import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.RoadsChooseFragmentBinding
+import com.example.rosavtodorproject2.ioc.RoadPlacesInformationViewModelFactory
+import com.example.rosavtodorproject2.ioc.RoadsViewModelFactory
 import com.example.rosavtodorproject2.ioc.applicationInstance
+import javax.inject.Inject
 
 class RoadsChooseFragment : Fragment() {
 
@@ -26,8 +30,13 @@ class RoadsChooseFragment : Fragment() {
         onRoadItemClick = ::onRoadItemClick,
     )
 
-    private val viewModel: RoadsChooseFragmentViewModel by viewModels { requireContext().applicationInstance.applicationComponent.getRoadsViewModelFactory() }
-
+    @Inject
+    lateinit var viewModelFactory: RoadsViewModelFactory
+    private val viewModel: RoadsChooseFragmentViewModel by viewModels { viewModelFactory }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.applicationInstance.applicationComponent.injectRoadsChooseFragment(this)
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -11,6 +11,11 @@ import com.example.rosavtodorproject2.domain.useCases.MapPointsUseCase
 import com.example.rosavtodorproject2.domain.useCases.RoadAdvertisementsUseCase
 import com.example.rosavtodorproject2.domain.useCases.RoadPlacesUseCase
 import com.example.rosavtodorproject2.domain.useCases.RoadsUseCase
+import com.example.rosavtodorproject2.ui.view.interactiveMapFragment.InteractiveMapFragment
+import com.example.rosavtodorproject2.ui.view.mainFragment.MainFragment
+import com.example.rosavtodorproject2.ui.view.roadInformationFragment.RoadInformationFragment
+import com.example.rosavtodorproject2.ui.view.roadPlacesInformationFragment.RoadPlacesInformationFragment
+import com.example.rosavtodorproject2.ui.view.roadsChooseFragment.RoadsChooseFragment
 import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -22,11 +27,17 @@ annotation class AppComponentScope
 @dagger.Component(modules = [NetworkModule::class, ViewModelsModule::class])
 @AppComponentScope
 interface ApplicationComponent {
-    fun getMainViewModelFactory(): MainViewModelFactory
+    fun injectInteractiveMapFragment(fragment: InteractiveMapFragment)
+    fun injectMainFragment(fragment: MainFragment)
+    fun injectRoadInformationFragment(fragment: RoadInformationFragment)
+    fun injectRoadPlacesInformationFragment(fragment: RoadPlacesInformationFragment)
+    fun injectRoadsChooseFragment(fragment: RoadsChooseFragment)
+
+    /*fun getMainViewModelFactory(): MainViewModelFactory
     fun getInteractiveMapViewModelFactory(): InteractiveMapViewModelFactory
     fun getRoadsViewModelFactory(): RoadsViewModelFactory
     fun getRoadInformationViewModelFactory(): RoadInformationViewModelFactory
-    fun getRoadPlacesInformationViewModelFactory(): RoadPlacesInformationViewModelFactory
+    fun getRoadPlacesInformationViewModelFactory(): RoadPlacesInformationViewModelFactory*/
 }
 
 @dagger.Module

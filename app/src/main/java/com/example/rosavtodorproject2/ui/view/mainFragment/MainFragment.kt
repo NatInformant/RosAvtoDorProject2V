@@ -1,5 +1,6 @@
 package com.example.rosavtodorproject2.ui.view.mainFragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +20,9 @@ import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.MainFragmentBinding
+import com.example.rosavtodorproject2.ioc.MainViewModelFactory
 import com.example.rosavtodorproject2.ioc.applicationInstance
+import javax.inject.Inject
 
 class MainFragment : Fragment() {
 
@@ -29,9 +32,13 @@ class MainFragment : Fragment() {
     private var adapter: AreaAdvertisementsListAdapter = AreaAdvertisementsListAdapter(
         areaAdvertisementsDiffUtil = AreaAdvertisementsDiffUtil(),
     )
-
-    private val viewModel: MainFragmentViewModel by viewModels { requireContext().applicationInstance.applicationComponent.getMainViewModelFactory() }
-
+    @Inject
+    lateinit var viewModelFactory: MainViewModelFactory
+    private val viewModel: MainFragmentViewModel by viewModels { viewModelFactory }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.applicationInstance.applicationComponent.injectMainFragment(this)
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

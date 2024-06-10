@@ -46,6 +46,7 @@ import com.example.rosavtodorproject2.databinding.FilterPointsCheckboxPopupWindo
 import com.example.rosavtodorproject2.databinding.FragmentInteractiveMapBinding
 import com.example.rosavtodorproject2.databinding.UnverifiedPointPopupWindowBinding
 import com.example.rosavtodorproject2.databinding.VerifiedPointPopupWindowBinding
+import com.example.rosavtodorproject2.ioc.InteractiveMapViewModelFactory
 import com.example.rosavtodorproject2.ioc.applicationInstance
 import com.example.rosavtodorproject2.ui.model.PhotoElementModel
 import com.yandex.mapkit.Animation
@@ -73,6 +74,7 @@ import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
 import com.yandex.runtime.Runtime.getApplicationContext
 import com.yandex.runtime.image.ImageProvider
+import javax.inject.Inject
 
 
 class InteractiveMapFragment : Fragment() {
@@ -87,7 +89,9 @@ class InteractiveMapFragment : Fragment() {
     // если его не null-ить в OnDestroyView, но в Доке Яндекса, не сказано что так делать нужно,
     // так что ХЗ
 
-    private val viewModel: InteractiveMapFragmentViewModel by viewModels { requireContext().applicationInstance.applicationComponent.getInteractiveMapViewModelFactory() }
+    @Inject
+    lateinit var viewModelFactory: InteractiveMapViewModelFactory
+    private val viewModel: InteractiveMapFragmentViewModel by viewModels { viewModelFactory }
 
     private var isPointAdding = false
     private var isPointDescriptionCreating = false
@@ -125,6 +129,10 @@ class InteractiveMapFragment : Fragment() {
     private var locationManager: LocationManager? = null
     private var userLocationLayer: UserLocationLayer? = null
     private var roadName: String? = null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.applicationInstance.applicationComponent.injectInteractiveMapFragment(this)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
