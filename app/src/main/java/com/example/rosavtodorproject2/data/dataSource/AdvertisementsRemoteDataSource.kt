@@ -19,27 +19,18 @@ class AdvertisementsRemoteDataSource {
     }
 
 
-    private var advertisementsWithRegionNames: MutableList<AdvertisementWithRegionName> =
-        mutableListOf()
-
     suspend fun loadAdvertisements(): HttpResponseState<List<Pair<String, List<Advertisement>>>> {
-        advertisementsWithRegionNames.clear()
 
         kotlin.runCatching {
             advertisementsApi.getAdvertisements()
         }.fold(
             onSuccess = { response ->
                 if (response.isSuccessful) {
-                    response.body()?.allRegionsAdvertisements?.forEach { advertisement: AdvertisementWithRegionName ->
-                        advertisementsWithRegionNames.add(
-                            advertisement
-                        )
-                    }
                     return HttpResponseState.Success(
-                        advertisementsWithRegionNames.groupBy(
+                        response.body()?.allRegionsAdvertisements?.groupBy(
                             keySelector = { it.regionName },
                             valueTransform = { Advertisement(it.title, it.description) }
-                        ).toSortedMap().toList()
+                        )?.toSortedMap()?.toList() ?: emptyList()
                     )
                 } else {
                     return HttpResponseState.Failure(response.message() ?: "")

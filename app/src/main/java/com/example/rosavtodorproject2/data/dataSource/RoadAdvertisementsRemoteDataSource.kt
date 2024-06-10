@@ -16,27 +16,20 @@ class RoadAdvertisementsRemoteDataSource {
             .create(RoadAdvertisementsApi::class.java)
     }
 
-
-    private var roadAdvertisements: MutableList<Advertisement> =
-        mutableListOf()
-
-    suspend fun loadRoadAdvertisements(roadName:String): HttpResponseState<List<Advertisement>> {
-        roadAdvertisements.clear()
+    suspend fun loadRoadAdvertisements(roadName: String): HttpResponseState<List<Advertisement>> {
 
         kotlin.runCatching {
             roadAdvertisementsApi.getAdvertisements(roadName)
         }.fold(
             onSuccess = { response ->
                 if (response.isSuccessful) {
-                    response.body()?.roadAdvertisements?.forEach { advertisement: AdvertisementWithRegionName ->
-                        roadAdvertisements.add(
-                            Advertisement(advertisement.title, advertisement.description)
-                        )
-                    }
-                    //toList() нужен, чтобы мы ссылку на roads в liveData не передавали, а
-                    // то иначе она будет реагировать на его очистку и работать не корректно
                     return HttpResponseState.Success(
-                        roadAdvertisements.toList()
+                        response.body()?.roadAdvertisements?.map {
+                            Advertisement(
+                                it.title,
+                                it.description
+                            )
+                        } ?: emptyList()
                     )
                 } else {
                     return HttpResponseState.Failure(response.message() ?: "")

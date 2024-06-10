@@ -15,27 +15,14 @@ class RoadsRemoteDataSource {
             .create(RoadsApi::class.java)
     }
 
-
-    private var roads: MutableList<Road> =
-        mutableListOf()
-
     suspend fun loadRoads(): HttpResponseState<List<Road>> {
-        roads.clear()
 
         kotlin.runCatching {
             roadsApi.getRoads()
         }.fold(
             onSuccess = { response ->
                 if (response.isSuccessful) {
-
-                    response.body()?.roadsList?.forEach { road: Road ->
-                        roads.add(
-                            road
-                        )
-                    }
-                    //toList() нужен, чтобы мы ссылку на roads в liveData не передавали, а
-                    // то иначе она будет реагировать на его очистку и работать не корректно
-                    return HttpResponseState.Success(roads.toList())
+                    return HttpResponseState.Success(response.body()?.roadsList ?: emptyList())
                 } else {
                     return HttpResponseState.Failure(response.message() ?: "")
                 }

@@ -57,7 +57,6 @@ class MapRemoteDataSource {
 
     suspend fun addPoint(newPoint: MyPoint, reliability: Int, filePaths: List<String>) {
 
-
         val response = mapPointsApi.addPoint(
             requestPointBody = RequestPointBody(
                 RequestPoint(
