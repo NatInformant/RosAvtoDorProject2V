@@ -139,46 +139,12 @@ class InteractiveMapFragment : Fragment() {
     ): View {
         binding = FragmentInteractiveMapBinding.inflate(layoutInflater, container, false)
 
-        roadName = arguments?.getString("roadName")
-
         MapKitFactory.initialize(getApplicationContext())
         mapView = binding.mapview
 
-        //Хз правильно ли, но так хотя бы всегда обьект для popupWindow подгруженный будет и
-        //останется только сам обьект view создать и всё
         setUpBindingsForPopupWindows()
 
-        locationManager =
-            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-
         setUpCameraPosition()
-
-        mapView.map.addInputListener(addingNewPointListener)
-
-        viewModel.points.observe(viewLifecycleOwner)
-        { httpResponseState ->
-            when (httpResponseState) {
-                is HttpResponseState.Success -> {
-                    currentPointsList = httpResponseState.value
-                    addPointsToInteractiveMap(httpResponseState.value)
-                }
-                is HttpResponseState.Failure -> {
-                    currentPointsList = emptyList()
-                    addPointsToInteractiveMap(emptyList())
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Без доступа к интернету приложение не сможет работать",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-                else -> {
-                    currentPointsList = emptyList()
-                    addPointsToInteractiveMap(emptyList())
-
-                }
-            }
-        }
 
         if (requireContext().applicationInstance.currentUserPosition != null) {
             binding.updateMapPointsFab.isEnabled = true
@@ -379,6 +345,83 @@ class InteractiveMapFragment : Fragment() {
         }
 
     }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        roadName = arguments?.getString("roadName")
+
+        locationManager =
+            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+
+        checkLocationPermission()
+
+        mapView.map.addInputListener(addingNewPointListener)
+
+        viewModel.points.observe(viewLifecycleOwner)
+        { httpResponseState ->
+            when (httpResponseState) {
+                is HttpResponseState.Success -> {
+                    currentPointsList = httpResponseState.value
+                    addPointsToInteractiveMap(httpResponseState.value)
+                }
+                is HttpResponseState.Failure -> {
+                    currentPointsList = emptyList()
+                    addPointsToInteractiveMap(emptyList())
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Без доступа к интернету приложение не сможет работать",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else -> {
+                    currentPointsList = emptyList()
+                    addPointsToInteractiveMap(emptyList())
+
+                }
+            }
+        }
+
+        if (roadName != null) {
+            binding.backToChatsPanelButton.setOnClickListener {
+                val action =
+                    InteractiveMapFragmentDirections.actionInteractiveMapFragmentToRoadInformationFragment(
+                        roadName ?: ""
+                    )
+                findNavController().navigate(action)
+            }
+        } else {
+            binding.backToChatsPanelButton.setOnClickListener {
+                findNavController().navigate(R.id.action_interactiveMapFragment_to_roadsChooseFragment)
+            }
+        }
+        binding.filtersButton.setOnClickListener {
+            listenerForFiltersButton(it)
+        }
+        binding.showCurrentUserPositionFab.setOnClickListener {
+            listenerForShowCurrentUserPositionFab()
+        }
+        binding.addPointToMapFab.setOnClickListener {
+            listenerForAddPointToMapFab(binding.anchorViewForPopupMenu)
+        }
+        binding.updateMapPointsFab.setOnClickListener {
+            viewModel.updatePoints(
+                requireContext().applicationInstance.currentUserPosition!!.latitude,
+                requireContext().applicationInstance.currentUserPosition!!.longitude
+            )
+        }
+        binding.confirmAdditionPointToMapFab.setOnClickListener {
+            listenerForConfirmAdditionPointFab()
+        }
+        binding.cancelAdditionPointToMapFab.setOnClickListener {
+            listenerForCancelAdditionPointFab()
+        }
+
+        setUpFragmentCurrentState(savedInstanceState)
+    }
+
     private val addingNewPointListener = object : InputListener {
         override fun onMapTap(map: Map, point: Point) {
 
@@ -400,17 +443,26 @@ class InteractiveMapFragment : Fragment() {
             // Пока не нужно, но может потом что-нибудь покумекаем
         }
     }
-    private val userLocationObjectListener = object : UserLocationObjectListener {
-        override fun onObjectAdded(p0: UserLocationView) {
-            binding.showCurrentUserPositionFab.isEnabled = true
+    private fun addPointsToInteractiveMap(myPoints: List<MyPoint>) {
+
+        if (currentIconPlacemark != null) {
+            val currentIconPlacemarkPoint = currentIconPlacemark!!.geometry
+            mapView.map.mapObjects.clear()
+            setUpCurrentIconPlacemark(currentIconPlacemarkPoint)
+        } else {
+            mapView.map.mapObjects.clear()
         }
 
-        override fun onObjectRemoved(p0: UserLocationView) {
+        if (requireContext().applicationInstance.currentUserPosition != null) {
+            setUpUserAreaCircle()
         }
 
-        override fun onObjectUpdated(p0: UserLocationView, p1: ObjectEvent) {}
+        myPoints.forEach {
+            if (requireContext().applicationInstance.listFilterStatesForPointType[it.type]) {
+                addCurrentPointToMap(it)
+            }
+        }
     }
-
     private fun setUpCurrentIconPlacemark(point: Point) {
         currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
             .apply {
@@ -422,6 +474,31 @@ class InteractiveMapFragment : Fragment() {
                         zIndex = 10f
                     }
                 )
+            }
+    }
+    private fun setUpUserAreaCircle() {
+        val userAreaCircle = Circle(
+            Point(
+                requireContext().applicationInstance.currentUserPosition!!.latitude,
+                requireContext().applicationInstance.currentUserPosition!!.longitude
+            ), userAreaCircleRadius
+        )
+        mapView.map.mapObjects.addCircle(userAreaCircle).apply {
+            strokeWidth = 1.5f
+            strokeColor =
+                ContextCompat.getColor(requireContext(), R.color.user_area_circle_stroke_color)
+            fillColor =
+                ContextCompat.getColor(requireContext(), R.color.user_area_circle_fill_color)
+        }
+    }
+
+    private fun addCurrentPointToMap(it: MyPoint) {
+        mapView.map.mapObjects.addPlacemark()
+            .apply {
+                userData = it
+                geometry = Point(it.coordinates.latitude, it.coordinates.longitude)
+                setIcon(pointIconsList[it.type])
+                addTapListener(pointTapListener)
             }
     }
 
@@ -540,98 +617,6 @@ class InteractiveMapFragment : Fragment() {
             startActivity(intent) // Запускаем новое Activity с помощью Intent
         }
     }
-
-    private fun addPointsToInteractiveMap(myPoints: List<MyPoint>) {
-
-        if (currentIconPlacemark != null) {
-            val currentIconPlacemarkPoint = currentIconPlacemark!!.geometry
-            mapView.map.mapObjects.clear()
-            setUpCurrentIconPlacemark(currentIconPlacemarkPoint)
-        } else {
-            mapView.map.mapObjects.clear()
-        }
-
-        if (requireContext().applicationInstance.currentUserPosition != null) {
-            setUpUserAreaCircle()
-        }
-
-        myPoints.forEach {
-            if (requireContext().applicationInstance.listFilterStatesForPointType[it.type]) {
-                addCurrentPointToMap(it)
-            }
-        }
-    }
-
-    private fun setUpUserAreaCircle() {
-        val userAreaCircle = Circle(
-            Point(
-                requireContext().applicationInstance.currentUserPosition!!.latitude,
-                requireContext().applicationInstance.currentUserPosition!!.longitude
-            ), userAreaCircleRadius
-        )
-        mapView.map.mapObjects.addCircle(userAreaCircle).apply {
-            strokeWidth = 1.5f
-            strokeColor =
-                ContextCompat.getColor(requireContext(), R.color.user_area_circle_stroke_color)
-            fillColor =
-                ContextCompat.getColor(requireContext(), R.color.user_area_circle_fill_color)
-        }
-    }
-
-    private fun addCurrentPointToMap(it: MyPoint) {
-        mapView.map.mapObjects.addPlacemark()
-            .apply {
-                userData = it
-                geometry = Point(it.coordinates.latitude, it.coordinates.longitude)
-                setIcon(pointIconsList[it.type])
-                addTapListener(pointTapListener)
-            }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        checkLocationPermission()
-
-        if (roadName != null) {
-            binding.backToChatsPanelButton.setOnClickListener {
-                val action =
-                    InteractiveMapFragmentDirections.actionInteractiveMapFragmentToRoadInformationFragment(
-                        roadName ?: ""
-                    )
-                findNavController().navigate(action)
-            }
-        } else {
-            binding.backToChatsPanelButton.setOnClickListener {
-                findNavController().navigate(R.id.action_interactiveMapFragment_to_roadsChooseFragment)
-            }
-        }
-        binding.filtersButton.setOnClickListener {
-            listenerForFiltersButton(it)
-        }
-        binding.showCurrentUserPositionFab.setOnClickListener {
-            listenerForShowCurrentUserPositionFab()
-        }
-        binding.addPointToMapFab.setOnClickListener {
-            listenerForAddPointToMapFab(binding.anchorViewForPopupMenu)
-        }
-        binding.updateMapPointsFab.setOnClickListener {
-            viewModel.updatePoints(
-                requireContext().applicationInstance.currentUserPosition!!.latitude,
-                requireContext().applicationInstance.currentUserPosition!!.longitude
-            )
-        }
-        binding.confirmAdditionPointToMapFab.setOnClickListener {
-            listenerForConfirmAdditionPointFab()
-        }
-        binding.cancelAdditionPointToMapFab.setOnClickListener {
-            listenerForCancelAdditionPointFab()
-        }
-
-        setUpFragmentCurrentState(savedInstanceState)
-    }
-
-
     private fun setUpFragmentCurrentState(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             return
@@ -732,21 +717,32 @@ class InteractiveMapFragment : Fragment() {
         userLocationLayer?.setObjectListener(userLocationObjectListener)
     }
 
+    private val userLocationObjectListener = object : UserLocationObjectListener {
+        override fun onObjectAdded(p0: UserLocationView) {
+            binding.showCurrentUserPositionFab.isEnabled = true
+        }
+
+        override fun onObjectRemoved(p0: UserLocationView) {
+        }
+
+        override fun onObjectUpdated(p0: UserLocationView, p1: ObjectEvent) {}
+    }
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            if (requireContext().applicationInstance.currentUserPosition == null) {
-                requireContext().applicationInstance.currentUserPosition = location
+
+            if (getApplicationContext().applicationInstance.currentUserPosition == null) {
+                getApplicationContext().applicationInstance.currentUserPosition = location
 
                 viewModel.updatePoints(location.latitude, location.longitude)
 
-                requireContext().applicationInstance.currentCameraPosition = CameraPosition(
+                getApplicationContext().applicationInstance.currentCameraPosition = CameraPosition(
                     Point(location.latitude, location.longitude),
                     /* zoom = */ 8f,
                     /* azimuth = */ 0f,
                     /* tilt = */ 0f
                 )
                 mapView.map.move(
-                    requireContext().applicationInstance.currentCameraPosition!!,
+                    getApplicationContext().applicationInstance.currentCameraPosition!!,
                     Animation(Animation.Type.SMOOTH, 2f),
                     null
                 )
@@ -762,10 +758,10 @@ class InteractiveMapFragment : Fragment() {
             binding.addPointToMapFab.isEnabled = true
             binding.filtersButton.isEnabled = true
 
-            val distance = requireContext().applicationInstance.currentUserPosition!!.distanceTo(location)
+            val distance = getApplicationContext().applicationInstance.currentUserPosition!!.distanceTo(location)
 
             if (distance >= 5000) {
-                requireContext().applicationInstance.currentUserPosition = location
+                getApplicationContext().applicationInstance.currentUserPosition = location
 
                 viewModel.updatePoints(location.latitude, location.longitude)
             }
