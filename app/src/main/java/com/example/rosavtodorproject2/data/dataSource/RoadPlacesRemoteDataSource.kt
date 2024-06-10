@@ -7,16 +7,11 @@ import com.example.rosavtodorproject2.data.models.Road
 import com.example.rosavtodorproject2.data.models.RoadPlace
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class RoadPlacesRemoteDataSource {
-
-    private val roadsApi: RoadPlacesApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(RoadPlacesApi::class.java)
-    }
+class RoadPlacesRemoteDataSource @Inject constructor(
+    private val roadsApi: RoadPlacesApi
+) {
 
     suspend fun loadRoadPlaces(
         roadName: String,
@@ -34,7 +29,7 @@ class RoadPlacesRemoteDataSource {
         }.fold(
             onSuccess = { response ->
                 if (response.isSuccessful) {
-                    return HttpResponseState.Success( response.body()?.roadPlacesList ?: emptyList())
+                    return HttpResponseState.Success(response.body()?.roadPlacesList ?: emptyList())
                 } else {
                     return HttpResponseState.Failure(response.message() ?: "")
                 }

@@ -11,17 +11,14 @@ import okhttp3.RequestBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
+import javax.inject.Inject
 
 
-class MapRemoteDataSource {
+class MapRemoteDataSource @Inject constructor(
+    private val mapPointsApi: MapPointsApi
+) {
 
-    private val mapPointsApi: MapPointsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(MapPointsApi::class.java)
-    }
+
     private val addedByUserPoints: MutableList<MyPoint> = mutableListOf()
     private val points: MutableList<MyPoint> = mutableListOf()
     fun loadPoints() = HttpResponseState.Success(points + addedByUserPoints)

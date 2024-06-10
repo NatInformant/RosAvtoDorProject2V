@@ -1,9 +1,15 @@
 package com.example.rosavtodorproject2.ioc
 
+import com.example.rosavtodorproject2.BuildConfig
+import com.example.rosavtodorproject2.data.dataSource.AdvertisementsApi
 import com.example.rosavtodorproject2.data.dataSource.AdvertisementsRemoteDataSource
+import com.example.rosavtodorproject2.data.dataSource.MapPointsApi
 import com.example.rosavtodorproject2.data.dataSource.MapRemoteDataSource
+import com.example.rosavtodorproject2.data.dataSource.RoadAdvertisementsApi
 import com.example.rosavtodorproject2.data.dataSource.RoadAdvertisementsRemoteDataSource
+import com.example.rosavtodorproject2.data.dataSource.RoadPlacesApi
 import com.example.rosavtodorproject2.data.dataSource.RoadPlacesRemoteDataSource
+import com.example.rosavtodorproject2.data.dataSource.RoadsApi
 import com.example.rosavtodorproject2.data.dataSource.RoadsRemoteDataSource
 import com.example.rosavtodorproject2.domain.useCases.AdvertisementsUseCase
 import com.example.rosavtodorproject2.domain.useCases.MapPointsUseCase
@@ -11,6 +17,8 @@ import com.example.rosavtodorproject2.domain.useCases.RoadAdvertisementsUseCase
 import com.example.rosavtodorproject2.domain.useCases.RoadPlacesUseCase
 import com.example.rosavtodorproject2.domain.useCases.RoadsUseCase
 import dagger.Provides
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Scope
 
 @Scope
@@ -29,27 +37,45 @@ interface ApplicationComponent {
 
 @dagger.Module
 object DataModule {
-    //Убрать и заменить на provides методы для Retrofit обьектов,
-    // а то иначе они попросту бессымленны!
     @Provides
     @AppComponentScope
-    fun getAdvertisementsDataSource() = AdvertisementsRemoteDataSource()
+    fun getAdvertisementsApi(): AdvertisementsApi = Retrofit.Builder()
+        .baseUrl(BuildConfig.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(AdvertisementsApi::class.java)
 
     @Provides
     @AppComponentScope
-    fun getMapDataSource() = MapRemoteDataSource()
+    fun getMapPointsApi(): MapPointsApi = Retrofit.Builder()
+        .baseUrl(BuildConfig.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(MapPointsApi::class.java)
 
     @Provides
     @AppComponentScope
-    fun getRoadsDataSource() = RoadsRemoteDataSource()
+    fun getRoadsApi(): RoadsApi = Retrofit.Builder()
+        .baseUrl(BuildConfig.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(RoadsApi::class.java)
 
     @Provides
     @AppComponentScope
-    fun getRoadAdvertisementsDataSource() = RoadAdvertisementsRemoteDataSource()
+    fun getRoadAdvertisementsApi(): RoadAdvertisementsApi = Retrofit.Builder()
+        .baseUrl(BuildConfig.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(RoadAdvertisementsApi::class.java)
 
     @Provides
     @AppComponentScope
-    fun getRoadPlacesDataSource() = RoadPlacesRemoteDataSource()
+    fun getRoadPlacesApi(): RoadPlacesApi = Retrofit.Builder()
+        .baseUrl(BuildConfig.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(RoadPlacesApi::class.java)
 }
 
 @dagger.Module
@@ -106,15 +132,3 @@ object InteractiveMapViewModelModule {
         return InteractiveMapViewModelFactory(mapPointsUseCase)
     }
 }
-/*@dagger.Module
-object ConversationViewModelModule {
-    @Provides
-    @AppComponentScope
-    fun getConversationViewModelFactory(
-        advertisementsUseCase: AdvertisementsUseCase,
-        usersUseCase: UsersUseCase,
-        messageWithUserSenderUseCase: MessageWithUserSenderUseCase
-    ): ConversationViewModelFactory {
-        return ConversationViewModelFactory(advertisementsUseCase, usersUseCase,messageWithUserSenderUseCase)
-    }
-}*/

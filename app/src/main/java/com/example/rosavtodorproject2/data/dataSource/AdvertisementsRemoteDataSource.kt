@@ -8,17 +8,11 @@ import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.SortedMap
+import javax.inject.Inject
 
-class AdvertisementsRemoteDataSource {
-    private val advertisementsApi: AdvertisementsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(AdvertisementsApi::class.java)
-    }
-
-
+class AdvertisementsRemoteDataSource @Inject constructor(
+    private val advertisementsApi: AdvertisementsApi
+) {
     suspend fun loadAdvertisements(): HttpResponseState<List<Pair<String, List<Advertisement>>>> {
 
         kotlin.runCatching {

@@ -6,15 +6,11 @@ import com.example.rosavtodorproject2.data.models.AdvertisementWithRegionName
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class RoadAdvertisementsRemoteDataSource {
-    private val roadAdvertisementsApi: RoadAdvertisementsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(RoadAdvertisementsApi::class.java)
-    }
+class RoadAdvertisementsRemoteDataSource @Inject constructor(
+    private val roadAdvertisementsApi: RoadAdvertisementsApi
+) {
 
     suspend fun loadRoadAdvertisements(roadName: String): HttpResponseState<List<Advertisement>> {
 

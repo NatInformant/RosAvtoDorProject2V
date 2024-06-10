@@ -5,15 +5,11 @@ import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.Road
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class RoadsRemoteDataSource {
-    private val roadsApi: RoadsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(RoadsApi::class.java)
-    }
+class RoadsRemoteDataSource @Inject constructor(
+    private val roadsApi: RoadsApi
+) {
 
     suspend fun loadRoads(): HttpResponseState<List<Road>> {
 
