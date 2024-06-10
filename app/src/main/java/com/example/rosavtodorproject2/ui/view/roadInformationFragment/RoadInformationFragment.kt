@@ -138,7 +138,6 @@ class RoadInformationFragment : Fragment() {
                 is HttpResponseState.Success -> {
                     adapter.submitList(httpResponseState.value)
                 }
-
                 is HttpResponseState.Failure -> {
                     Toast.makeText(
                         requireContext(),
@@ -146,13 +145,8 @@ class RoadInformationFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                 }
-
                 else -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Без доступа к интернету приложение не сможет работать",
-                        Toast.LENGTH_LONG
-                    ).show()
+
                 }
             }
         }

@@ -110,11 +110,7 @@ class MainFragment : Fragment() {
                     ).show()
                 }
                 else -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Без доступа к интернету приложение не сможет работать",
-                        Toast.LENGTH_LONG
-                    ).show()
+
                 }
             }
         }
