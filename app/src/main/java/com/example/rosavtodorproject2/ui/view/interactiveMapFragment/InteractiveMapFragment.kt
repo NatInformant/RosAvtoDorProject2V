@@ -13,7 +13,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
+import android.provider.MediaStore
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.Gravity
@@ -675,7 +675,7 @@ class InteractiveMapFragment : Fragment() {
             }
 
             val addedPhotosList = savedInstanceState.getParcelableArray("addedPhotosList")
-            if(addedPhotosList?.isArrayOf<PhotoElementModel>() == true){
+            if (addedPhotosList?.isArrayOf<PhotoElementModel>() == true) {
                 photosListAdapter.submitList((addedPhotosList as Array<PhotoElementModel>).toList())
             }
         }
@@ -947,10 +947,11 @@ class InteractiveMapFragment : Fragment() {
             )
         )
     }
+
     private val pickMultipleMedia =
         registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
             // Callback is invoked after the user selects a media item or closes the photo picker.
-            photosListAdapter.submitList(uris.map {PhotoElementModel(it)})
+            photosListAdapter.submitList(uris.map { PhotoElementModel(it) })
         }
 
     private fun listenerForConfirmDescriptionAddingButton() {
@@ -973,7 +974,7 @@ class InteractiveMapFragment : Fragment() {
             text = bindingCreateDescriptionForAddingPointPopupWindow
                 .addingPointDescription.text.toString(),
             reliability = reliability,
-            fileUris = photosListAdapter.currentList.map { it.uri }
+            filePaths = photosListAdapter.currentList.mapNotNull { getRealPathFromURI(it.uri) }
         )
 
         reliability = 1
@@ -983,6 +984,17 @@ class InteractiveMapFragment : Fragment() {
         addingPointDescriptionPopupWindow = null
         bindingCreateDescriptionForAddingPointPopupWindow.addingPointDescription.text.clear()
         photosListAdapter.submitList(emptyList())
+    }
+
+    private fun getRealPathFromURI(uri: Uri?): String? {
+        var result: String? = null
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = requireContext().contentResolver.query(uri!!, proj, null, null, null)
+        if (cursor != null && cursor.moveToFirst()) {
+            result = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+            cursor.close()
+        }
+        return result
     }
 
     private fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
@@ -1022,7 +1034,7 @@ class InteractiveMapFragment : Fragment() {
                 ""
             }
         )
-        outState.putParcelableArray("addedPhotosList",photosListAdapter.currentList.toTypedArray())
+        outState.putParcelableArray("addedPhotosList", photosListAdapter.currentList.toTypedArray())
     }
 
     override fun onDestroyView() {

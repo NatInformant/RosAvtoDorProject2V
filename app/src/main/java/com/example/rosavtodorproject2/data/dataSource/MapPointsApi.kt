@@ -7,6 +7,7 @@ import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
@@ -18,9 +19,10 @@ interface MapPointsApi {
         @Query("Coordinates.Longitude") longitude:Double,
         @Query("Radius") radius:Double = 100.0,
     ): Response<PointsGetResponse>
+    @Multipart
     @POST("api/unverifiedPoints")
     suspend fun addPoint(
-        @Body requestPointBody: RequestPointBody,
+        @Part("requestPointBody") requestPointBody: RequestPointBody,
         @Part files: List<MultipartBody.Part>
     ):Response<PointPostResponse>
 }

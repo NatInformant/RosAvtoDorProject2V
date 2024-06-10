@@ -1,6 +1,5 @@
 package com.example.rosavtodorproject2.data.repositories
 
-import android.net.Uri
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -42,10 +41,10 @@ class PointsRepository @Inject constructor(
     }
 
     @MainThread
-    suspend fun addPoint(point: MyPoint, reliability: Int, fileUris:List<Uri>) {
+    suspend fun addPoint(point: MyPoint, reliability: Int, filePaths:List<String>) {
 
         withContext(Dispatchers.IO) {
-            mapPointsDataSource.addPoint(point, reliability,fileUris)
+            mapPointsDataSource.addPoint(point, reliability,filePaths)
         }
 
         mapPointsDataSource.loadPoints().value.add(point)

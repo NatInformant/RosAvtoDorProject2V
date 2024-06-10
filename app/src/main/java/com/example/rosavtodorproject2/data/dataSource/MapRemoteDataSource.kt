@@ -1,6 +1,5 @@
 package com.example.rosavtodorproject2.data.dataSource
 
-import android.net.Uri
 import com.example.rosavtodorproject2.BuildConfig
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.MyPoint
@@ -56,7 +55,7 @@ class MapRemoteDataSource {
         )
     }
 
-    suspend fun addPoint(newPoint: MyPoint, reliability: Int, fileUris: List<Uri>) {
+    suspend fun addPoint(newPoint: MyPoint, reliability: Int, filePaths: List<String>) {
 
 
         val response = mapPointsApi.addPoint(
@@ -72,8 +71,8 @@ class MapRemoteDataSource {
                     /*reliability = reliability*/
                 )
             ),
-            files = fileUris.filter { it.path != null }.map {
-                val file = File(it.path)
+            files = filePaths.map {
+                val file = File(it)
                 val requestFile =
                     RequestBody.create(MediaType.parse("multipart/form-data"), file)
                 MultipartBody.Part.createFormData("file", file.name, requestFile)

@@ -1,7 +1,5 @@
 package com.example.rosavtodorproject2.ui.view.interactiveMapFragment
 
-import android.net.Uri
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,10 +7,7 @@ import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.domain.useCases.MapPointsUseCase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.net.InetAddress
 import javax.inject.Inject
 
 class InteractiveMapFragmentViewModel @Inject constructor(
@@ -25,7 +20,7 @@ class InteractiveMapFragmentViewModel @Inject constructor(
         }
     }
 
-    fun addPoint(type: Int, latitude: Double, longitude: Double, text: String, reliability:Int, fileUris:List<Uri>) {
+    fun addPoint(type: Int, latitude: Double, longitude: Double, text: String, reliability:Int, filePaths:List<String>) {
         viewModelScope.launch {
             mapPointsUseCase.addPoint(
                 MyPoint(
@@ -36,7 +31,7 @@ class InteractiveMapFragmentViewModel @Inject constructor(
                     description = ""
                 ),
                 reliability = reliability,
-                fileUris = fileUris,
+                filePaths = filePaths,
             )
         }
     }
