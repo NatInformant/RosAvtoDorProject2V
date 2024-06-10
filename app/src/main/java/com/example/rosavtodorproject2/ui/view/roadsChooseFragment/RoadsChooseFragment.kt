@@ -14,19 +14,19 @@ import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.RoadsChooseFragmentBinding
+import com.example.rosavtodorproject2.ioc.applicationInstance
 
 class RoadsChooseFragment : Fragment() {
 
     private lateinit var binding: RoadsChooseFragmentBinding
-    private val applicationComponent
-        get() = App.getInstance().applicationComponent
+
 
     private var adapter: RoadsListAdapter = RoadsListAdapter(
         roadsDiffUtil = RoadsDiffUtil(),
         onRoadItemClick = ::onRoadItemClick,
     )
 
-    private val viewModel: RoadsChooseFragmentViewModel by viewModels { applicationComponent.getRoadsViewModelFactory() }
+    private val viewModel: RoadsChooseFragmentViewModel by viewModels { requireContext().applicationInstance.applicationComponent.getRoadsViewModelFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,

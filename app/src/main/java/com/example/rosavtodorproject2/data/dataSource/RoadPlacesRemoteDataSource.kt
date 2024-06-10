@@ -5,14 +5,14 @@ import com.example.rosavtodorproject2.data.models.Coordinates
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.Road
 import com.example.rosavtodorproject2.data.models.RoadPlace
+import com.example.rosavtodorproject2.ioc.AppComponentScope
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
-
+@AppComponentScope
 class RoadPlacesRemoteDataSource @Inject constructor(
     private val roadsApi: RoadPlacesApi
 ) {
-
     suspend fun loadRoadPlaces(
         roadName: String,
         roadPlacesType: String,

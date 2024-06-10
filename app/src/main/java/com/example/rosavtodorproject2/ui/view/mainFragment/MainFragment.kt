@@ -19,19 +19,18 @@ import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.MainFragmentBinding
+import com.example.rosavtodorproject2.ioc.applicationInstance
 
 class MainFragment : Fragment() {
 
     private lateinit var binding: MainFragmentBinding
-    private val applicationComponent
-        get() = App.getInstance().applicationComponent
 
 
     private var adapter: AreaAdvertisementsListAdapter = AreaAdvertisementsListAdapter(
         areaAdvertisementsDiffUtil = AreaAdvertisementsDiffUtil(),
     )
 
-    private val viewModel: MainFragmentViewModel by viewModels { applicationComponent.getMainViewModelFactory() }
+    private val viewModel: MainFragmentViewModel by viewModels { requireContext().applicationInstance.applicationComponent.getMainViewModelFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,

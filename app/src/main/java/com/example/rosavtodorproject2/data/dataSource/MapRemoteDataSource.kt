@@ -5,6 +5,7 @@ import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.data.models.RequestPoint
 import com.example.rosavtodorproject2.data.models.RequestPointBody
+import com.example.rosavtodorproject2.ioc.AppComponentScope
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -13,11 +14,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import javax.inject.Inject
 
-
+@AppComponentScope
 class MapRemoteDataSource @Inject constructor(
     private val mapPointsApi: MapPointsApi
 ) {
-
 
     private val addedByUserPoints: MutableList<MyPoint> = mutableListOf()
     private val points: MutableList<MyPoint> = mutableListOf()

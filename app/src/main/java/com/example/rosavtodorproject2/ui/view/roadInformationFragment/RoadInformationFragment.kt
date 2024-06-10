@@ -17,19 +17,18 @@ import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.RoadInformationFragmentBinding
+import com.example.rosavtodorproject2.ioc.applicationInstance
 import com.example.rosavtodorproject2.ui.view.mainFragment.AdvertisementsDiffUtil
 
 class RoadInformationFragment : Fragment() {
 
     private lateinit var binding: RoadInformationFragmentBinding
-    private val applicationComponent
-        get() = App.getInstance().applicationComponent
 
     private var adapter: RoadAdvertisementsListAdapter = RoadAdvertisementsListAdapter(
         advertisementsDiffUtil = AdvertisementsDiffUtil(),
     )
 
-    private val viewModel: RoadInformationFragmentViewModel by viewModels { applicationComponent.getRoadInformationViewModelFactory() }
+    private val viewModel: RoadInformationFragmentViewModel by viewModels { requireContext().applicationInstance.applicationComponent.getRoadInformationViewModelFactory() }
     var roadName: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -138,6 +137,7 @@ class RoadInformationFragment : Fragment() {
                 is HttpResponseState.Success -> {
                     adapter.submitList(httpResponseState.value)
                 }
+
                 is HttpResponseState.Failure -> {
                     Toast.makeText(
                         requireContext(),
@@ -145,6 +145,7 @@ class RoadInformationFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                 }
+
                 else -> {
 
                 }
