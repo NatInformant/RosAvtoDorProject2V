@@ -4,11 +4,14 @@ import android.net.Uri
 import com.example.rosavtodorproject2.BuildConfig
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.MyPoint
-import com.example.rosavtodorproject2.data.models.RequestPointBody
 import com.example.rosavtodorproject2.data.models.RequestPoint
-import com.example.rosavtodorproject2.data.models.RoadPlace
+import com.example.rosavtodorproject2.data.models.RequestPointBody
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 
 
 class MapRemoteDataSource {
@@ -56,7 +59,6 @@ class MapRemoteDataSource {
     suspend fun addPoint(newPoint: MyPoint, reliability: Int, fileUris: List<Uri>) {
 
 
-
         val response = mapPointsApi.addPoint(
             requestPointBody = RequestPointBody(
                 RequestPoint(
@@ -69,7 +71,13 @@ class MapRemoteDataSource {
                     },
                     /*reliability = reliability*/
                 )
-            )
+            ),
+            files = fileUris.filter { it.path != null }.map {
+                val file = File(it.path)
+                val requestFile =
+                    RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                MultipartBody.Part.createFormData("file", file.name, requestFile)
+            }
         )
 
         if (response.isSuccessful) {
