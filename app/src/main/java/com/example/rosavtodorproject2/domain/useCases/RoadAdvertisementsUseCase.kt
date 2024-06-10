@@ -11,11 +11,9 @@ import javax.inject.Inject
 class RoadAdvertisementsUseCase @Inject constructor(
     private val roadAdvertisementsRepository: RoadAdvertisementsRepository,
 ) {
-    val roadAdvertisements: LiveData<HttpResponseState<List<Advertisement>>> =
-        roadAdvertisementsRepository.roadAdvertisements
 
-    suspend fun updateRoadAdvertisements(roadName:String) {
-        withContext(Dispatchers.IO) {
+    suspend fun updateRoadAdvertisements(roadName:String): HttpResponseState<List<Advertisement>> {
+        return withContext(Dispatchers.IO) {
             roadAdvertisementsRepository.updateAdvertisements(roadName)
         }
     }
