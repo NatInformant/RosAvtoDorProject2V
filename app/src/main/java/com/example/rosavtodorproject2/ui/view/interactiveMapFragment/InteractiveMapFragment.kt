@@ -128,7 +128,6 @@ class InteractiveMapFragment : Fragment() {
     private val userAreaCircleRadius = 100000f
     private var locationManager: LocationManager? = null
     private var userLocationLayer: UserLocationLayer? = null
-    private var roadName: String? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
         context.applicationInstance.applicationComponent.injectInteractiveMapFragment(this)
@@ -350,8 +349,6 @@ class InteractiveMapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        roadName = arguments?.getString("roadName")
-
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager?
 
@@ -384,18 +381,8 @@ class InteractiveMapFragment : Fragment() {
             }
         }
 
-        if (roadName != null) {
-            binding.backToChatsPanelButton.setOnClickListener {
-                val action =
-                    InteractiveMapFragmentDirections.actionInteractiveMapFragmentToRoadInformationFragment(
-                        roadName ?: ""
-                    )
-                findNavController().navigate(action)
-            }
-        } else {
-            binding.backToChatsPanelButton.setOnClickListener {
-                findNavController().navigate(R.id.action_interactiveMapFragment_to_roadsChooseFragment)
-            }
+        binding.backToChatsPanelButton.setOnClickListener {
+            findNavController().popBackStack()
         }
         binding.filtersButton.setOnClickListener {
             listenerForFiltersButton(it)

@@ -32,6 +32,8 @@ import com.example.rosavtodorproject2.ioc.RoadPlacesInformationViewModelFactory
 import com.example.rosavtodorproject2.ioc.applicationInstance
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
+import com.yandex.runtime.Runtime
+import com.yandex.runtime.Runtime.getApplicationContext
 import javax.inject.Inject
 
 class RoadPlacesInformationFragment : Fragment() {
@@ -102,11 +104,7 @@ class RoadPlacesInformationFragment : Fragment() {
         checkLocationPermission()
 
         binding.backToRoadInformationFragmentPanelButton.setOnClickListener {
-            val action =
-                RoadPlacesInformationFragmentDirections.actionRoadPlacesInformationFragmentToRoadInformationFragment(
-                    roadName ?: ""
-                )
-            findNavController().navigate(action)
+            findNavController().popBackStack()
         }
     }
     private fun setUpRoadPlacesList() {
@@ -272,14 +270,15 @@ class RoadPlacesInformationFragment : Fragment() {
         }
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            if (requireContext().applicationInstance.currentUserPosition == null) {
-                requireContext().applicationInstance.currentUserPosition = location
+            //Вернуть костыль, ибо он хоть и костыль но НАДЁЖНЫЙ
+            if (getApplicationContext().applicationInstance.currentUserPosition == null) {
+                getApplicationContext().applicationInstance.currentUserPosition = location
 
                 updateRoadPlacesAndMapPoints()
 
                 //Оно здесь нужно, на случай если это будет первым окном,
                 //в котором мы определили позицию пользователя.
-                requireContext().applicationInstance.currentCameraPosition = CameraPosition(
+                getApplicationContext().applicationInstance.currentCameraPosition = CameraPosition(
                     Point(location.latitude, location.longitude),
                     /* zoom = */ 8f,
                     /* azimuth = */ 0f,
@@ -289,10 +288,10 @@ class RoadPlacesInformationFragment : Fragment() {
                 return
             }
 
-            val distance = requireContext().applicationInstance.currentUserPosition!!.distanceTo(location)
+            val distance = getApplicationContext().applicationInstance.currentUserPosition!!.distanceTo(location)
 
             if (distance >= 5000) {
-                requireContext().applicationInstance.currentUserPosition = location
+                getApplicationContext().applicationInstance.currentUserPosition = location
 
                 updateRoadPlacesAndMapPoints()
             }

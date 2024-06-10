@@ -75,7 +75,7 @@ class RoadInformationFragment : Fragment() {
             findNavController().navigate(action)
         }
         binding.backToRoadsChooseFragmentPanelButton.setOnClickListener {
-            findNavController().navigate(R.id.action_roadInformationFragment_to_roadsChooseFragment)
+            findNavController().popBackStack()
         }
 
 
