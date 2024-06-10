@@ -1,6 +1,7 @@
 package com.example.rosavtodorproject2.ui.view.roadsChooseFragment
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rosavtodorproject2.data.models.Advertisement
@@ -14,14 +15,20 @@ import javax.inject.Inject
 class RoadsChooseFragmentViewModel @Inject constructor(
     private val roadsUseCase: RoadsUseCase,
 ) : ViewModel() {
-    val roads: LiveData<HttpResponseState<List<Road>>> = roadsUseCase.roads
+    private val _roads =
+        MutableLiveData<HttpResponseState<List<Road>>>(
+            HttpResponseState.Loading
+        )
+
+    val roads: LiveData<HttpResponseState<List<Road>>> = _roads
 
     init {
         updateRoads()
     }
+
     fun updateRoads() {
         viewModelScope.launch {
-            roadsUseCase.updateRoads()
+            _roads.postValue(roadsUseCase.updateRoads())
         }
     }
 }

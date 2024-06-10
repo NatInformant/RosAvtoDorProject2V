@@ -15,19 +15,9 @@ import javax.inject.Inject
 class RoadsRepository @Inject constructor(
     val dataSource: RoadsRemoteDataSource
 ) {
-    private val _roads =
-        MutableLiveData<HttpResponseState<List<Road>>>(
-            HttpResponseState.Success(
-                emptyList()
-            )
-        )
-
-    val roads: LiveData<HttpResponseState<List<Road>>> = _roads
-
-    suspend fun updateRoads() {
-        val responseState = withContext(Dispatchers.IO) {
+    suspend fun updateRoads(): HttpResponseState<List<Road>> {
+        return withContext(Dispatchers.IO) {
             dataSource.loadRoads()
         }
-        _roads.postValue(responseState)
     }
 }
