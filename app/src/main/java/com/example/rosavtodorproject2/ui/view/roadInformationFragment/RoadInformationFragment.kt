@@ -68,11 +68,7 @@ class RoadInformationFragment : Fragment() {
         setUpRoadAdvertisementsList()
 
         binding.goToInteractiveMapFragmentPanel.root.setOnClickListener {
-            val action =
-                RoadInformationFragmentDirections.actionRoadInformationFragmentToInteractiveMapFragment(
-                    roadName ?: ""
-                )
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_roadInformationFragment_to_interactiveMapFragment)
         }
         binding.backToRoadsChooseFragmentPanelButton.setOnClickListener {
             findNavController().popBackStack()

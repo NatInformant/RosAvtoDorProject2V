@@ -39,14 +39,6 @@
         android:name="com.example.rosavtodorproject2.ui.view.interactiveMapFragment.InteractiveMapFragment"
         android:label="fragment_interactive_map"
         tools:layout="@layout/fragment_interactive_map" >
-        <action
-            android:id="@+id/action_interactiveMapFragment_to_roadsChooseFragment"
-            app:destination="@id/roadsChooseFragment" />
-        <argument
-            android:name="roadName" />
-        <action
-            android:id="@+id/action_interactiveMapFragment_to_roadInformationFragment"
-            app:destination="@id/roadInformationFragment" />
     </fragment>
     <fragment
         android:id="@+id/roadsChooseFragment"
@@ -55,9 +47,6 @@
         <action
             android:id="@+id/action_roadsChooseFragment_to_interactiveMapFragment"
             app:destination="@id/interactiveMapFragment" />
-        <action
-            android:id="@+id/action_roadsChooseFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
         <action
             android:id="@+id/action_roadsChooseFragment_to_roadInformationFragment"
             app:destination="@id/roadInformationFragment" />
@@ -74,9 +63,6 @@
             android:name="roadName"
             android:defaultValue="" />
         <action
-            android:id="@+id/action_roadInformationFragment_to_roadsChooseFragment"
-            app:destination="@id/roadsChooseFragment" />
-        <action
             android:id="@+id/action_roadInformationFragment_to_roadPlacesInformationFragment"
             app:destination="@id/roadPlacesInformationFragment" />
     </fragment>
@@ -85,9 +71,6 @@
         android:name="com.example.rosavtodorproject2.ui.view.roadPlacesInformationFragment.RoadPlacesInformationFragment"
         android:label="road_place_information_fragment"
         tools:layout="@layout/road_places_information_fragment" >
-        <action
-            android:id="@+id/action_roadPlacesInformationFragment_to_roadInformationFragment"
-            app:destination="@id/roadInformationFragment" />
         <argument
             android:name="roadName"
             android:defaultValue="" />
