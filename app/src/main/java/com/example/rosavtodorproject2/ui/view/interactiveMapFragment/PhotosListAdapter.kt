@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
+import coil.size.Scale
+import coil.transform.RoundedCornersTransformation
 import com.example.rosavtodorproject2.databinding.PhotoElementBinding
 import com.example.rosavtodorproject2.ui.model.PhotoElementModel
 
@@ -40,11 +42,11 @@ class PhotosListAdapter(
             removeCurrentElementCallBack: (PhotoElementModel) -> Unit,
             photoElementModel: PhotoElementModel
         ) {
-            Glide.with(photoElementBinding.root)
-                .load(photoElementModel.uri)
-                .override(dpToPx(60), dpToPx(60))
-                .centerCrop()
-                .into(photoElementBinding.chosenPhotoPreview)
+            photoElementBinding.chosenPhotoPreview.load(photoElementModel.uri){
+                transformations(RoundedCornersTransformation(dpToPx(14).toFloat()))
+                size(dpToPx(60), dpToPx(60))
+                scale(Scale.FILL)
+            }
 
             photoElementBinding.deleteChosenPhotoButton.setOnClickListener {
                 removeCurrentElementCallBack(photoElementModel)

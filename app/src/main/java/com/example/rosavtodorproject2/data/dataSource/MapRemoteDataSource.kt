@@ -7,6 +7,7 @@ import com.example.rosavtodorproject2.data.models.RequestPoint
 import com.example.rosavtodorproject2.data.models.RequestPointBody
 import com.example.rosavtodorproject2.ioc.AppComponentScope
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Retrofit
@@ -72,7 +73,7 @@ class MapRemoteDataSource @Inject constructor(
             files = filePaths.map {
                 val file = File(it)
                 val requestFile =
-                    RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                    RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
                 MultipartBody.Part.createFormData("file", file.name, requestFile)
             }
         )
