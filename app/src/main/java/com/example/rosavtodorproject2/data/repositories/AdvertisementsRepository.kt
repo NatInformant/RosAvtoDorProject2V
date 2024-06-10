@@ -24,11 +24,10 @@ class AdvertisementsRepository @Inject constructor(
     val advertisements: LiveData<HttpResponseState<List<Pair<String,List<Advertisement>>>>> =
         _advertisements
 
-    @MainThread
     suspend fun updateAdvertisements() {
         val responseState = withContext(Dispatchers.IO) {
             dataSource.loadAdvertisements()
         }
-        _advertisements.value = responseState
+        _advertisements.postValue(responseState)
     }
 }

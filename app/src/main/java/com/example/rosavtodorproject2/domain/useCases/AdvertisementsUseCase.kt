@@ -16,7 +16,7 @@ class AdvertisementsUseCase @Inject constructor(
         advertisementsRepository.advertisements
 
     suspend fun updateAdvertisements() {
-        withContext(Dispatchers.Main) {
+        withContext(Dispatchers.IO) {
             advertisementsRepository.updateAdvertisements()
         }
     }

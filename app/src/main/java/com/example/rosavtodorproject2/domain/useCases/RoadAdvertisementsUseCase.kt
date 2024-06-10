@@ -15,7 +15,7 @@ class RoadAdvertisementsUseCase @Inject constructor(
         roadAdvertisementsRepository.roadAdvertisements
 
     suspend fun updateRoadAdvertisements(roadName:String) {
-        withContext(Dispatchers.Main) {
+        withContext(Dispatchers.IO) {
             roadAdvertisementsRepository.updateAdvertisements(roadName)
         }
     }

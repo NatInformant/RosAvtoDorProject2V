@@ -24,11 +24,10 @@ class RoadAdvertisementsRepository @Inject constructor(
     val roadAdvertisements: LiveData<HttpResponseState<List<Advertisement>>> =
         _roadAdvertisements
 
-    @MainThread
     suspend fun updateAdvertisements(roadName:String) {
         val responseState = withContext(Dispatchers.IO) {
             dataSource.loadRoadAdvertisements(roadName)
         }
-        _roadAdvertisements.value = responseState
+        _roadAdvertisements.postValue(responseState)
     }
 }

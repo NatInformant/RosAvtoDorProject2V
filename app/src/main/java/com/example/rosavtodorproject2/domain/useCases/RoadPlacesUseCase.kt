@@ -20,7 +20,7 @@ class RoadPlacesUseCase @Inject constructor(
         roadPlacesType: String,
         currentUserPosition: Coordinates
     ) {
-        withContext(Dispatchers.Main) {
+        withContext(Dispatchers.IO) {
             pointsRepository.updateOnlyRoadPlaces(roadName, roadPlacesType, currentUserPosition)
         }
     }
@@ -29,7 +29,7 @@ class RoadPlacesUseCase @Inject constructor(
         roadPlacesType: String,
         currentUserPosition: Coordinates
     ) {
-        withContext(Dispatchers.Main) {
+        withContext(Dispatchers.IO) {
             pointsRepository.updateRoadPlacesAndMapPoints(roadName, roadPlacesType, currentUserPosition)
         }
     }

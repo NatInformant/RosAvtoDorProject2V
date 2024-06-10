@@ -31,16 +31,14 @@ class PointsRepository @Inject constructor(
     val roadPlaces: LiveData<HttpResponseState<List<RoadPlace>>> =
         _roadPlaces
 
-    @MainThread
     suspend fun updatePoints(currentLatitude: Double, currentLongitude: Double) {
         val loadedList =
             withContext(Dispatchers.IO) {
                 mapPointsDataSource.getPoints(currentLatitude, currentLongitude)
             }
-        _points.value = loadedList
+        _points.postValue(loadedList)
     }
 
-    @MainThread
     suspend fun addPoint(point: MyPoint, reliability: Int, filePaths:List<String>) {
 
         withContext(Dispatchers.IO) {
@@ -48,10 +46,9 @@ class PointsRepository @Inject constructor(
         }
 
         mapPointsDataSource.loadPoints().value.add(point)
-        _points.value = mapPointsDataSource.loadPoints()
+        _points.postValue(mapPointsDataSource.loadPoints())
     }
 
-    @MainThread
     suspend fun updateOnlyRoadPlaces(
         roadName: String,
         roadPlacesType: String,
@@ -60,10 +57,9 @@ class PointsRepository @Inject constructor(
         val responseState = withContext(Dispatchers.IO) {
             roadPlacesDataSource.loadRoadPlaces(roadName, roadPlacesType, currentUserPosition)
         }
-        _roadPlaces.value = responseState
+        _roadPlaces.postValue(responseState)
     }
 
-    @MainThread
     suspend fun updateRoadPlacesAndMapPoints(
         roadName: String,
         roadPlacesType: String,

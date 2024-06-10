@@ -24,11 +24,10 @@ class RoadsRepository @Inject constructor(
 
     val roads: LiveData<HttpResponseState<List<Road>>> = _roads
 
-    @MainThread
     suspend fun updateRoads() {
         val responseState = withContext(Dispatchers.IO) {
             dataSource.loadRoads()
         }
-        _roads.value = responseState
+        _roads.postValue(responseState)
     }
 }

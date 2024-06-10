@@ -18,7 +18,7 @@ class RoadsUseCase @Inject constructor(
     val roads: LiveData<HttpResponseState<List<Road>>> = roadsRepository.roads
 
     suspend fun updateRoads() {
-        withContext(Dispatchers.Main) {
+        withContext(Dispatchers.IO) {
             roadsRepository.updateRoads()
         }
     }
