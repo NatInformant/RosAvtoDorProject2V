@@ -145,7 +145,7 @@ class InteractiveMapFragment : Fragment() {
 
         setUpCameraPosition()
 
-        if (requireContext().applicationInstance.currentUserPosition != null) {
+        if (App.getInstance().currentUserPosition != null) {
             binding.updateMapPointsFab.isEnabled = true
             binding.addPointToMapFab.isEnabled = true
             binding.filtersButton.isEnabled = true
@@ -172,38 +172,38 @@ class InteractiveMapFragment : Fragment() {
             FilterPointsCheckboxPopupWindowBinding.inflate(layoutInflater, binding.root, false)
 
         bindingFilterPointsCheckboxPopupWindow.petrolStationCheckBox.also {
-            it.isChecked = requireContext().applicationInstance.listFilterStatesForPointType[0]
+            it.isChecked = App.getInstance().listFilterStatesForPointType[0]
         }.setOnCheckedChangeListener(
             checkedChangeListener
         )
 
         bindingFilterPointsCheckboxPopupWindow.cafeCheckBox.also {
-            it.isChecked = requireContext().applicationInstance.listFilterStatesForPointType[1]
+            it.isChecked = App.getInstance().listFilterStatesForPointType[1]
         }.setOnCheckedChangeListener(
             checkedChangeListener
         )
         bindingFilterPointsCheckboxPopupWindow.carServiceCheckBox.also {
-            it.isChecked = requireContext().applicationInstance.listFilterStatesForPointType[2]
+            it.isChecked = App.getInstance().listFilterStatesForPointType[2]
         }.setOnCheckedChangeListener(
             checkedChangeListener
         )
         bindingFilterPointsCheckboxPopupWindow.guesthouseCheckBox.also {
-            it.isChecked = requireContext().applicationInstance.listFilterStatesForPointType[3]
+            it.isChecked = App.getInstance().listFilterStatesForPointType[3]
         }.setOnCheckedChangeListener(
             checkedChangeListener
         )
         bindingFilterPointsCheckboxPopupWindow.carRechargeStationCheckBox.also {
-            it.isChecked = requireContext().applicationInstance.listFilterStatesForPointType[4]
+            it.isChecked = App.getInstance().listFilterStatesForPointType[4]
         }.setOnCheckedChangeListener(
             checkedChangeListener
         )
         bindingFilterPointsCheckboxPopupWindow.eventCheckBox.also {
-            it.isChecked = requireContext().applicationInstance.listFilterStatesForPointType[5]
+            it.isChecked = App.getInstance().listFilterStatesForPointType[5]
         }.setOnCheckedChangeListener(
             checkedChangeListener
         )
         bindingFilterPointsCheckboxPopupWindow.incidentsCheckBox.also {
-            it.isChecked = requireContext().applicationInstance.listFilterStatesForPointType[6]
+            it.isChecked = App.getInstance().listFilterStatesForPointType[6]
         }.setOnCheckedChangeListener(
             checkedChangeListener
         )
@@ -245,7 +245,7 @@ class InteractiveMapFragment : Fragment() {
             if (button?.text == getString(R.string.incidents)) {
                 for (x in 6..9) {
                     changedFilterStatePointType = x
-                    requireContext().applicationInstance.listFilterStatesForPointType[changedFilterStatePointType] =
+                    App.getInstance().listFilterStatesForPointType[changedFilterStatePointType] =
                         isChecked
                     if (isChecked) {
                         addCurrentTypePointsToMap()
@@ -265,7 +265,7 @@ class InteractiveMapFragment : Fragment() {
                 getString(R.string.event) -> changedFilterStatePointType = 5
             }
 
-            requireContext().applicationInstance.listFilterStatesForPointType[changedFilterStatePointType] = isChecked
+            App.getInstance().listFilterStatesForPointType[changedFilterStatePointType] = isChecked
 
             if (isChecked) {
                 addCurrentTypePointsToMap()
@@ -286,7 +286,7 @@ class InteractiveMapFragment : Fragment() {
     }
 
     private fun setUpCameraPosition() {
-        if (requireContext().applicationInstance.currentCameraPosition == null) {
+        if (App.getInstance().currentCameraPosition == null) {
             mapView.map.move(
                 CameraPosition(
                     Point(BASE_LATITUDE, BASE_LONGITUDE),
@@ -299,7 +299,7 @@ class InteractiveMapFragment : Fragment() {
             )
         } else {
             mapView.map.move(
-                requireContext().applicationInstance.currentCameraPosition!!,
+                App.getInstance().currentCameraPosition!!,
                 Animation(Animation.Type.SMOOTH, 1f),
                 null
             )
@@ -395,8 +395,8 @@ class InteractiveMapFragment : Fragment() {
         }
         binding.updateMapPointsFab.setOnClickListener {
             viewModel.updatePoints(
-                requireContext().applicationInstance.currentUserPosition!!.latitude,
-                requireContext().applicationInstance.currentUserPosition!!.longitude
+                App.getInstance().currentUserPosition!!.latitude,
+                App.getInstance().currentUserPosition!!.longitude
             )
         }
         binding.confirmAdditionPointToMapFab.setOnClickListener {
@@ -440,12 +440,12 @@ class InteractiveMapFragment : Fragment() {
             mapView.map.mapObjects.clear()
         }
 
-        if (requireContext().applicationInstance.currentUserPosition != null) {
+        if (App.getInstance().currentUserPosition != null) {
             setUpUserAreaCircle()
         }
 
         myPoints.forEach {
-            if (requireContext().applicationInstance.listFilterStatesForPointType[it.type]) {
+            if (App.getInstance().listFilterStatesForPointType[it.type]) {
                 addCurrentPointToMap(it)
             }
         }
@@ -466,8 +466,8 @@ class InteractiveMapFragment : Fragment() {
     private fun setUpUserAreaCircle() {
         val userAreaCircle = Circle(
             Point(
-                requireContext().applicationInstance.currentUserPosition!!.latitude,
-                requireContext().applicationInstance.currentUserPosition!!.longitude
+                App.getInstance().currentUserPosition!!.latitude,
+                App.getInstance().currentUserPosition!!.longitude
             ), userAreaCircleRadius
         )
         mapView.map.mapObjects.addCircle(userAreaCircle).apply {
@@ -590,8 +590,8 @@ class InteractiveMapFragment : Fragment() {
         private fun goToYandexMaps(currentPointCoordinates: Coordinates) {
             val url =
                 "https://yandex.ru/maps/?rtext=" +
-                        "${requireContext().applicationInstance.currentUserPosition?.latitude}," +// точка
-                        "${requireContext().applicationInstance.currentUserPosition?.longitude}" +// начала пути
+                        "${App.getInstance().currentUserPosition?.latitude}," +// точка
+                        "${App.getInstance().currentUserPosition?.longitude}" +// начала пути
                         "~" +
                         "${currentPointCoordinates.latitude}," +//точка
                         "${currentPointCoordinates.longitude}" +//конца пути
@@ -665,8 +665,8 @@ class InteractiveMapFragment : Fragment() {
             // Если разрешение предоставлено, запрашиваем обновления местоположения
             locationManager?.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
-                requireContext().applicationInstance.LOCATION_UPDATES_TIME_INTERVAL,
-                requireContext().applicationInstance.LOCATION_UPDATES_MIN_DISTANCE,
+                App.getInstance().LOCATION_UPDATES_TIME_INTERVAL,
+                App.getInstance().LOCATION_UPDATES_MIN_DISTANCE,
                 locationListener
             )
             setUpCurrentUserPositionIcon()
@@ -682,8 +682,8 @@ class InteractiveMapFragment : Fragment() {
                 // Разрешение на использование местоположения предоставлено
                 locationManager?.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    requireContext().applicationInstance.LOCATION_UPDATES_TIME_INTERVAL,
-                    requireContext().applicationInstance.LOCATION_UPDATES_MIN_DISTANCE,
+                    App.getInstance().LOCATION_UPDATES_TIME_INTERVAL,
+                    App.getInstance().LOCATION_UPDATES_MIN_DISTANCE,
                     locationListener
                 )
                 setUpCurrentUserPositionIcon()
@@ -717,19 +717,19 @@ class InteractiveMapFragment : Fragment() {
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
 
-            if (getApplicationContext().applicationInstance.currentUserPosition == null) {
-                getApplicationContext().applicationInstance.currentUserPosition = location
+            if (App.getInstance().currentUserPosition == null) {
+                App.getInstance().currentUserPosition = location
 
                 viewModel.updatePoints(location.latitude, location.longitude)
 
-                getApplicationContext().applicationInstance.currentCameraPosition = CameraPosition(
+                App.getInstance().currentCameraPosition = CameraPosition(
                     Point(location.latitude, location.longitude),
                     /* zoom = */ 8f,
                     /* azimuth = */ 0f,
                     /* tilt = */ 0f
                 )
                 mapView.map.move(
-                    getApplicationContext().applicationInstance.currentCameraPosition!!,
+                    App.getInstance().currentCameraPosition!!,
                     Animation(Animation.Type.SMOOTH, 2f),
                     null
                 )
@@ -745,10 +745,10 @@ class InteractiveMapFragment : Fragment() {
             binding.addPointToMapFab.isEnabled = true
             binding.filtersButton.isEnabled = true
 
-            val distance = getApplicationContext().applicationInstance.currentUserPosition!!.distanceTo(location)
+            val distance = App.getInstance().currentUserPosition!!.distanceTo(location)
 
             if (distance >= 5000) {
-                getApplicationContext().applicationInstance.currentUserPosition = location
+                App.getInstance().currentUserPosition = location
 
                 viewModel.updatePoints(location.latitude, location.longitude)
             }
@@ -792,12 +792,12 @@ class InteractiveMapFragment : Fragment() {
             mapView.map.move(
                 CameraPosition(
                     Point(
-                        requireContext().applicationInstance.currentUserPosition!!.latitude,
-                        requireContext().applicationInstance.currentUserPosition!!.longitude
+                        App.getInstance().currentUserPosition!!.latitude,
+                        App.getInstance().currentUserPosition!!.longitude
                     ),
-                    /* zoom = */requireContext().applicationInstance.currentCameraPosition!!.zoom,
-                    /* azimuth = */ requireContext().applicationInstance.currentCameraPosition!!.azimuth,
-                    /* tilt = */ requireContext().applicationInstance.currentCameraPosition!!.tilt
+                    /* zoom = */App.getInstance().currentCameraPosition!!.zoom,
+                    /* azimuth = */ App.getInstance().currentCameraPosition!!.azimuth,
+                    /* tilt = */ App.getInstance().currentCameraPosition!!.tilt
                 ),
                 Animation(Animation.Type.SMOOTH, 2f),
                 null
@@ -1023,7 +1023,7 @@ class InteractiveMapFragment : Fragment() {
         //Не уверен, что теперь в этом вообще есть необходимость, но лучше перебдеть, чем недобдеть.
         addingPointDescriptionPopupWindow?.dismiss()
         addingPointDescriptionPopupWindow = null
-        requireContext().applicationInstance.currentCameraPosition = mapView.map.cameraPosition
+        App.getInstance().currentCameraPosition = mapView.map.cameraPosition
         super.onDestroyView()
     }
 }

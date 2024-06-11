@@ -239,8 +239,8 @@ class RoadPlacesInformationFragment : Fragment() {
             // Если разрешение предоставлено, запрашиваем обновления местоположения
             locationManager?.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
-                requireContext().applicationInstance.LOCATION_UPDATES_TIME_INTERVAL,
-                requireContext().applicationInstance.LOCATION_UPDATES_MIN_DISTANCE,
+                App.getInstance().LOCATION_UPDATES_TIME_INTERVAL,
+                App.getInstance().LOCATION_UPDATES_MIN_DISTANCE,
                 locationListener
             )
         }
@@ -255,8 +255,8 @@ class RoadPlacesInformationFragment : Fragment() {
                 // Разрешение на использование местоположения предоставлено
                 locationManager?.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    requireContext().applicationInstance.LOCATION_UPDATES_TIME_INTERVAL,
-                    requireContext().applicationInstance.LOCATION_UPDATES_MIN_DISTANCE,
+                    App.getInstance().LOCATION_UPDATES_TIME_INTERVAL,
+                    App.getInstance().LOCATION_UPDATES_MIN_DISTANCE,
                     locationListener
                 )
             } else {
