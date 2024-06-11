@@ -6,7 +6,6 @@ import com.example.rosavtodorproject2.data.models.RequestPoint
 import com.example.rosavtodorproject2.ioc.AppComponentScope
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
@@ -19,6 +18,7 @@ class MapRemoteDataSource @Inject constructor(
     private val addedByUserPoints: MutableList<MyPoint> = mutableListOf()
     private val points: MutableList<MyPoint> = mutableListOf()
     fun loadPoints() = HttpResponseState.Success(points + addedByUserPoints)
+    fun addPointLocally(newPoint: MyPoint) = addedByUserPoints.add(newPoint)
     suspend fun getPoints(
         currentLatitude: Double,
         currentLongitude: Double
@@ -49,11 +49,7 @@ class MapRemoteDataSource @Inject constructor(
         )
     }
 
-    suspend fun addPoint(newPoint: MyPoint, reliability: Int, filePaths: List<String>) {
-
-        addedByUserPoints.add(newPoint)
-
-
+    suspend fun addPointRemote(newPoint: MyPoint, reliability: Int, filePaths: List<String>) {
         val response = mapPointsApi.addPoint(
             requestPoint = RequestPoint(
                 type = newPoint.type - 5,
@@ -66,6 +62,7 @@ class MapRemoteDataSource @Inject constructor(
                 reliability = reliability
             )
         )
+
         if (response.isSuccessful) {
             mapPointsApi.addPhotoToPoint(
                 pointId = response.body()!!.pointId,

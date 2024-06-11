@@ -1,6 +1,5 @@
 package com.example.rosavtodorproject2.data.repositories
 
-import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.rosavtodorproject2.data.dataSource.MapRemoteDataSource
@@ -38,10 +37,12 @@ class PointsRepository @Inject constructor(
     }
 
     suspend fun addPoint(point: MyPoint, reliability: Int, filePaths: List<String>) {
-        withContext(Dispatchers.IO) {
-            mapPointsDataSource.addPoint(point, reliability, filePaths)
-        }
+        mapPointsDataSource.addPointLocally(point)
         _points.postValue(mapPointsDataSource.loadPoints())
+
+        withContext(Dispatchers.IO) {
+            mapPointsDataSource.addPointRemote(point, reliability, filePaths)
+        }
     }
 
     suspend fun updateOnlyRoadPlaces(
