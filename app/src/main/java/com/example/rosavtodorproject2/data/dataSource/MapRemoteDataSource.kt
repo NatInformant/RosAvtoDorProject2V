@@ -1,17 +1,13 @@
 package com.example.rosavtodorproject2.data.dataSource
 
-import com.example.rosavtodorproject2.BuildConfig
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.data.models.MyPoint
 import com.example.rosavtodorproject2.data.models.RequestPoint
-import com.example.rosavtodorproject2.data.models.RequestPointBody
 import com.example.rosavtodorproject2.ioc.AppComponentScope
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 
@@ -57,29 +53,30 @@ class MapRemoteDataSource @Inject constructor(
 
         addedByUserPoints.add(newPoint)
 
-        val response = mapPointsApi.addPoint(
-            requestPointBody = RequestPointBody(
-                RequestPoint(
-                    type = newPoint.type - 5,
-                    coordinates = newPoint.coordinates,
-                    description = if (newPoint.name == "") {
-                        null
-                    } else {
-                        newPoint.name
-                    },
-                    /*reliability = reliability*/
-                )
-            ),
-            files = filePaths.map {
-                val file = File(it)
-                val requestFile =
-                    RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
-                MultipartBody.Part.createFormData("file", file.name, requestFile)
-            }
-        )
 
+        val response = mapPointsApi.addPoint(
+            requestPoint = RequestPoint(
+                type = newPoint.type - 5,
+                coordinates = newPoint.coordinates,
+                description = if (newPoint.name == "") {
+                    null
+                } else {
+                    newPoint.name
+                },
+                reliability = reliability
+            )
+        )
         if (response.isSuccessful) {
-            //Хз надо ли вообще тут что-то проверять?
+            mapPointsApi.addPhotoToPoint(
+                pointId = response.body()!!.pointId,
+                Files = filePaths.map {
+                    val file = File(it)
+                    val requestFile =
+                        file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    MultipartBody.Part.createFormData("Files", file.name, requestFile)
+                }
+            )
         }
+
     }
 }

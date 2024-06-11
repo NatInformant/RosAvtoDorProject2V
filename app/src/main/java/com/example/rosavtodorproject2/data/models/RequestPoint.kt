@@ -7,5 +7,5 @@ data class RequestPoint(
     @SerializedName("type") val type: Int,
     @SerializedName("coordinates") val coordinates: Coordinates,
     @SerializedName("description") val description: String?,
-   /* @SerializedName("reliability") val reliability:Int,*/
+    @SerializedName("reliability") val reliability:Int,
 )
