@@ -202,15 +202,15 @@ class RoadPlacesInformationFragment : Fragment() {
     }
 
     private fun updateOnlyRoadPlaces() {
-        if (requireContext().applicationInstance.currentUserPosition == null) {
+        if (App.getInstance().currentUserPosition == null) {
             return
         }
         viewModel.updateOnlyRoadPlaces(
             roadName ?: "",
             roadPlaceType ?: "",
             Coordinates(
-                requireContext().applicationInstance.currentUserPosition!!.latitude,
-                requireContext().applicationInstance.currentUserPosition!!.longitude
+                App.getInstance().currentUserPosition!!.latitude,
+                App.getInstance().currentUserPosition!!.longitude
             )
         )
     }
@@ -220,8 +220,8 @@ class RoadPlacesInformationFragment : Fragment() {
             roadName ?: "",
             roadPlaceType ?: "",
             Coordinates(
-                requireContext().applicationInstance.currentUserPosition!!.latitude,
-                requireContext().applicationInstance.currentUserPosition!!.longitude
+                App.getInstance().currentUserPosition!!.latitude,
+                App.getInstance().currentUserPosition!!.longitude
             )
         )
     }
@@ -270,15 +270,14 @@ class RoadPlacesInformationFragment : Fragment() {
         }
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            //Вернуть костыль, ибо он хоть и костыль но НАДЁЖНЫЙ
-            if (getApplicationContext().applicationInstance.currentUserPosition == null) {
-                getApplicationContext().applicationInstance.currentUserPosition = location
+            if (App.getInstance().currentUserPosition == null) {
+                App.getInstance().currentUserPosition = location
 
                 updateRoadPlacesAndMapPoints()
 
                 //Оно здесь нужно, на случай если это будет первым окном,
                 //в котором мы определили позицию пользователя.
-                getApplicationContext().applicationInstance.currentCameraPosition = CameraPosition(
+                App.getInstance().currentCameraPosition = CameraPosition(
                     Point(location.latitude, location.longitude),
                     /* zoom = */ 8f,
                     /* azimuth = */ 0f,
@@ -288,10 +287,10 @@ class RoadPlacesInformationFragment : Fragment() {
                 return
             }
 
-            val distance = getApplicationContext().applicationInstance.currentUserPosition!!.distanceTo(location)
+            val distance = App.getInstance().currentUserPosition!!.distanceTo(location)
 
             if (distance >= 5000) {
-                getApplicationContext().applicationInstance.currentUserPosition = location
+                App.getInstance().currentUserPosition = location
 
                 updateRoadPlacesAndMapPoints()
             }
@@ -314,8 +313,8 @@ class RoadPlacesInformationFragment : Fragment() {
     private fun goToYandexMapButtonClick(currentRoadPlaceCoordinates: Coordinates) {
         val url =
             "https://yandex.ru/maps/?rtext=" +
-                    "${requireContext().applicationInstance.currentUserPosition!!.latitude}," +// точка
-                    "${requireContext().applicationInstance.currentUserPosition!!.longitude}" +// начала пути
+                    "${App.getInstance().currentUserPosition!!.latitude}," +// точка
+                    "${App.getInstance().currentUserPosition!!.longitude}" +// начала пути
                     "~" +
                     "${currentRoadPlaceCoordinates.latitude}," +//точка
                     "${currentRoadPlaceCoordinates.longitude}" +//конца пути

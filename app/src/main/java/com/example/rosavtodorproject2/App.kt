@@ -46,6 +46,13 @@ class App : Application() {
     )
     override fun onCreate() {
         super.onCreate()
+        sInstance = this
         MapKitFactory.setApiKey(BuildConfig.MY_API_KEY)
+    }
+    companion object {
+        private var sInstance: App? = null
+        fun getInstance(): App {
+            return requireNotNull(sInstance) { "I really don't know how you get there." }
+        }
     }
 }
