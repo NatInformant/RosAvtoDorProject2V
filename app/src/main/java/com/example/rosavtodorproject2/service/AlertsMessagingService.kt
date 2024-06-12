@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.rosavtodorproject2.R
@@ -13,14 +14,17 @@ import java.util.GregorianCalendar
 
 class AlertsMessagingService : FirebaseMessagingService() {
 
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
+    }
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-
 
         val notification = remoteMessage.notification
         val title = notification?.title
         val message = notification?.body
 
+        Log.d("MyFirebaseService", "Message received: $title - $message")
         if (title != null && message != null) {
             sendNotification(
                 title,
@@ -35,43 +39,17 @@ class AlertsMessagingService : FirebaseMessagingService() {
         message: String?,
         context: Context
     ) {
-        val current = GregorianCalendar.getInstance()
 
-        // Channel is a must on android 8+
-        val notificationChannel = "chat_notifications"
+        val notificationManager = getSystemService(NotificationManager::class.java)
 
         val notificationBuilder = NotificationCompat.Builder(context, "notif")
-            .setSmallIcon(getNotificationIcon())
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setContentText(message)
-            .setWhen(current.getTimeInMillis())
-            .setAutoCancel(true)
-            .setColor(ContextCompat.getColor(context, R.color.black))
-            .setChannelId(notificationChannel)
+            .setPriority(NotificationManager.IMPORTANCE_HIGH)
 
-        // In case we want to setup notification piority
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            notificationBuilder.setPriority(NotificationManager.IMPORTANCE_HIGH)
-        } else {
-            notificationBuilder.setPriority(NotificationCompat.PRIORITY_MAX)
-        }
-
-
-        val notificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val mChannel = NotificationChannel(
-                notificationChannel,
-                context.getString(R.string.app_name), NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationManager.createNotificationChannel(mChannel)
-        }
-
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
+        notificationManager.notify(1 /* ID of notification */, notificationBuilder.build())
+        Log.d("MyFirebaseService", "Message sended SUCCSESFULLY")
     }
 
-    private fun getNotificationIcon(): Int {
-        return R.mipmap.ic_launcher
-    }
 }
