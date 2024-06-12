@@ -144,7 +144,6 @@ class InteractiveMapFragment : Fragment() {
         setUpBindingsForPopupWindows()
 
         setUpCameraPosition()
-
         if (App.getInstance().currentUserPosition != null) {
             binding.updateMapPointsFab.isEnabled = true
             binding.addPointToMapFab.isEnabled = true
