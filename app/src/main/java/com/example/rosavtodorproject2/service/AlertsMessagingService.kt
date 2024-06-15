@@ -8,6 +8,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.rosavtodorproject2.R
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import java.util.GregorianCalendar
@@ -24,7 +26,7 @@ class AlertsMessagingService : FirebaseMessagingService() {
         val title = notification?.title
         val message = notification?.body
 
-        Log.d("MyFirebaseService", "Message received: $title - $message")
+        Firebase.analytics.logEvent("Message_received:_$title - $message",null)
         if (title != null && message != null) {
             sendNotification(
                 title,
@@ -48,8 +50,8 @@ class AlertsMessagingService : FirebaseMessagingService() {
             .setContentText(message)
             .setPriority(NotificationManager.IMPORTANCE_HIGH)
 
-        notificationManager.notify(1 /* ID of notification */, notificationBuilder.build())
-        Log.d("MyFirebaseService", "Message sended SUCCSESFULLY")
+        notificationManager.notify(3 /* ID of notification */, notificationBuilder.build())
+        Firebase.analytics.logEvent("Message_sended",null)
     }
 
 }
