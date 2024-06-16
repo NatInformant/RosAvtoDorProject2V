@@ -82,7 +82,7 @@ class MainFragment : Fragment() {
             }
         }
     }
-    private fun menuItemCheckBoxListener(item: MenuItem): Boolean {
+    private fun menuItemCheckBoxListener(item: MenuItem){
         if (item.title!!.contains("области")) {
             for (x in optionsMenu!!.children) {
                 if (x.order > item.order) {
@@ -93,8 +93,6 @@ class MainFragment : Fragment() {
                 }
             }
         }
-
-        return true
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
