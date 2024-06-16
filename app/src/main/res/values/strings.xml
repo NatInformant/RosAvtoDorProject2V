@@ -51,4 +51,10 @@
     <string name="options_title">Настройки:</string>
     <string name="notification_options_title">Отправлять уведомления для:</string>
     <string name="about_program_option_title">О программе</string>
+    <string name="chelyabinsk_obl">Челябинской области</string>
+    <string name="chelyabinsk_obl_road1">Дороги М5-ПКЕ</string>
+    <string name="chelyabinsk_obl_road2">Дороги А-310</string>
+    <string name="kurgan_obl">Курганской области</string>
+    <string name="kurgan_obl_road_1">Дороги М5-ПКЕ</string>
+    <string name="kurgan_obl_road_2">Дороги А-310</string>
 </resources>

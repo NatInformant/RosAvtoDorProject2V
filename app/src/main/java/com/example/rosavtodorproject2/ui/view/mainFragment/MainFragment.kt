@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -24,6 +25,7 @@ import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.MainFragmentBinding
 import com.example.rosavtodorproject2.ioc.MainViewModelFactory
 import com.example.rosavtodorproject2.ioc.applicationInstance
+import com.example.rosavtodorproject2.service.AlertsMessagingService
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
@@ -59,14 +61,7 @@ class MainFragment : Fragment() {
     private fun setUpToolBar() {
         val navController = NavHostFragment.findNavController(this)
 
-        val sideBar = binding.navView
-        optionsMenu = sideBar.menu
-        sideBar.menu.children.filter { it.actionView is CheckBox }.forEach { menuItem ->
-            (menuItem.actionView as CheckBox).setOnClickListener {
-                menuItemCheckBoxListener(menuItem)
-            }
-        }
-        sideBar.setupWithNavController(navController)
+        setUpSideBar(navController)
 
         val appBarConfiguration =
             AppBarConfiguration(navController.graph, drawerLayout = binding.drawerLayout)
@@ -82,18 +77,56 @@ class MainFragment : Fragment() {
             }
         }
     }
-    private fun menuItemCheckBoxListener(item: MenuItem){
+
+    private fun setUpSideBar(
+        navController: NavController
+    ) {
+        val sideBar = binding.navView
+
+        optionsMenu = sideBar.menu
+        sideBar.menu.children.filter { it.actionView is CheckBox }.forEach { menuItem ->
+            (menuItem.actionView as CheckBox).also {
+                if (menuItem.title!!.contains("области")) {
+                    it.isChecked =
+                        AlertsMessagingService
+                            .obl_name_to_filer_value
+                            .getValue(menuItem.title.toString())
+                } else {
+                    it.isChecked =
+                        AlertsMessagingService
+                            .road_name_to_filer_value
+                            .getValue(menuItem.title.toString())
+                    menuItem.title = "    " + menuItem.title
+                }
+            }.setOnClickListener {
+                menuItemCheckBoxListener(menuItem)
+            }
+        }
+
+        sideBar.setupWithNavController(navController)
+    }
+
+    private fun menuItemCheckBoxListener(item: MenuItem) {
+        val currentState = (item.actionView as CheckBox).isChecked
         if (item.title!!.contains("области")) {
+            AlertsMessagingService
+                .obl_name_to_filer_value[item.title.toString().trim()] = currentState
             for (x in optionsMenu!!.children) {
                 if (x.order > item.order) {
                     if (x.title!!.contains("области") or x.title!!.contains("О программе")) {
                         break
                     }
-                    (x.actionView as CheckBox).isChecked = (item.actionView as CheckBox).isChecked
+                    (x.actionView as CheckBox).isChecked = currentState
+                    AlertsMessagingService
+                        .road_name_to_filer_value[item.title.toString().trim()] = currentState
                 }
             }
+        } else {
+            AlertsMessagingService
+                .road_name_to_filer_value[item.title.toString().trim()] = currentState
         }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

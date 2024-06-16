@@ -7,33 +7,39 @@
     <group android:checkableBehavior="all">
         <item
             android:id="@+id/chelyabinsk_obl_menu_item"
-            android:title="Челябинской области"
+            android:title="@string/chelyabinsk_obl"
             app:actionViewClass="android.widget.CheckBox"
+            android:checked="true"
             android:orderInCategory="1"/>
         <item
             android:id="@+id/chelyabinsk_obl_road_1_menu_item"
-            android:title="    Дороги М5-ПКЕ"
+            android:title="@string/chelyabinsk_obl_road1"
             app:actionViewClass="android.widget.CheckBox"
+            android:checked="true"
             android:orderInCategory="2"/>
         <item
             android:id="@+id/chelyabinsk_obl_road_2_menu_item"
-            android:title="    Дороги А-310"
+            android:title="@string/chelyabinsk_obl_road2"
             app:actionViewClass="android.widget.CheckBox"
+            android:checked="true"
             android:orderInCategory="3"/>
         <item
             android:id="@+id/kurgan_obl_menu_item"
-            android:title="Курганской области"
+            android:title="@string/kurgan_obl"
             app:actionViewClass="android.widget.CheckBox"
+            android:checked="true"
             android:orderInCategory="4"/>
         <item
             android:id="@+id/kurgan_obl_road_1_menu_item"
-            android:title="    Дороги М5-ПКЕ"
+            android:title="@string/kurgan_obl_road_1"
             app:actionViewClass="android.widget.CheckBox"
-            android:orderInCategory="5"/>
+            android:checked="true"
+            android:orderInCategory="5" />
         <item
             android:id="@+id/kurgan_obl_road_2_menu_item"
-            android:title="    Дороги А-310"
+            android:title="@string/kurgan_obl_road_2"
             app:actionViewClass="android.widget.CheckBox"
+            android:checked="true"
             android:orderInCategory="6"/>
     </group>
     <item
