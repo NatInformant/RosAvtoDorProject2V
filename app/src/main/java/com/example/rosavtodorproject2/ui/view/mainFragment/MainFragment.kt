@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.rosavtodorproject2.App
 import com.example.rosavtodorproject2.R
 import com.example.rosavtodorproject2.data.models.HttpResponseState
 import com.example.rosavtodorproject2.databinding.MainFragmentBinding
@@ -63,8 +61,11 @@ class MainFragment : Fragment() {
 
         val sideBar = binding.navView
         optionsMenu = sideBar.menu
-        sideBar.menu.children.forEach { it.setOnMenuItemClickListener(::menuItemListener) }
-
+        sideBar.menu.children.filter { it.actionView is CheckBox }.forEach { menuItem ->
+            (menuItem.actionView as CheckBox).setOnClickListener {
+                menuItemCheckBoxListener(menuItem)
+            }
+        }
         sideBar.setupWithNavController(navController)
 
         val appBarConfiguration =
@@ -81,7 +82,20 @@ class MainFragment : Fragment() {
             }
         }
     }
+    private fun menuItemCheckBoxListener(item: MenuItem): Boolean {
+        if (item.title!!.contains("области")) {
+            for (x in optionsMenu!!.children) {
+                if (x.order > item.order) {
+                    if (x.title!!.contains("области") or x.title!!.contains("О программе")) {
+                        break
+                    }
+                    (x.actionView as CheckBox).isChecked = (item.actionView as CheckBox).isChecked
+                }
+            }
+        }
 
+        return true
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -92,7 +106,6 @@ class MainFragment : Fragment() {
         }
     }
 
-    /*it.actionView as CheckBox*/
     private fun setUpAdvertisementsList() {
         val allAreasAdvertisementsRecyclerView: RecyclerView =
             binding.allAreasAdvertisementsRecyclerList
@@ -139,22 +152,5 @@ class MainFragment : Fragment() {
         binding.swipeRefreshLayoutForAdvertisementsList.setOnRefreshListener {
             viewModel.updateAdvertisements()
         }
-    }
-
-    fun menuItemListener(item: MenuItem): Boolean {
-        if (item.title!!.contains ("области")) {
-            (item.actionView as CheckBox).isChecked = !(item.actionView as CheckBox).isChecked
-            for (x in optionsMenu!!.children) {
-                if (x.order > item.order) {
-                    if (x.title!!.contains("области") or x.title!!.contains("О программе")) {
-                        break
-                    }
-                    (x.actionView as CheckBox).isChecked = (item.actionView as CheckBox).isChecked
-                }
-            }
-        } else {
-            (item.actionView as CheckBox).isChecked = !(item.actionView as CheckBox).isChecked
-        }
-        return true
     }
 }
