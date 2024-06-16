@@ -3,8 +3,12 @@ package com.example.rosavtodorproject2.ui.view.mainFragment
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.view.children
@@ -32,13 +36,16 @@ class MainFragment : Fragment() {
     private var adapter: AreaAdvertisementsListAdapter = AreaAdvertisementsListAdapter(
         areaAdvertisementsDiffUtil = AreaAdvertisementsDiffUtil(),
     )
+
     @Inject
     lateinit var viewModelFactory: MainViewModelFactory
     private val viewModel: MainFragmentViewModel by viewModels { viewModelFactory }
+    private var optionsMenu: Menu? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
         context.applicationInstance.applicationComponent.injectMainFragment(this)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,10 +57,14 @@ class MainFragment : Fragment() {
 
         return binding.root
     }
+
     private fun setUpToolBar() {
         val navController = NavHostFragment.findNavController(this)
 
         val sideBar = binding.navView
+        optionsMenu = sideBar.menu
+        sideBar.menu.children.forEach { it.setOnMenuItemClickListener(::menuItemListener) }
+
         sideBar.setupWithNavController(navController)
 
         val appBarConfiguration =
@@ -70,6 +81,7 @@ class MainFragment : Fragment() {
             }
         }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -80,6 +92,7 @@ class MainFragment : Fragment() {
         }
     }
 
+    /*it.actionView as CheckBox*/
     private fun setUpAdvertisementsList() {
         val allAreasAdvertisementsRecyclerView: RecyclerView =
             binding.allAreasAdvertisementsRecyclerList
@@ -101,17 +114,19 @@ class MainFragment : Fragment() {
 
             binding.swipeRefreshLayoutForAdvertisementsList.isRefreshing = false
 
-            when (httpResponseState){
+            when (httpResponseState) {
                 is HttpResponseState.Success -> {
                     adapter.submitList(httpResponseState.value)
                 }
-                is HttpResponseState.Failure ->{
+
+                is HttpResponseState.Failure -> {
                     Toast.makeText(
                         requireContext(),
                         "Без доступа к интернету приложение не сможет работать",
                         Toast.LENGTH_LONG
                     ).show()
                 }
+
                 else -> {
 
                 }
@@ -124,5 +139,22 @@ class MainFragment : Fragment() {
         binding.swipeRefreshLayoutForAdvertisementsList.setOnRefreshListener {
             viewModel.updateAdvertisements()
         }
+    }
+
+    fun menuItemListener(item: MenuItem): Boolean {
+        if (item.title!!.contains ("области")) {
+            (item.actionView as CheckBox).isChecked = !(item.actionView as CheckBox).isChecked
+            for (x in optionsMenu!!.children) {
+                if (x.order > item.order) {
+                    if (x.title!!.contains("области") or x.title!!.contains("О программе")) {
+                        break
+                    }
+                    (x.actionView as CheckBox).isChecked = (item.actionView as CheckBox).isChecked
+                }
+            }
+        } else {
+            (item.actionView as CheckBox).isChecked = !(item.actionView as CheckBox).isChecked
+        }
+        return true
     }
 }

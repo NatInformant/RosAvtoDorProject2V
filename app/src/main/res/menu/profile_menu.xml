@@ -8,29 +8,36 @@
         <item
             android:id="@+id/chelyabinsk_obl_menu_item"
             android:title="Челябинской области"
-            app:actionViewClass="android.widget.CheckBox" />
+            app:actionViewClass="android.widget.CheckBox"
+            android:orderInCategory="1"/>
         <item
             android:id="@+id/chelyabinsk_obl_road_1_menu_item"
             android:title="    Дороги М5-ПКЕ"
-            app:actionViewClass="android.widget.CheckBox" />
+            app:actionViewClass="android.widget.CheckBox"
+            android:orderInCategory="2"/>
         <item
             android:id="@+id/chelyabinsk_obl_road_2_menu_item"
             android:title="    Дороги А-310"
-            app:actionViewClass="android.widget.CheckBox" />
+            app:actionViewClass="android.widget.CheckBox"
+            android:orderInCategory="3"/>
         <item
             android:id="@+id/kurgan_obl_menu_item"
             android:title="Курганской области"
-            app:actionViewClass="android.widget.CheckBox" />
+            app:actionViewClass="android.widget.CheckBox"
+            android:orderInCategory="4"/>
         <item
             android:id="@+id/kurgan_obl_road_1_menu_item"
             android:title="    Дороги М5-ПКЕ"
-            app:actionViewClass="android.widget.CheckBox" />
+            app:actionViewClass="android.widget.CheckBox"
+            android:orderInCategory="5"/>
         <item
             android:id="@+id/kurgan_obl_road_2_menu_item"
             android:title="    Дороги А-310"
-            app:actionViewClass="android.widget.CheckBox" />
+            app:actionViewClass="android.widget.CheckBox"
+            android:orderInCategory="6"/>
     </group>
     <item
         android:icon="@drawable/option_icon"
-        android:title="@string/about_program_option_title" />
+        android:title="@string/about_program_option_title"
+        android:orderInCategory="7"/>
 </menu>
