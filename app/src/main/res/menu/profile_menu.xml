@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
- <item
-     android:id="@+id/change_current_user_name"
-     android:title="@string/change_current_user_name_option"
-     android:icon="@drawable/option_icon"
-     />
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:icon="@drawable/option_icon"
+        android:title="@string/notification_options_title" />
+    <group android:checkableBehavior="all">
+        <item
+            android:id="@+id/chelyabinsk_obl_menu_item"
+            android:title="Челябинской области"
+            app:actionViewClass="android.widget.CheckBox" />
+        <item
+            android:id="@+id/chelyabinsk_obl_road_1_menu_item"
+            android:title="    Дороги М5-ПКЕ"
+            app:actionViewClass="android.widget.CheckBox" />
+        <item
+            android:id="@+id/chelyabinsk_obl_road_2_menu_item"
+            android:title="    Дороги А-310"
+            app:actionViewClass="android.widget.CheckBox" />
+        <item
+            android:id="@+id/kurgan_obl_menu_item"
+            android:title="Курганской области"
+            app:actionViewClass="android.widget.CheckBox" />
+        <item
+            android:id="@+id/kurgan_obl_road_1_menu_item"
+            android:title="    Дороги М5-ПКЕ"
+            app:actionViewClass="android.widget.CheckBox" />
+        <item
+            android:id="@+id/kurgan_obl_road_2_menu_item"
+            android:title="    Дороги А-310"
+            app:actionViewClass="android.widget.CheckBox" />
+    </group>
+    <item
+        android:icon="@drawable/option_icon"
+        android:title="@string/about_program_option_title" />
 </menu>

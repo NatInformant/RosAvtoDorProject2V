@@ -48,4 +48,7 @@
     <string name="verified_point_name_format">%1$s: %2$s</string>
     <string name="road_warnings_title_format">Предупреждения по трассе: %s</string>
     <string name="distance_to_road_place_format">%.2f км</string>
+    <string name="options_title">Настройки:</string>
+    <string name="notification_options_title">Отправлять уведомления для:</string>
+    <string name="about_program_option_title">О программе</string>
 </resources>
