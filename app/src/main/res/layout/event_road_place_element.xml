@@ -21,31 +21,6 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <!--<ImageButton
-        android:id="@+id/increase_place_grade_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/not_enabled_star_background"
-        android:layout_marginVertical="2dp"
-        android:layout_marginStart="1dp"
-        app:layout_constraintStart_toStartOf="@+id/place_grade_text_view"
-        app:layout_constraintTop_toTopOf="@+id/place_grade_text_view"
-        app:layout_constraintBottom_toBottomOf="@+id/place_grade_text_view"
-        />
-
-    <TextView
-        android:id="@+id/place_grade_text_view"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="17sp"
-        android:background="@drawable/place_grade_background"
-        android:paddingStart="22dp"
-        android:paddingEnd="2dp"
-        app:layout_constraintEnd_toStartOf="@+id/distance_to_place_text_view"
-        app:layout_constraintTop_toTopOf="parent"
-        />-->
-
     <TextView
         android:id="@+id/event_road_place_title"
         android:layout_width="0dp"
@@ -64,38 +39,53 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingHorizontal="6dp"
-        android:paddingBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:paddingBottom="2dp"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/event_road_place_title" />
 
     <TextView
-        android:id="@+id/road_place_go_to_yandex_map_title"
+        android:id="@+id/event_date_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:paddingHorizontal="6dp"
-        android:paddingBottom="5dp"
-        android:text="@string/road_place_go_to_yandex_map_title"
+        android:layout_marginTop="3dp"
+        android:text="@string/event_date_title_text"
         android:textColor="@color/black"
+        android:textStyle="bold"
+        android:paddingHorizontal="6dp"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_road_place_description" />
+        app:layout_constraintTop_toBottomOf="@+id/event_road_place_description"
+        />
+    <TextView
+        android:id="@+id/event_date_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="6dp"
+        android:layout_marginStart="4dp"
+        android:text="12.06 - 22.07"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/event_date_title_text_view"
+        app:layout_constraintTop_toTopOf="@+id/event_date_title_text_view"
+        />
 
     <TextView
         android:id="@+id/road_place_go_to_yandex_map_button"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:layout_marginTop="6dp"
         android:background="@drawable/road_place_go_to_button_background"
         android:paddingHorizontal="15dp"
         android:paddingVertical="5dp"
-        android:text="@string/go_to_yandex_map_button_title"
+        android:text="@string/event_road_place_element_know_more_button_text"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="21sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/road_place_go_to_yandex_map_title" />
+        app:layout_constraintTop_toBottomOf="@+id/event_date_text_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

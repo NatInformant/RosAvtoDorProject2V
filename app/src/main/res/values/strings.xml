@@ -25,6 +25,8 @@
     <string name="dialog_window_positive_button_text">Изменить</string>
     <string name="dialog_window_negative_button_text">Отменить</string>
     <string name="verified_point_popup_window_goto_button_text">Поехали!</string>
+    <string name="event_point_popup_window_know_more_button_text">Узнать больше</string>
+    <string name="event_road_place_element_know_more_button_text">Узнать больше о событии</string>
     <string name="create_description_for_adding_point_popup_window_title">Добавьте текстовое описание:</string>
     <string name="create_description_for_adding_point_popup_window_edit_text_hint">Напишите здесь описание…</string>
     <string name="create_description_for_adding_point_popup_window_confirm_button_text">Принято</string>
@@ -57,4 +59,5 @@
     <string name="kurgan_obl">Курганской области</string>
     <string name="kurgan_obl_road_1">Дороги М5-ПКЕ</string>
     <string name="kurgan_obl_road_2">Дороги А-310</string>
+    <string name="event_date_title_text">Дата проведения:</string>
 </resources>
