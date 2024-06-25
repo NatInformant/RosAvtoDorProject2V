@@ -5,7 +5,7 @@ import com.example.rosavtodorproject2.data.models.RoadPlace
 
 class RoadPlacesDiffUtil : DiffUtil.ItemCallback<RoadPlace>() {
     override fun areItemsTheSame(oldItem: RoadPlace, newItem: RoadPlace): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.coordinates == newItem.coordinates
     }
 
     override fun areContentsTheSame(oldItem: RoadPlace, newItem: RoadPlace): Boolean {
