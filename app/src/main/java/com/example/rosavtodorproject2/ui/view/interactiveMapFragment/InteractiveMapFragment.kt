@@ -128,6 +128,7 @@ class InteractiveMapFragment : Fragment() {
     private val userAreaCircleRadius = 100000f
     private var locationManager: LocationManager? = null
     private var userLocationLayer: UserLocationLayer? = null
+    private var roadName:String? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
         context.applicationInstance.applicationComponent.injectInteractiveMapFragment(this)
@@ -137,6 +138,8 @@ class InteractiveMapFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentInteractiveMapBinding.inflate(layoutInflater, container, false)
+
+        roadName = arguments?.getString("roadName")
 
         MapKitFactory.initialize(getApplicationContext())
         mapView = binding.mapview
@@ -955,7 +958,8 @@ class InteractiveMapFragment : Fragment() {
             text = bindingCreateDescriptionForAddingPointPopupWindow
                 .addingPointDescription.text.toString(),
             reliability = reliability,
-            filePaths = photosListAdapter.currentList.mapNotNull { getRealPathFromURI(it.uri) }
+            filePaths = photosListAdapter.currentList.mapNotNull { getRealPathFromURI(it.uri) },
+            roadName = roadName
         )
 
         reliability = 1

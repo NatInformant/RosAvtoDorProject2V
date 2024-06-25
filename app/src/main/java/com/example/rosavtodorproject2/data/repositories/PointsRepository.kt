@@ -36,12 +36,12 @@ class PointsRepository @Inject constructor(
         _points.postValue(loadedList)
     }
 
-    suspend fun addPoint(point: MyPoint, reliability: Int, filePaths: List<String>) {
+    suspend fun addPoint(point: MyPoint, reliability: Int, filePaths: List<String>,roadName: String?) {
         mapPointsDataSource.addPointLocally(point)
         _points.postValue(mapPointsDataSource.loadPoints())
 
         withContext(Dispatchers.IO) {
-            mapPointsDataSource.addPointRemote(point, reliability, filePaths)
+            mapPointsDataSource.addPointRemote(point, reliability, filePaths, roadName)
         }
     }
 

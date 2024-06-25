@@ -49,31 +49,55 @@ class MapRemoteDataSource @Inject constructor(
         )
     }
 
-    suspend fun addPointRemote(newPoint: MyPoint, reliability: Int, filePaths: List<String>) {
-        val response = mapPointsApi.addPoint(
-            requestPoint = RequestPoint(
-                type = newPoint.type - 5,
-                coordinates = newPoint.coordinates,
-                description = if (newPoint.name == "") {
-                    null
-                } else {
-                    newPoint.name
-                },
-                reliability = reliability
+    suspend fun addPointRemote(newPoint: MyPoint, reliability: Int, filePaths: List<String>, roadName:String?) {
+
+        kotlin.runCatching {
+            mapPointsApi.addPoint(
+                requestPoint = RequestPoint(
+                    type = newPoint.type - 5,
+                    coordinates = newPoint.coordinates,
+                    description = if (newPoint.name == "") {
+                        null
+                    } else {
+                        newPoint.name
+                    },
+                    reliability = reliability,
+                    roadName = roadName,
+                )
             )
+        }.fold(
+            onSuccess = {response ->
+
+                if (filePaths.isEmpty()){
+                    return
+                }
+
+                if (response.isSuccessful) {
+                    kotlin.runCatching {
+                        mapPointsApi.addPhotoToPoint(
+                            pointId = response.body()!!.pointId,
+                            Files = filePaths.map {
+                                val file = File(it)
+                                val requestFile =
+                                    file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                                MultipartBody.Part.createFormData("Files", file.name, requestFile)
+                            }
+                        )
+                    }.fold(
+                        onSuccess = {
+                            val a = 1
+                        },
+                        onFailure = {
+                            val b = it
+                        }
+                    )
+                }
+            },
+            onFailure = {
+
+            }
         )
 
-        if (response.isSuccessful) {
-            mapPointsApi.addPhotoToPoint(
-                pointId = response.body()!!.pointId,
-                Files = filePaths.map {
-                    val file = File(it)
-                    val requestFile =
-                        file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-                    MultipartBody.Part.createFormData("Files", file.name, requestFile)
-                }
-            )
-        }
 
     }
 }

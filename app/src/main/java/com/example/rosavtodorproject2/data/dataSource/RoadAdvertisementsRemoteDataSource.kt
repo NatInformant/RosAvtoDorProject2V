@@ -20,12 +20,7 @@ class RoadAdvertisementsRemoteDataSource @Inject constructor(
             onSuccess = { response ->
                 if (response.isSuccessful) {
                     return HttpResponseState.Success(
-                        response.body()?.roadAdvertisements?.map {
-                            Advertisement(
-                                it.title,
-                                it.description
-                            )
-                        } ?: emptyList()
+                        response.body()?.roadAdvertisements ?: emptyList()
                     )
                 } else {
                     return HttpResponseState.Failure(response.message() ?: "")

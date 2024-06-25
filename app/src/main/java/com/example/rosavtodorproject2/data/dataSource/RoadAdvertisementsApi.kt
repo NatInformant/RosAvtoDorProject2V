@@ -6,6 +6,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface RoadAdvertisementsApi {
-    @GET("/api/roads/{roadName}/advertisements")
+    @GET("roads/{roadName}/advertisements")
     suspend fun getAdvertisements(@Path("roadName") roadName:String): Response<RoadAdvertisementsGetResponse>
 }

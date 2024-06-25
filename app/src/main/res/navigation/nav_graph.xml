@@ -14,31 +14,14 @@
             android:id="@+id/action_mainFragment_to_roadsChooseFragment"
             app:destination="@id/roadsChooseFragment" />
     </fragment>
-    <!--<fragment
-        android:id="@+id/conversationFragment"
-        android:name="com.example.rosavtodorproject2.ui.view.conversationFragment.ConversationFragment"
-        android:label="fragment_conversation"
-        tools:layout="@layout/fragment_conversation" >
-        <action
-            android:id="@+id/action_conversationFragment_to_chatsFragment"
-            app:destination="@id/chatsFragment" />
-        <argument
-            android:name="collocutorName"
-            android:defaultValue="no name" />
-        <argument
-            android:name="collocutorPictureResourceId"
-            app:argType="integer"
-            android:defaultValue="0" />
-        <argument
-            android:name="collocutorId"
-            app:argType="integer"
-            android:defaultValue="0" />
-    </fragment>-->
     <fragment
         android:id="@+id/interactiveMapFragment"
         android:name="com.example.rosavtodorproject2.ui.view.interactiveMapFragment.InteractiveMapFragment"
         android:label="fragment_interactive_map"
         tools:layout="@layout/fragment_interactive_map" >
+        <argument
+            android:name="roadName"
+            />
     </fragment>
     <fragment
         android:id="@+id/roadsChooseFragment"
@@ -56,12 +39,12 @@
         android:name="com.example.rosavtodorproject2.ui.view.roadInformationFragment.RoadInformationFragment"
         android:label="road_information_fragment"
         tools:layout="@layout/road_information_fragment" >
-        <action
-            android:id="@+id/action_roadInformationFragment_to_interactiveMapFragment"
-            app:destination="@id/interactiveMapFragment" />
         <argument
             android:name="roadName"
             android:defaultValue="" />
+        <action
+            android:id="@+id/action_roadInformationFragment_to_interactiveMapFragment"
+            app:destination="@id/interactiveMapFragment" />
         <action
             android:id="@+id/action_roadInformationFragment_to_roadPlacesInformationFragment"
             app:destination="@id/roadPlacesInformationFragment" />

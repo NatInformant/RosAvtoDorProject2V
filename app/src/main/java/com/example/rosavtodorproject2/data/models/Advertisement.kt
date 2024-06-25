@@ -1,6 +1,8 @@
 package com.example.rosavtodorproject2.data.models
 
+import com.google.gson.annotations.SerializedName
+
 data class Advertisement(
-    val title:String,
-    val description:String,
+    @SerializedName("title") val title:String,
+    @SerializedName("description") val description:String,
 )

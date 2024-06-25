@@ -7,7 +7,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RoadPlacesApi {
-    @GET("/api/roads/{roadName}/verifiedPoints/{type}")
+    @GET("roads/{roadName}/verifiedPoints/{type}")
     suspend fun getRoadPlaces(
         @Path("roadName") roadName: String,
         @Path("type") type: String,

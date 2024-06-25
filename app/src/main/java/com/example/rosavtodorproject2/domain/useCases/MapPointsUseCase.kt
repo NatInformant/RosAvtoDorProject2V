@@ -18,9 +18,9 @@ class MapPointsUseCase @Inject constructor(
         }
     }
 
-    suspend fun addPoint(point: MyPoint, reliability:Int, filePaths:List<String>) {
+    suspend fun addPoint(point: MyPoint, reliability:Int, filePaths:List<String>,roadName:String?) {
         withContext(Dispatchers.IO) {
-            pointsRepository.addPoint(point,reliability,filePaths)
+            pointsRepository.addPoint(point,reliability,filePaths, roadName)
         }
     }
 }

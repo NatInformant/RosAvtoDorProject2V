@@ -20,7 +20,7 @@ class InteractiveMapFragmentViewModel @Inject constructor(
         }
     }
 
-    fun addPoint(type: Int, latitude: Double, longitude: Double, text: String, reliability:Int, filePaths:List<String>) {
+    fun addPoint(type: Int, latitude: Double, longitude: Double, text: String, reliability:Int, filePaths:List<String>,roadName:String?) {
         viewModelScope.launch {
             mapPointsUseCase.addPoint(
                 MyPoint(
@@ -32,6 +32,7 @@ class InteractiveMapFragmentViewModel @Inject constructor(
                 ),
                 reliability = reliability,
                 filePaths = filePaths,
+                roadName = roadName
             )
         }
     }

@@ -11,6 +11,6 @@
     <color name="enabled_add_point_fab_icon_color">#000000</color>
     <color name="user_area_circle_fill_color">#00000000</color>
     <color name="user_area_circle_stroke_color">#FF0000</color>
-    <color name="advertisements_list_background_color">#F37777</color>
+    <color name="advertisements_list_background_color">#399FEA</color>
     <color name="divider_color">#000000</color>
 </resources>

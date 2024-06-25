@@ -16,18 +16,18 @@ import retrofit2.http.Query
 import java.util.UUID
 
 interface MapPointsApi {
-    @GET("api/v1/Mobile/verifiedPoints")
+    @GET("verifiedPoints")
     suspend fun getPoints(
         @Query("Coordinates.Latitude") latitude:Double,
         @Query("Coordinates.Longitude") longitude:Double,
         @Query("Radius") radius:Double = 100.0,
     ): Response<PointsGetResponse>
-    @POST("api/v1/Mobile/unverifiedPoints")
+    @POST("unverifiedPoints")
     suspend fun addPoint(
         @Body requestPoint: RequestPoint
     ):Response<PointPostResponse>
     @Multipart
-    @POST("api/v1/Mobile/unverifiedPoints/{pointId}/files")
+    @POST("unverifiedPoints/{pointId}/files")
     suspend fun addPhotoToPoint(
         @Path("pointId") pointId: UUID,
         @Part Files: List<MultipartBody.Part>
