@@ -104,7 +104,7 @@ class RoadPlacesInformationFragment : Fragment() {
         checkLocationPermission()
 
         binding.backToRoadInformationFragmentPanelButton.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigateUp()
         }
     }
     private fun setUpRoadPlacesList() {

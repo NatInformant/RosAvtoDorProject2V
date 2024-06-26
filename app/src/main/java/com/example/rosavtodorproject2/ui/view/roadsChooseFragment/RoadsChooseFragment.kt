@@ -55,7 +55,7 @@ class RoadsChooseFragment : Fragment() {
             findNavController().navigate(R.id.action_roadsChooseFragment_to_interactiveMapFragment)
         }
         binding.backToMainFragmentPanelButton.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigateUp()
         }
     }
 

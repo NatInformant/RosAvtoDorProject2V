@@ -384,7 +384,7 @@ class InteractiveMapFragment : Fragment() {
         }
 
         binding.backToChatsPanelButton.setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigateUp()
         }
         binding.filtersButton.setOnClickListener {
             listenerForFiltersButton(it)
