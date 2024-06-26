@@ -49,8 +49,12 @@ class MapRemoteDataSource @Inject constructor(
         )
     }
 
-    suspend fun addPointRemote(newPoint: MyPoint, reliability: Int, filePaths: List<String>, roadName:String?) {
-
+    suspend fun addPointRemote(
+        newPoint: MyPoint,
+        reliability: Int,
+        filePaths: List<String>,
+        roadName: String?
+    ): String {
         kotlin.runCatching {
             mapPointsApi.addPoint(
                 requestPoint = RequestPoint(
@@ -66,10 +70,10 @@ class MapRemoteDataSource @Inject constructor(
                 )
             )
         }.fold(
-            onSuccess = {response ->
+            onSuccess = { response ->
 
-                if (filePaths.isEmpty()){
-                    return
+                if (filePaths.isEmpty()) {
+                    return ""
                 }
 
                 if (response.isSuccessful) {
@@ -85,19 +89,20 @@ class MapRemoteDataSource @Inject constructor(
                         )
                     }.fold(
                         onSuccess = {
-                            val a = 1
+                            return ""
                         },
                         onFailure = {
-                            val b = it
+                            return "При отправке фотографий произошла ошибка"
                         }
                     )
+                } else {
+                    return "При отправке точки произошла ошибка"
                 }
+
             },
             onFailure = {
-
+                return "При отправке точки произошла ошибка"
             }
         )
-
-
     }
 }

@@ -128,11 +128,13 @@ class InteractiveMapFragment : Fragment() {
     private val userAreaCircleRadius = 100000f
     private var locationManager: LocationManager? = null
     private var userLocationLayer: UserLocationLayer? = null
-    private var roadName:String? = null
+    private var roadName: String? = null
+    private var isMessageShown = false
     override fun onAttach(context: Context) {
         super.onAttach(context)
         context.applicationInstance.applicationComponent.injectInteractiveMapFragment(this)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -210,13 +212,19 @@ class InteractiveMapFragment : Fragment() {
             checkedChangeListener
         )
 
-        bindingVerifiedPointPopupWindow = VerifiedPointPopupWindowBinding.inflate(layoutInflater, binding.root, false)
+        bindingVerifiedPointPopupWindow =
+            VerifiedPointPopupWindowBinding.inflate(layoutInflater, binding.root, false)
         bindingUnverifiedPointPopupWindow =
             UnverifiedPointPopupWindowBinding.inflate(layoutInflater, binding.root, false)
-        bindingEventPointPopupWindow = EventPointPopupWindowBinding.inflate(layoutInflater, binding.root, false)
+        bindingEventPointPopupWindow =
+            EventPointPopupWindowBinding.inflate(layoutInflater, binding.root, false)
 
         bindingCreateDescriptionForAddingPointPopupWindow =
-            CreateDescriptionForAddingPointPopupWindowBinding.inflate(layoutInflater, binding.root, false)
+            CreateDescriptionForAddingPointPopupWindowBinding.inflate(
+                layoutInflater,
+                binding.root,
+                false
+            )
 
         bindingCreateDescriptionForAddingPointPopupWindow.addedPhotosList.adapter =
             photosListAdapter
@@ -358,6 +366,14 @@ class InteractiveMapFragment : Fragment() {
 
         mapView.map.addInputListener(addingNewPointListener)
 
+        isMessageShown = savedInstanceState?.getBoolean("isMessageShown") ?: false
+        viewModel.message.observe(viewLifecycleOwner) { message ->
+            if (message != "" && !isMessageShown) {
+                Toast.makeText(requireContext(),message,Toast.LENGTH_LONG).show()
+                isMessageShown = true
+            }
+        }
+
         viewModel.points.observe(viewLifecycleOwner)
         { httpResponseState ->
             when (httpResponseState) {
@@ -365,6 +381,7 @@ class InteractiveMapFragment : Fragment() {
                     currentPointsList = httpResponseState.value
                     addPointsToInteractiveMap(httpResponseState.value)
                 }
+
                 is HttpResponseState.Failure -> {
                     currentPointsList = emptyList()
                     addPointsToInteractiveMap(emptyList())
@@ -375,6 +392,7 @@ class InteractiveMapFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                 }
+
                 else -> {
                     currentPointsList = emptyList()
                     addPointsToInteractiveMap(emptyList())
@@ -382,6 +400,7 @@ class InteractiveMapFragment : Fragment() {
                 }
             }
         }
+
 
         binding.backToChatsPanelButton.setOnClickListener {
             findNavController().navigateUp()
@@ -432,6 +451,7 @@ class InteractiveMapFragment : Fragment() {
             // Пока не нужно, но может потом что-нибудь покумекаем
         }
     }
+
     private fun addPointsToInteractiveMap(myPoints: List<MyPoint>) {
 
         if (currentIconPlacemark != null) {
@@ -452,6 +472,7 @@ class InteractiveMapFragment : Fragment() {
             }
         }
     }
+
     private fun setUpCurrentIconPlacemark(point: Point) {
         currentIconPlacemark = mapView.map.mapObjects.addPlacemark()
             .apply {
@@ -465,6 +486,7 @@ class InteractiveMapFragment : Fragment() {
                 )
             }
     }
+
     private fun setUpUserAreaCircle() {
         val userAreaCircle = Circle(
             Point(
@@ -606,6 +628,7 @@ class InteractiveMapFragment : Fragment() {
             startActivity(intent) // Запускаем новое Activity с помощью Intent
         }
     }
+
     private fun setUpFragmentCurrentState(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             return
@@ -951,6 +974,8 @@ class InteractiveMapFragment : Fragment() {
 
         isPointDescriptionCreating = false
 
+        isMessageShown = false
+
         viewModel.addPoint(
             type = currentIconNumber,
             latitude = currentIconPlacemark!!.geometry.latitude,
@@ -999,6 +1024,7 @@ class InteractiveMapFragment : Fragment() {
         super.onSaveInstanceState(outState)
         outState.putBoolean("isPointAdding", isPointAdding)
         outState.putBoolean("isPointDescriptionCreating", isPointDescriptionCreating)
+        outState.putBoolean("isMessageShown", isMessageShown)
 
         outState.putDouble(
             "addingPointLatitude",
