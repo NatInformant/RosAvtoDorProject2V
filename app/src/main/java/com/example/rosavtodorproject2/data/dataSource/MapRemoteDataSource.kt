@@ -83,7 +83,7 @@ class MapRemoteDataSource @Inject constructor(
                             Files = filePaths.map {
                                 val file = File(it)
                                 val requestFile =
-                                    file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+                                    file.asRequestBody(contentType = "image/jpeg".toMediaTypeOrNull())
                                 MultipartBody.Part.createFormData("Files", file.name, requestFile)
                             }
                         )
